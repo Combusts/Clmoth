@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,10 +9,9 @@ public class PlayerInputManager : MonoBehaviour
     public static PlayerInputManager Instance { get; private set; }
     Actions inputActions;
 
-
-    // 事件
     public Action<float> OnMoveActionPerformed;
     public Action<float> OnMoveActionCanceled;
+    public Action OnEseActionPerformed;
 
     void Awake()
     {
@@ -30,7 +28,20 @@ public class PlayerInputManager : MonoBehaviour
         inputActions = new Actions();
         inputActions.Player.Move.performed += OnMovePerformed;
         inputActions.Player.Move.canceled += OnMoveCanceled;
+        inputActions.Player.Ese.performed += OnEsePerformed;
         inputActions.Enable();
+    }
+    
+    private void OnDestroy()
+    {        
+        // 清理输入系统
+        if (inputActions != null)
+        {
+            inputActions.Disable();
+            inputActions.Player.Move.performed -= OnMovePerformed;
+            inputActions.Player.Move.canceled -= OnMoveCanceled;
+            inputActions.Player.Ese.performed -= OnEsePerformed;
+        }
     }
 
     // 移动事件
@@ -41,10 +52,17 @@ public class PlayerInputManager : MonoBehaviour
         OnMoveActionPerformed?.Invoke(value);
     }
 
+    // 移动事件取消
     void OnMoveCanceled(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
         Debug.Log(value);
         OnMoveActionCanceled?.Invoke(value);
+    }
+
+    // 退出事件
+    void OnEsePerformed(InputAction.CallbackContext context)
+    {
+        OnEseActionPerformed?.Invoke();
     }
 }

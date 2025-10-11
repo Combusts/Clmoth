@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(new Vector3(direction, 0, 0) * speed * Time.deltaTime);
+        transform.Translate(speed * Time.deltaTime * new Vector3(direction, 0, 0));
     }
 
     void OnDisable()
