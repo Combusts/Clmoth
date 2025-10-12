@@ -1,0 +1,377 @@
+{
+  "dialogueId": "MiniGame01",
+  "startNodeId": "MiniGame01_Start",
+  "nodes": {
+    "MiniGame01_Start": {
+      "id": "MiniGame01_Start",
+      "type": "Choice",
+      "text": "欢迎来到拼图小游戏！\n这是你的第一次尝试。让我来为你介绍规则。\n这是你的第 {$mini_game_01_attempts + 1} 次尝试。\n- 将拼图碎片拖拽到正确位置\n- 完成拼图即可获得钥匙\n- 有时间限制：60秒\n- 观察拼图的边缘和颜色\n- 从角落开始拼\n- 不要着急，仔细思考",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "开始游戏",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "查看规则",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "退出游戏",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "if",
+          "parameters": [
+            "$mini_game_01_attempts",
+            "==",
+            "0"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Start_Game": {
+      "id": "Start_Game",
+      "type": "Text",
+      "text": "很好！让我们开始拼图游戏。\n游戏开始！",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set",
+          "parameters": [
+            "$mini_game_01_attempts",
+            "=",
+            "$mini_game_01_attempts",
+            "+",
+            "1"
+          ]
+        },
+        {
+          "commandName": "set_game_state",
+          "parameters": [
+            "MiniGame"
+          ]
+        },
+        {
+          "commandName": "complete_mini_game",
+          "parameters": [
+            "Puzzle01"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "View_Rules": {
+      "id": "View_Rules",
+      "type": "Choice",
+      "text": "拼图游戏详细规则：\n- 鼠标左键：选择拼图碎片\n- 拖拽：移动拼图碎片\n- 鼠标右键：旋转拼图碎片\n- 将所有拼图碎片放到正确位置\n- 完成拼图即可获得钥匙\n- 在时间限制内完成\n- 完成时间：影响最终评分\n- 错误次数：越少越好\n- 提示使用：会影响评分\n- 按 H 键获得提示\n- 提示会显示下一个正确位置\n- 使用提示会影响最终评分",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "开始游戏",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [],
+      "nextNodeId": ""
+    },
+    "Exit_Game": {
+      "id": "Exit_Game",
+      "type": "Text",
+      "text": "退出拼图游戏...",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set_game_state",
+          "parameters": [
+            "Playing"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "MiniGame01_Complete": {
+      "id": "MiniGame01_Complete",
+      "type": "Choice",
+      "text": "恭喜！你完成了拼图游戏！\n- 完成时间：{$mini_game_01_time} 秒\n- 尝试次数：{$mini_game_01_attempts}\n- 错误次数：{$mini_game_01_errors}\n太棒了！你在30秒内完成了拼图！\n很好！你在45秒内完成了拼图！\n不错！你完成了拼图！\n完美！你没有犯任何错误！\n很好！你只犯了少量错误！\n你犯了一些错误，但没关系，重要的是完成了！\n- 获得钥匙：Key01\n- 经验值：100\n- 解锁成就：拼图大师",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "继续游戏",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "重新挑战",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "返回关卡",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "if",
+          "parameters": [
+            "$mini_game_01_time",
+            "<",
+            "30"
+          ]
+        },
+        {
+          "commandName": "elseif",
+          "parameters": [
+            "$mini_game_01_time",
+            "<",
+            "45"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        },
+        {
+          "commandName": "if",
+          "parameters": [
+            "$mini_game_01_errors",
+            "==",
+            "0"
+          ]
+        },
+        {
+          "commandName": "elseif",
+          "parameters": [
+            "$mini_game_01_errors",
+            "<",
+            "3"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        },
+        {
+          "commandName": "collect_item",
+          "parameters": [
+            "Key01"
+          ]
+        },
+        {
+          "commandName": "save_choice",
+          "parameters": [
+            "mini_game_01_completed",
+            "true"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Continue_Game": {
+      "id": "Continue_Game",
+      "type": "Choice",
+      "text": "很好！让我们继续游戏。\n你现在可以使用钥匙打开门了！",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "继续",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set_game_state",
+          "parameters": [
+            "Playing"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Retry_Challenge": {
+      "id": "Retry_Challenge",
+      "type": "Text",
+      "text": "重新挑战拼图游戏...\n让我们再试一次！",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set",
+          "parameters": [
+            "$mini_game_01_attempts",
+            "=",
+            "$mini_game_01_attempts",
+            "+",
+            "1"
+          ]
+        },
+        {
+          "commandName": "set_game_state",
+          "parameters": [
+            "MiniGame"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Return_Level": {
+      "id": "Return_Level",
+      "type": "Text",
+      "text": "返回关卡...",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set_game_state",
+          "parameters": [
+            "Playing"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "MiniGame01_Fail": {
+      "id": "MiniGame01_Fail",
+      "type": "Choice",
+      "text": "很遗憾，你没有完成拼图游戏。\n时间用完了！\n你选择了退出游戏。\n- 尝试次数：{$mini_game_01_attempts}\n- 完成时间：{$mini_game_01_time} 秒\n- 错误次数：{$mini_game_01_errors}\n不要灰心！你还有机会。\n你已经尝试了3次，让我们休息一下。",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "再试一次",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "查看提示",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "退出游戏",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "退出游戏",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "if",
+          "parameters": [
+            "$mini_game_01_time",
+            ">=",
+            "60"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        },
+        {
+          "commandName": "if",
+          "parameters": [
+            "$mini_game_01_attempts",
+            "<",
+            "3"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Try_Again": {
+      "id": "Try_Again",
+      "type": "Text",
+      "text": "很好！让我们再试一次。\n记住，仔细观察拼图的形状和颜色！",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set",
+          "parameters": [
+            "$mini_game_01_attempts",
+            "=",
+            "$mini_game_01_attempts",
+            "+",
+            "1"
+          ]
+        },
+        {
+          "commandName": "set_game_state",
+          "parameters": [
+            "MiniGame"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "View_Hints": {
+      "id": "View_Hints",
+      "type": "Choice",
+      "text": "拼图游戏提示：\n- 从边缘开始拼\n- 观察拼图的颜色和纹理\n- 先拼角落，再拼边缘\n- 蓝色碎片：通常在天空部分\n- 绿色碎片：通常在草地部分\n- 棕色碎片：通常在土地部分\n- 使用鼠标右键旋转碎片\n- 拖拽碎片到大致位置\n- 仔细观察碎片边缘的匹配",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "开始游戏",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [],
+      "nextNodeId": ""
+    }
+  }
+}

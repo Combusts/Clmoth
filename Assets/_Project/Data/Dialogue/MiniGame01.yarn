@@ -1,0 +1,195 @@
+title: MiniGame01_Start
+
+欢迎来到拼图小游戏！
+
+<<if $mini_game_01_attempts == 0>>
+    这是你的第一次尝试。让我来为你介绍规则。
+<<else>>
+    这是你的第 {$mini_game_01_attempts + 1} 次尝试。
+<<endif>>
+
+## 游戏规则
+- 将拼图碎片拖拽到正确位置
+- 完成拼图即可获得钥匙
+- 有时间限制：60秒
+
+## 提示
+- 观察拼图的边缘和颜色
+- 从角落开始拼
+- 不要着急，仔细思考
+
+-> 开始游戏
+-> 查看规则
+-> 退出游戏
+===
+
+title: Start_Game
+
+很好！让我们开始拼图游戏。
+
+<<set $mini_game_01_attempts = $mini_game_01_attempts + 1>>
+<<set_game_state MiniGame>>
+<<complete_mini_game Puzzle01>>
+
+游戏开始！
+===
+
+title: View_Rules
+
+拼图游戏详细规则：
+
+## 基本操作
+- 鼠标左键：选择拼图碎片
+- 拖拽：移动拼图碎片
+- 鼠标右键：旋转拼图碎片
+
+## 游戏目标
+- 将所有拼图碎片放到正确位置
+- 完成拼图即可获得钥匙
+- 在时间限制内完成
+
+## 评分标准
+- 完成时间：影响最终评分
+- 错误次数：越少越好
+- 提示使用：会影响评分
+
+## 提示系统
+- 按 H 键获得提示
+- 提示会显示下一个正确位置
+- 使用提示会影响最终评分
+
+-> 开始游戏
+===
+
+title: Exit_Game
+
+退出拼图游戏...
+
+<<set_game_state Playing>>
+===
+
+title: MiniGame01_Complete
+
+恭喜！你完成了拼图游戏！
+
+## 完成统计
+- 完成时间：{$mini_game_01_time} 秒
+- 尝试次数：{$mini_game_01_attempts}
+- 错误次数：{$mini_game_01_errors}
+
+<<if $mini_game_01_time < 30>>
+    太棒了！你在30秒内完成了拼图！
+<<elseif $mini_game_01_time < 45>>
+    很好！你在45秒内完成了拼图！
+<<else>>
+    不错！你完成了拼图！
+<<endif>>
+
+<<if $mini_game_01_errors == 0>>
+    完美！你没有犯任何错误！
+<<elseif $mini_game_01_errors < 3>>
+    很好！你只犯了少量错误！
+<<else>>
+    你犯了一些错误，但没关系，重要的是完成了！
+<<endif>>
+
+## 奖励
+- 获得钥匙：Key01
+- 经验值：100
+- 解锁成就：拼图大师
+
+<<collect_item Key01>>
+<<save_choice mini_game_01_completed true>>
+
+-> 继续游戏
+-> 重新挑战
+-> 返回关卡
+===
+
+title: Continue_Game
+
+很好！让我们继续游戏。
+
+<<set_game_state Playing>>
+你现在可以使用钥匙打开门了！
+
+-> 继续
+===
+
+title: Retry_Challenge
+
+重新挑战拼图游戏...
+
+<<set $mini_game_01_attempts = $mini_game_01_attempts + 1>>
+<<set_game_state MiniGame>>
+
+让我们再试一次！
+===
+
+title: Return_Level
+
+返回关卡...
+
+<<set_game_state Playing>>
+===
+
+title: MiniGame01_Fail
+
+很遗憾，你没有完成拼图游戏。
+
+## 失败原因
+<<if $mini_game_01_time >= 60>>
+    时间用完了！
+<<else>>
+    你选择了退出游戏。
+<<endif>>
+
+## 统计
+- 尝试次数：{$mini_game_01_attempts}
+- 完成时间：{$mini_game_01_time} 秒
+- 错误次数：{$mini_game_01_errors}
+
+<<if $mini_game_01_attempts < 3>>
+    不要灰心！你还有机会。
+    
+    -> 再试一次
+    -> 查看提示
+    -> 退出游戏
+<<else>>
+    你已经尝试了3次，让我们休息一下。
+    
+    -> 退出游戏
+<<endif>>
+===
+
+title: Try_Again
+
+很好！让我们再试一次。
+
+<<set $mini_game_01_attempts = $mini_game_01_attempts + 1>>
+<<set_game_state MiniGame>>
+
+记住，仔细观察拼图的形状和颜色！
+===
+
+title: View_Hints
+
+拼图游戏提示：
+
+## 基本策略
+- 从边缘开始拼
+- 观察拼图的颜色和纹理
+- 先拼角落，再拼边缘
+
+## 具体提示
+- 蓝色碎片：通常在天空部分
+- 绿色碎片：通常在草地部分
+- 棕色碎片：通常在土地部分
+
+## 操作技巧
+- 使用鼠标右键旋转碎片
+- 拖拽碎片到大致位置
+- 仔细观察碎片边缘的匹配
+
+-> 开始游戏
+===
