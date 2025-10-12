@@ -1,0 +1,150 @@
+title: Start
+
+欢迎来到 Spotlight 2025！
+这是一个横版解谜游戏，你将通过解谜和对话来推进剧情。
+
+<<if $visited_tutorial == false>>
+    这是你的第一次游戏，让我来为你介绍基本操作。
+    <<set $visited_tutorial = true>>
+<<else>>
+    欢迎回来！你已经熟悉了基本操作。
+<<endif>>
+
+-> 开始游戏
+-> 查看教程
+-> 设置
+-> 退出游戏
+===
+
+title: Start_Game
+
+很好！让我们开始你的冒险之旅。
+
+<<if $level_01_completed == false>>
+    首先，你需要完成第一关。
+    <<load_scene Level_01>>
+<<else>>
+    你已经完成了第一关！让我们继续下一关。
+    <<load_scene Level_02>>
+<<endif>>
+===
+
+title: Tutorial
+
+教程时间！让我来教你如何游戏。
+
+## 基本操作
+- 使用 WASD 或方向键移动
+- 按空格键跳跃
+- 按 E 键与物品交互
+- 按 ESC 键暂停游戏
+
+## 解谜提示
+- 仔细观察环境
+- 收集所有物品
+- 完成小游戏
+- 与NPC对话获取线索
+
+-> 我明白了
+-> 再讲一遍
+===
+
+title: I_Understand
+
+很好！现在你已经掌握了基本操作。
+
+<<set_game_state Playing>>
+让我们开始游戏吧！
+
+<<load_scene Level_01>>
+===
+
+title: Explain_Again
+
+当然！让我再详细解释一遍。
+
+## 移动控制
+- W 或 ↑：向上移动
+- A 或 ←：向左移动  
+- S 或 ↓：向下移动
+- D 或 →：向右移动
+
+## 交互控制
+- 空格键：跳跃
+- E 键：与物品/NPC交互
+- ESC 键：暂停游戏
+
+## 游戏目标
+- 收集所有物品
+- 完成小游戏
+- 与NPC对话
+- 推进剧情
+
+-> 我明白了
+===
+
+title: Settings
+
+设置菜单：
+
+## 音频设置
+- 主音量：{$master_volume}
+- 音乐音量：{$music_volume}
+- 音效音量：{$sfx_volume}
+
+## 游戏设置
+- 文本速度：{$text_speed}
+- 自动推进：{$auto_advance}
+
+-> 调整音频
+-> 调整游戏设置
+-> 返回主菜单
+===
+
+title: Adjust_Audio
+
+音频设置：
+
+<<play_sound menu_click>>
+
+主音量：{$master_volume}
+音乐音量：{$music_volume}
+音效音量：{$sfx_volume}
+
+-> 返回设置
+===
+
+title: Adjust_Game_Settings
+
+游戏设置：
+
+文本速度：{$text_speed}
+自动推进：{$auto_advance}
+
+-> 返回设置
+===
+
+title: Quit_Game
+
+你确定要退出游戏吗？
+
+-> 是的，退出
+-> 不，继续游戏
+===
+
+title: Quit_Confirm
+
+好的，游戏将保存并退出。
+
+<<save_choice quit_game true>>
+感谢游玩 Spotlight 2025！
+
+<<set_game_state MainMenu>>
+===
+
+title: Continue_Game
+
+很好！让我们继续游戏。
+
+<<set_game_state Playing>>
+===

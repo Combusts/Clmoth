@@ -1,0 +1,387 @@
+{
+  "dialogueId": "Level01",
+  "startNodeId": "Level01_Start",
+  "nodes": {
+    "Level01_Start": {
+      "id": "Level01_Start",
+      "type": "Choice",
+      "text": "欢迎来到第一关！\n这是你的第一个关卡，让我来为你介绍。\n欢迎回到第一关！\n- 收集3个宝石\n- 完成拼图小游戏\n- 找到隐藏的钥匙\n- 仔细观察环境\n- 与NPC对话获取线索\n- 不要错过任何角落",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "开始探索",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "查看地图",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "返回主菜单",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "if",
+          "parameters": [
+            "$level_01_visited",
+            "==",
+            "false"
+          ]
+        },
+        {
+          "commandName": "set",
+          "parameters": [
+            "$level_01_visited",
+            "=",
+            "true"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Start_Exploration": {
+      "id": "Start_Exploration",
+      "type": "Text",
+      "text": "很好！让我们开始探索。\n记住，按 E 键与物品交互，按空格键跳跃。\n祝你游戏愉快！",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set_game_state",
+          "parameters": [
+            "Playing"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "View_Map": {
+      "id": "View_Map",
+      "type": "Choice",
+      "text": "地图显示：\n```\n[起点] -----> [宝石1] -----> [拼图游戏]\n|                              |\nv                              v\n[宝石2] <----- [钥匙] <----- [宝石3]\n```\n- 起点：你在这里\n- 宝石1：需要跳跃到达\n- 宝石2：在隐藏区域\n- 宝石3：需要解谜\n- 钥匙：在拼图游戏后\n- 拼图游戏：需要收集3个宝石",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "开始探索",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [],
+      "nextNodeId": ""
+    },
+    "Return_Main_Menu": {
+      "id": "Return_Main_Menu",
+      "type": "Text",
+      "text": "返回主菜单...",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set_game_state",
+          "parameters": [
+            "MainMenu"
+          ]
+        },
+        {
+          "commandName": "load_scene",
+          "parameters": [
+            "MainMenu"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Level01_Complete": {
+      "id": "Level01_Complete",
+      "type": "Choice",
+      "text": "恭喜！你完成了第一关！\n- 收集物品：{$collected_items}/3\n- 小游戏完成：{$mini_games_completed}/1\n- 对话完成：{$dialogue_completed}/2\n完美！你收集了所有物品！\n你收集了 {$collected_items} 个物品，还有 {3 - $collected_items} 个没有收集。\n小游戏也完成了！\n你还没有完成小游戏。",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "继续下一关",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "重新开始",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "返回主菜单",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "if",
+          "parameters": [
+            "$collected_items",
+            ">=",
+            "3"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        },
+        {
+          "commandName": "if",
+          "parameters": [
+            "$mini_games_completed",
+            ">=",
+            "1"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Continue_Next_Level": {
+      "id": "Continue_Next_Level",
+      "type": "Text",
+      "text": "很好！让我们继续下一关。",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set",
+          "parameters": [
+            "$level_01_completed",
+            "=",
+            "true"
+          ]
+        },
+        {
+          "commandName": "set",
+          "parameters": [
+            "$level_02_unlocked",
+            "=",
+            "true"
+          ]
+        },
+        {
+          "commandName": "load_scene",
+          "parameters": [
+            "Level_02"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Restart_Level": {
+      "id": "Restart_Level",
+      "type": "Text",
+      "text": "重新开始第一关...",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set",
+          "parameters": [
+            "$level_01_completed",
+            "=",
+            "false"
+          ]
+        },
+        {
+          "commandName": "set",
+          "parameters": [
+            "$collected_items",
+            "=",
+            "0"
+          ]
+        },
+        {
+          "commandName": "set",
+          "parameters": [
+            "$mini_games_completed",
+            "=",
+            "0"
+          ]
+        },
+        {
+          "commandName": "set",
+          "parameters": [
+            "$dialogue_completed",
+            "=",
+            "0"
+          ]
+        },
+        {
+          "commandName": "load_scene",
+          "parameters": [
+            "Level_01"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Level01_NPC_Dialogue": {
+      "id": "Level01_NPC_Dialogue",
+      "type": "Choice",
+      "text": "你好！我是这个关卡的向导。\n你还没有收集任何物品。记住要仔细观察环境！\n你已经收集了1个物品，还有2个！\n你已经收集了2个物品，还有1个！\n你已经收集了所有物品！现在可以去完成拼图游戏了。\n拼图游戏还没有完成。你需要收集所有宝石才能开始。\n拼图游戏已经完成了！你可以继续前进。",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "谢谢",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "给我提示",
+          "nextNodeId": "",
+          "commands": []
+        },
+        {
+          "text": "再见",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "if",
+          "parameters": [
+            "$collected_items",
+            "==",
+            "0"
+          ]
+        },
+        {
+          "commandName": "elseif",
+          "parameters": [
+            "$collected_items",
+            "==",
+            "1"
+          ]
+        },
+        {
+          "commandName": "elseif",
+          "parameters": [
+            "$collected_items",
+            "==",
+            "2"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        },
+        {
+          "commandName": "if",
+          "parameters": [
+            "$mini_games_completed",
+            "==",
+            "0"
+          ]
+        },
+        {
+          "commandName": "else",
+          "parameters": []
+        },
+        {
+          "commandName": "endif",
+          "parameters": []
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Thanks": {
+      "id": "Thanks",
+      "type": "Text",
+      "text": "不客气！祝你游戏愉快！",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set",
+          "parameters": [
+            "$dialogue_completed",
+            "=",
+            "$dialogue_completed",
+            "+",
+            "1"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    },
+    "Give_Hint": {
+      "id": "Give_Hint",
+      "type": "Choice",
+      "text": "好的，让我给你一些提示：\n- 宝石1：在平台的最高处\n- 宝石2：在隐藏的墙壁后面\n- 宝石3：需要解谜才能获得\n- 收集所有宝石后，拼图游戏会自动开始\n- 仔细观察拼图的形状和颜色\n- 不要着急，慢慢思考",
+      "characterName": "",
+      "choices": [
+        {
+          "text": "谢谢",
+          "nextNodeId": "",
+          "commands": []
+        }
+      ],
+      "conditions": [],
+      "commands": [],
+      "nextNodeId": ""
+    },
+    "Goodbye": {
+      "id": "Goodbye",
+      "type": "Text",
+      "text": "再见！记得要仔细观察环境！",
+      "characterName": "",
+      "choices": [],
+      "conditions": [],
+      "commands": [
+        {
+          "commandName": "set",
+          "parameters": [
+            "$dialogue_completed",
+            "=",
+            "$dialogue_completed",
+            "+",
+            "1"
+          ]
+        }
+      ],
+      "nextNodeId": ""
+    }
+  }
+}
