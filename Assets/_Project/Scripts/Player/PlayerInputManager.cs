@@ -12,6 +12,7 @@ public class PlayerInputManager : MonoBehaviour
     public Action<float> OnMoveActionPerformed;
     public Action<float> OnMoveActionCanceled;
     public Action OnEseActionPerformed;
+    public Action OnInteractActionPerformed;
 
     void Awake()
     {
@@ -29,6 +30,7 @@ public class PlayerInputManager : MonoBehaviour
         inputActions.Player.Move.performed += OnMovePerformed;
         inputActions.Player.Move.canceled += OnMoveCanceled;
         inputActions.Player.Ese.performed += OnEsePerformed;
+        inputActions.Player.Interact.performed += OnInteractPerformed;
         inputActions.Enable();
     }
     
@@ -41,6 +43,7 @@ public class PlayerInputManager : MonoBehaviour
             inputActions.Player.Move.performed -= OnMovePerformed;
             inputActions.Player.Move.canceled -= OnMoveCanceled;
             inputActions.Player.Ese.performed -= OnEsePerformed;
+            inputActions.Player.Interact.performed -= OnInteractPerformed;
         }
     }
 
@@ -48,7 +51,6 @@ public class PlayerInputManager : MonoBehaviour
     void OnMovePerformed(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
-        Debug.Log(value);
         OnMoveActionPerformed?.Invoke(value);
     }
 
@@ -56,7 +58,6 @@ public class PlayerInputManager : MonoBehaviour
     void OnMoveCanceled(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
-        Debug.Log(value);
         OnMoveActionCanceled?.Invoke(value);
     }
 
@@ -64,5 +65,11 @@ public class PlayerInputManager : MonoBehaviour
     void OnEsePerformed(InputAction.CallbackContext context)
     {
         OnEseActionPerformed?.Invoke();
+    }
+
+    // 交互事件
+    void OnInteractPerformed(InputAction.CallbackContext context)
+    {
+        OnInteractActionPerformed?.Invoke();
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -31,10 +32,10 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         // 初始化UI路径字典
-        uiPathDic["Main"] = "Prefabs/UI/UIMain";
-        uiPathDic["Setting"] = "Prefabs/UI/UISetting";
-        uiPathDic["Playing"] = "Prefabs/UI/UIPlaying";
-        uiPathDic["Pause"] = "Prefabs/UI/UIPause";
+        uiPathDic["Main"] = "Assets/_Project/Prefabs/UI/UIMain.prefab";
+        uiPathDic["Setting"] = "Assets/_Project/Prefabs/UI/UISetting.prefab";
+        uiPathDic["Playing"] = "Assets/_Project/Prefabs/UI/UIPlaying.prefab";
+        uiPathDic["Pause"] = "Assets/_Project/Prefabs/UI/UIPause.prefab";
 
         GameManager.Instance.OnStartGame += () => {
             HideAllUI();
@@ -46,14 +47,18 @@ public class UIManager : MonoBehaviour
     {
         if (uiPathDic.ContainsKey(uiName) && !uiDic.ContainsKey(uiName))
         {
-            Debug.Log("初始化UI" + uiName);
-            GameObject ui = Resources.Load<GameObject>(uiPathDic[uiName]);
+            GameObject ui = AssetDatabase.LoadAssetAtPath(uiPathDic[uiName], typeof(GameObject)) as GameObject;;
+
+            if (ui == null)
+            {
+                Debug.LogError(uiName + "的UI资源为空");
+            }
+            
             GameObject uiInstance = Instantiate(ui, uiRoot.transform);
             uiInstance.name = uiName;
             uiDic.Add(uiName, uiInstance.GetComponent<PanelBase>());
             openPanels.Add(uiInstance.GetComponent<PanelBase>());
-            Debug.Log(openPanels.Count);
-            Debug.Log(string.Join('|', openPanels));
+
         } else if (uiDic.ContainsKey(uiName)) {
             Debug.Log("激活UI" + uiName);
             uiDic[uiName].Show();
