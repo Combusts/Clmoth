@@ -72,4 +72,7 @@ public class PlayerInputManager : MonoBehaviour
     {
         OnInteractActionPerformed?.Invoke();
     }
+
+    
+
 }

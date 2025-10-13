@@ -37,11 +37,18 @@ public class UIManager : MonoBehaviour
         uiPathDic["Playing"] = "Assets/_Project/Prefabs/UI/UIPlaying.prefab";
         uiPathDic["Pause"] = "Assets/_Project/Prefabs/UI/UIPause.prefab";
 
-        GameManager.Instance.OnStartGame += () => {
+    }
+
+    void Start()
+    {
+        GameManager.Instance.OnStartGame += () =>
+        {
             HideAllUI();
+
+            // 临时
+            ShowUI("Playing");
         };
     }
-    
 
     public void ShowUI(string uiName)
     {
@@ -60,7 +67,6 @@ public class UIManager : MonoBehaviour
             openPanels.Add(uiInstance.GetComponent<PanelBase>());
 
         } else if (uiDic.ContainsKey(uiName)) {
-            Debug.Log("激活UI" + uiName);
             uiDic[uiName].Show();
             openPanels.Add(uiDic[uiName]);
         } else {

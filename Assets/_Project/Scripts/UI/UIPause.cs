@@ -18,5 +18,6 @@ public class UIPause : PanelBase
         UIManager.Instance.HideAllUI();
         UIManager.Instance.ShowUI("Main");
         GameManager.Instance.ResumeGame();
+        GameManager.Instance.ToLevel("Main");
     }
 }

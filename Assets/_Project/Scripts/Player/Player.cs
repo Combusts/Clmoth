@@ -60,6 +60,7 @@ public class Player : MonoBehaviour
         this.direction = 0f;
     }
 
+
     private IInteractive FindClosestInteractive()
     {
         if (interactiveObjects.Count == 0) return null;
@@ -106,8 +107,8 @@ public class Player : MonoBehaviour
         {
             closestInteractive.Interact();
             closestInteractive.HideHint();
-
             interactiveObjects.Remove(closestInteractive);
+
             if (closestInteractive.CanInteract)
             {
                 interactiveObjects.Add(closestInteractive);

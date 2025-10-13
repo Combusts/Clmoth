@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Seat : MonoBehaviour, IInteractive
+public class Table : MonoBehaviour, IInteractive
 {
     public bool IsShowHint { get; set; }
     public bool CanInteract { get; set; } = true;
@@ -22,7 +22,7 @@ public class Seat : MonoBehaviour, IInteractive
 
     public void Interact()
     {
-        Debug.Log("Interact Seat");
+        Debug.Log("Interact table");
         // CanInteract = false;
     }
 

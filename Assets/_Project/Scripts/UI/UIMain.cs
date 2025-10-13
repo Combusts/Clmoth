@@ -7,9 +7,6 @@ public class UIMain : PanelBase
     public void OnStartGame()
     {
         GameManager.Instance.StartGame();
-
-        // 临时
-        UIManager.Instance.ShowUI("Playing");
     }
 
     public void OnExitGame()

@@ -16,9 +16,14 @@ public class UISetting : PanelBase
 
     private void OnEseActionPerformed()
     {
-        if(UIManager.Instance.IsLastUI("Setting"))
+        if (UIManager.Instance.IsLastUI("Setting"))
         {
             UIManager.Instance.HideUI("Setting");
         }
+    }
+    
+    public void OnClickBackButton()
+    {
+        UIManager.Instance.HideUI("Setting");
     }
 }
