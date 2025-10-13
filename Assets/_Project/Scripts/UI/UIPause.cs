@@ -5,7 +5,7 @@ using UnityEngine;
 public class UIPause : PanelBase
 {
     public void OnResume(){
-        UIManager.Instance.HideAllUI();
+        UIManager.Instance.HideUI("Pause");
         UIManager.Instance.ShowUI("Playing");
         GameManager.Instance.ResumeGame();
     }

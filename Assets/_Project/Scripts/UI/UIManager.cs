@@ -36,6 +36,7 @@ public class UIManager : MonoBehaviour
         uiPathDic["Setting"] = "Assets/_Project/Prefabs/UI/UISetting.prefab";
         uiPathDic["Playing"] = "Assets/_Project/Prefabs/UI/UIPlaying.prefab";
         uiPathDic["Pause"] = "Assets/_Project/Prefabs/UI/UIPause.prefab";
+        uiPathDic["CinematicBars"] = "Assets/_Project/Prefabs/UI/UICinematicBars.prefab";
 
     }
 
@@ -44,8 +45,7 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.OnStartGame += () =>
         {
             HideAllUI();
-
-            // 临时
+            ShowUI("CinematicBars");
             ShowUI("Playing");
         };
     }
