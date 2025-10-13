@@ -30,6 +30,12 @@ public class GameManager : MonoBehaviour
 
         SceneManager.sceneLoaded += (scene, mode)=>{
             Debug.Log($"Scene Loaded: {scene.name}");
+            
+            // 如果是游戏场景，设置相机位置
+            if (scene.name == "Level_01")
+            {
+                SetCameraPositionAfterSceneLoad();
+            }
         };
     }
 
@@ -57,5 +63,33 @@ public class GameManager : MonoBehaviour
 
     public void ToLevel(string levelName){
         SceneManager.LoadScene(levelDic[levelName]);  
+    }
+
+    private void SetCameraPositionAfterSceneLoad()
+    {
+        // 等待一帧确保UI已经创建
+        StartCoroutine(SetCameraPositionCoroutine());
+    }
+
+    private IEnumerator SetCameraPositionCoroutine()
+    {
+        // 等待一帧
+        yield return null;
+        
+        // 通过UIManager获取UICinematicBars并设置相机位置
+        if (UIManager.Instance != null)
+        {
+            // 尝试获取UICinematicBars组件
+            var cinematicBars = FindObjectOfType<UICinematicBars>();
+            if (cinematicBars != null)
+            {
+                cinematicBars.SetCameraPosition();
+                Debug.Log("Camera position set after scene load");
+            }
+            else
+            {
+                Debug.LogWarning("UICinematicBars not found after scene load");
+            }
+        }
     }
 }

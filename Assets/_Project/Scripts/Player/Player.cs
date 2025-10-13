@@ -13,9 +13,18 @@ public class Player : MonoBehaviour
 
     void OnEnable()
     {
-        PlayerInputManager.Instance.OnMoveActionPerformed += Moveperformed;
-        PlayerInputManager.Instance.OnMoveActionCanceled += Movecanceled;
-        PlayerInputManager.Instance.OnInteractActionPerformed += Interact;
+        // 确保 PlayerInputManager 已经初始化
+        if (PlayerInputManager.Instance != null)
+        {
+            PlayerInputManager.Instance.OnMoveActionPerformed += Moveperformed;
+            PlayerInputManager.Instance.OnMoveActionCanceled += Movecanceled;
+            PlayerInputManager.Instance.OnInteractActionPerformed += Interact;
+        }
+        else
+        {
+            // 如果 PlayerInputManager 还没准备好，延迟订阅
+            StartCoroutine(SubscribeToInputManagerWhenReady());
+        }
     }
 
     void Update()
@@ -27,9 +36,13 @@ public class Player : MonoBehaviour
 
     void OnDisable()
     {
-        PlayerInputManager.Instance.OnMoveActionPerformed -= Moveperformed;
-        PlayerInputManager.Instance.OnMoveActionCanceled -= Movecanceled;
-        PlayerInputManager.Instance.OnInteractActionPerformed -= Interact;
+        // 安全地取消订阅
+        if (PlayerInputManager.Instance != null)
+        {
+            PlayerInputManager.Instance.OnMoveActionPerformed -= Moveperformed;
+            PlayerInputManager.Instance.OnMoveActionCanceled -= Movecanceled;
+            PlayerInputManager.Instance.OnInteractActionPerformed -= Interact;
+        }
     }
 
     public void OnTriggerEnter2D(UnityEngine.Collider2D collision)
@@ -58,6 +71,21 @@ public class Player : MonoBehaviour
     void Movecanceled(float direction)
     {
         this.direction = 0f;
+    }
+
+    // 等待 PlayerInputManager 准备就绪的协程
+    private IEnumerator SubscribeToInputManagerWhenReady()
+    {
+        // 等待直到 PlayerInputManager.Instance 不为空
+        while (PlayerInputManager.Instance == null)
+        {
+            yield return null; // 等待一帧
+        }
+        
+        // 现在可以安全地订阅事件
+        PlayerInputManager.Instance.OnMoveActionPerformed += Moveperformed;
+        PlayerInputManager.Instance.OnMoveActionCanceled += Movecanceled;
+        PlayerInputManager.Instance.OnInteractActionPerformed += Interact;
     }
 
 

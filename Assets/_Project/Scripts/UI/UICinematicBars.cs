@@ -39,8 +39,26 @@ public class UICinematicBars : PanelBase
         bottomRect.offsetMax = Vector2.zero;
 
         // 将mainCamera的Transform PostionY向上偏移 BottomBlackBar的高度
-        mainCamera.transform.position = new Vector3(0, 0 - bottomBarHeight*10, -10);
+        SetCameraPosition();
 
+        Debug.Log("mainCamera.transform.position: " + mainCamera.transform.position);
+
+    }
+
+    public void SetCameraPosition()
+    {
+        // 重新获取Camera引用，确保使用当前场景的Camera
+        mainCamera = Camera.main;
+        
+        if (mainCamera != null)
+        {
+            mainCamera.transform.position = new Vector3(0, 0 - bottomBarHeight*10, -10);
+            Debug.Log("Camera position set to: " + mainCamera.transform.position);
+        }
+        else
+        {
+            Debug.LogWarning("Main camera not found when setting position");
+        }
     }
 
     void OnDisable()
