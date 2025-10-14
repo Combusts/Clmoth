@@ -26,10 +26,14 @@ public class GameManager : MonoBehaviour
 
         // 初始化场景字典
         levelDic["Main"] = 0;
-        levelDic["Level_01"] = 1;
+        levelDic["Game"] = 1;
 
         SceneManager.sceneLoaded += (scene, mode)=>{
-            Debug.Log($"Scene Loaded: {scene.name}");
+            if (scene.name == "Main")
+            {
+                UIManager.Instance.HideAllUI();
+                UIManager.Instance.ShowUI("Main");
+            }
         };
     }
 
@@ -42,7 +46,7 @@ public class GameManager : MonoBehaviour
     {
         OnStartGame?.Invoke();
 
-        SceneManager.LoadScene(levelDic["Level_01"]);
+        SceneManager.LoadScene(levelDic["Game"]);
     }
 
     public void PauseGame()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,11 +33,12 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         // 初始化UI路径字典
-        uiPathDic["Main"] = "Assets/_Project/Prefabs/UI/UIMain.prefab";
-        uiPathDic["Setting"] = "Assets/_Project/Prefabs/UI/UISetting.prefab";
-        uiPathDic["Playing"] = "Assets/_Project/Prefabs/UI/UIPlaying.prefab";
-        uiPathDic["Pause"] = "Assets/_Project/Prefabs/UI/UIPause.prefab";
-
+        uiPathDic["Main"] = "UIMain";
+        uiPathDic["Setting"] = "UISetting";
+        uiPathDic["Playing"] = "UIPlaying";
+        uiPathDic["Pause"] = "UIPause";
+        uiPathDic["GameOver"] = "UIGameOver";
+        uiPathDic["GameWin"] = "UIGameWin";
     }
 
     void Start()
@@ -54,7 +56,7 @@ public class UIManager : MonoBehaviour
     {
         if (uiPathDic.ContainsKey(uiName) && !uiDic.ContainsKey(uiName))
         {
-            GameObject ui = AssetDatabase.LoadAssetAtPath(uiPathDic[uiName], typeof(GameObject)) as GameObject;;
+            GameObject ui = AssetBundleLoader.LoadAssetBundle(Path.Combine(Application.streamingAssetsPath, "assetbundles/uiprefab.u3d"), uiPathDic[uiName]);
 
             if (ui == null)
             {

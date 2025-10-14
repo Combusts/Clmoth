@@ -4,7 +4,7 @@ using System.IO;
 public class CreateAssetBundles {
 
     //设定AssetBundle的储存路径
-    static string AssetbundlePath = "Assets" + Path.DirectorySeparatorChar + "assetbundles" + Path.DirectorySeparatorChar;
+    static string AssetbundlePath = "Assets/StreamingAssets" + Path.DirectorySeparatorChar + "assetbundles" + Path.DirectorySeparatorChar;
     
     //编辑器扩展
     [MenuItem("Assets/Build AssetBundle")]
