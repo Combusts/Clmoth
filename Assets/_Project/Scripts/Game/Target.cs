@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class Target : ColoredItem
 {
+    [Header("移动属性")]
     [SerializeField]
     private float maxMoveSpeed = 2f;
 
@@ -18,18 +19,35 @@ public class Target : ColoredItem
     [SerializeField]
     private float lowerBound = -4;
 
+    [Header("耐心属性")]
     [SerializeField]
-    private int patience = 5;
+    private int patience = 4;
+
+    [SerializeField]
+    private GameObject patienceIcon_1;
+    [SerializeField]
+    private GameObject patienceIcon_2;
+    [SerializeField]
+    private GameObject patienceIcon_3;
+
+
+
     int moveDirection = 1;
     private new void Start()
     {
         base.Start();
+
+        // 随机移动速度
         moveSpeed = Random.Range(minMoveSpeed, maxMoveSpeed);
 
         // 随机颜色
         // color = GetRandomEnumColor();
         // spriteRenderer.color = GetColor(color);
 
+        // 初始化耐心图标
+        patienceIcon_1.SetActive(false);
+        patienceIcon_2.SetActive(false);
+        patienceIcon_3.SetActive(false);
         TextMeshProUGUI patienceText = GetComponentInChildren<TextMeshProUGUI>();
         patienceText.text = patience.ToString();
 
@@ -64,18 +82,31 @@ public class Target : ColoredItem
             {
                 Destroy(collision.gameObject);
                 patience--;
-                TextMeshProUGUI patienceText = GetComponentInChildren<TextMeshProUGUI>();
-                patienceText.text = patience.ToString();
+
+                // 更新耐心图标
+                switch (patience)
+                {
+                    case 3:
+                        patienceIcon_3.SetActive(true);
+                        break;
+                    case 2:
+                        patienceIcon_2.SetActive(true);
+                        break;
+                    case 1:
+                        patienceIcon_1.SetActive(true);
+                        break;
+                }
+                // 调试用
+                // TextMeshProUGUI patienceText = GetComponentInChildren<TextMeshProUGUI>();
+                // patienceText.text = patience.ToString();
+
                 if (patience <= 0)
                 {
                     // 游戏结束
                     Destroy(gameObject);
                     GameBase.Instance.GameOver();
                 }
-                // moveSpeed = 0;
             }
         }
     }
-
-    
 }

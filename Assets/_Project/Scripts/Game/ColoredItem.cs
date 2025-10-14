@@ -10,6 +10,7 @@ public enum TargetColor
 }
 public class ColoredItem : MonoBehaviour
 {
+    [Header("颜色属性")]
     [SerializeField]
     public TargetColor color = TargetColor.Red;
     
