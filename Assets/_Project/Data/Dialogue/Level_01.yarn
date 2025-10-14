@@ -1,12 +1,105 @@
-﻿title: Start
-position: -99,-58
+title: Start
+position: -378,-299
 ---
-Wow!
-My first ever Yarn script in Unity!
-
--> Gosh!
--> Incredible!
--> I'm amazed!
-
-Anyway, time to get writing!
+<<set $mainName to "小蓝">>
+<<set $managerName to "X总">>
+<<set $newName to "明明">>
+//对话框可以没有前面的冒号，在对话框左上方显示名字/头像框
+"喂，快醒醒！"
+{$mainName}: ！！！
+【打瞌睡的时候刚好被上司撞见】
+-> 道歉
+    {$mainName}: “对不起！{$managerName}，我昨晚……
+-> 狡辩
+    {$mainName}: “啊不好意思{$managerName}，我刚才在研究我们公司地毯的材质……
+    自白: 可恶啊，我在说什么。
+-> 转移话题
+    {$mainName}: “哈…哈哈…{$managerName}，最近行情怎么样？”
+    【{$managerName}的脸色似乎更黑了。】
+{$managerName}: “你怎么回事，最近的工作完全不在状态。”
+{$managerName}: “你知道这会影响到其他同事的工作进度吗？”
+{$managerName}: “现在房地产行业整体环境又不乐观，公司生存压力那么大，你难道不知道吗？”
+-> 知道
+    【也许{$managerName}并不关心你的回答。】
+-> 不知道
+    【或许是太小声了，{$managerName}并没有理睬。】
+-> 关我屁事
+    【话到嘴边，你又咽了回去。】
+{$managerName}: “如果你近期业绩没有改善，我们可能需要重新评估你是否适合继续在这个岗位上工作。”
+{$mainName}: “{$managerName}，我……
+{$managerName}: “算了，多的不说了。今天务必把档案资料整理好发给我。”
+{$mainName}: “好的好的，我会尽快给您发过去。”
+自白: 呼……终于走了。
+自白: *看向钟表
+自白: 怎么已经11点了？！
+自白: 一定是昨天加班太晚了，今天才会在办公室打瞌睡。
+自白: 先想想今天要做什么。
+-> 办公
+    <<jump work>>
+-> 午饭
+    自白: 中午吃什么呢？
+    自白: 食堂好难吃，要不去点外卖吧……
+-> 白日梦
+    自白: 我们公司不是房地产公司吗？
+    自白: 空闲的房子这么多，什么时候给我发一套房子……
+自白: 唉，别想了。还是赶紧开始今天的工作吧。
+<<jump work>>
+===
+title: work
+position: -51,-298
+---
+自白: {$managerName}需要一份档案资料，那就先从整理档案开始吧: 
+这里是小游戏的文本部门，后面将会按照小游戏进行补充
+<<jump file>>
+===
+title:file
+position: -380,47
+---
+【一份入职申请简历吸引了你的注意】
+-> 阅读
+-> 偷看别人的资料不太好吧……
+    【似乎这份文件散发着魔力，你还是忍不住打开了。】
+自白: 他的信息怎么这么奇怪，难道是有bug吗？
+【隔壁桌的同事大段了你的思绪。】
+同事A: “Hey {$mainName}，come over，我有事找你。”
+自白: 不会又要把工作推给我了吧。
+<<jump A>>
+===
+title:A
+position: -75,45
+---
+A: “可以帮我check一下这里的代码吗，我点击run之后总是发生error，so annoying。”
+A: “还有这个file，待会帮我copy然后print一下哦~”
+-> “好的。”
+-> “这些不是你自己的工作吗？”
+    A: “哎呀哎呀，这些你比较skilled嘛～”
+-> “可是我还有其他的工作。”
+    A: “我们不是一个team吗，帮我点小忙应该no problem吧。”
+A: “我还有自己的schedule要忙啦，记得不要告诉leader哦~”
+自白: 同事A喜欢四处打听消息，说不定他知道简历的事情。
+{$mainName}: “等一下，但我还有一个问题。”
+A: “What’s problem?快点说，我可busy呢。”
+{$mainName}: “我找到一份奇怪的简历，你看看这是哪里……”
+A: “我说你呀，是不是stress太大出现幻觉了。”
+A: “要不去窗台透透气relax一下，别耽误到我focus了。”
+自白: 也许真是自己出现幻觉了，公司档案怎么会出现这么离谱的数据。
+自白: 还是先去窗台那里放松一下再工作吧。
+<<jump window>>
+===
+title:window
+position: 243,43
+---
+【你打开窗户，正准备端详窗外风景时。一双手突然抓住你的腰背，用力地把你推出窗外。】
+<<jump badream>>
+===
+title:badream
+position: -387,288
+---
+{$mainName}: “唔……”
+自白: 我是做了一个噩梦吗……
+{$mainName}: *看向时钟
+【时钟显示11点】
+【一道身影挡住了你的视线。】
+新人: “Hello!前辈，我是{$newName}。初次见面，请多指教。”
+{$mainName}: ？！
 ===
