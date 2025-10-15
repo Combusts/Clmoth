@@ -69,6 +69,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -7883320694119709362, guid: 5bbae037b401a4a159ad7104e6cbd50a, type: 2}
     - target: {fileID: 2958262986520364888, guid: 52571f68872914e24837210513edea1d, type: 3}
+      propertyPath: m_enableWordWrapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2958262986520364888, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
@@ -228,6 +232,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7262066351540048079, guid: 52571f68872914e24837210513edea1d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6014902688539971260}
     - targetCorrespondingSourceObject: {fileID: 2958262986446477828, guid: 52571f68872914e24837210513edea1d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9128227864826421637}
@@ -238,6 +245,26 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 8810049306046397191}
   m_SourcePrefab: {fileID: 100100000, guid: 52571f68872914e24837210513edea1d, type: 3}
+--- !u!1 &508640890437418957 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7262066351540048079, guid: 52571f68872914e24837210513edea1d, type: 3}
+  m_PrefabInstance: {fileID: 7189720754833731330}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6014902688539971260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508640890437418957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa748da57e273429ca914b12bb86d4fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueRunner: {fileID: 1195055368778872752}
+  sceneConfigs: []
+  enableDebugLogs: 1
 --- !u!1 &903529642122743776 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8020628925184811234, guid: 52571f68872914e24837210513edea1d, type: 3}
@@ -258,6 +285,17 @@ MonoBehaviour:
   roundedRadius: 20
   borderWidth: 5
   borderColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &1195055368778872752 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8309902628685535410, guid: 52571f68872914e24837210513edea1d, type: 3}
+  m_PrefabInstance: {fileID: 7189720754833731330}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508640890437418957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bec29c0a230741bdac901dba8da47ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2178088038120471513 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9078442560890639579, guid: 52571f68872914e24837210513edea1d, type: 3}

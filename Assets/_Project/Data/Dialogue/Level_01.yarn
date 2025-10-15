@@ -1,11 +1,16 @@
 title: Start
 position: -378,-299
 ---
+<<declare $mainName = "" as string>>
+<<declare $managerName = "" as string>>
+<<declare $newName = "" as string>>
 <<set $mainName to "小蓝">>
 <<set $managerName to "X总">>
 <<set $newName to "明明">>
 //对话框可以没有前面的冒号，在对话框左上方显示名字/头像框
+<<sleepy>>
 "喂，快醒醒！"
+<<wake_up>>
 {$mainName}: ！！！
 【打瞌睡的时候刚好被上司撞见】
 -> 道歉
@@ -35,7 +40,8 @@ position: -378,-299
 自白: 一定是昨天加班太晚了，今天才会在办公室打瞌睡。
 自白: 先想想今天要做什么。
 -> 办公
-    <<jump work>>
+    //结束对话，进入自由状态
+    <<stop>>
 -> 午饭
     自白: 中午吃什么呢？
     自白: 食堂好难吃，要不去点外卖吧……
@@ -43,7 +49,6 @@ position: -378,-299
     自白: 我们公司不是房地产公司吗？
     自白: 空闲的房子这么多，什么时候给我发一套房子……
 自白: 唉，别想了。还是赶紧开始今天的工作吧。
-<<jump work>>
 ===
 title: work
 position: -51,-298

@@ -10,6 +10,14 @@ public class Player : MonoBehaviour
 
     private IInteractive closestInteractive = null;
     private float direction = 0f;
+    [Header("动画")]
+    [SerializeField] private Animator animator;
+
+    void Start()
+    {
+        // 设置默认朝向为左
+        FlipSprite(true);
+    }
 
     void OnEnable()
     {
@@ -30,6 +38,8 @@ public class Player : MonoBehaviour
     void Update()
     {
         transform.Translate(speed * Time.deltaTime * new Vector3(direction, 0, 0));
+
+        animator.SetFloat("Speed", Mathf.Abs(direction));
 
         UpdateClosestInteractive();
     }
@@ -66,11 +76,36 @@ public class Player : MonoBehaviour
     void Moveperformed(float direction)
     {
         this.direction = direction;
+        
+        // 根据输入方向更新朝向
+        if (direction < 0) // 输入左
+        {
+            FlipSprite(true);
+        }
+        else if (direction > 0) // 输入右
+        {
+            FlipSprite(false);
+        }
     }
 
     void Movecanceled(float direction)
     {
         this.direction = 0f;
+    }
+
+    // 翻转精灵朝向
+    void FlipSprite(bool faceLeft)
+    {
+        Vector3 scale = transform.localScale;
+        if (faceLeft)
+        {
+            scale.x = Mathf.Abs(scale.x); // 确保x轴为正值（朝左）
+        }
+        else
+        {
+            scale.x = -Mathf.Abs(scale.x); // 确保x轴为负值（朝右）
+        }
+        transform.localScale = scale;
     }
 
     // 等待 PlayerInputManager 准备就绪的协程
@@ -134,15 +169,6 @@ public class Player : MonoBehaviour
         if (closestInteractive != null)
         {
             closestInteractive.Interact();
-            closestInteractive.HideHint();
-            interactiveObjects.Remove(closestInteractive);
-
-            if (closestInteractive.CanInteract)
-            {
-                interactiveObjects.Add(closestInteractive);
-            }
-
-            closestInteractive = null;
         }
     }
 }

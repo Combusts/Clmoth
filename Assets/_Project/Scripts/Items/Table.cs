@@ -2,40 +2,51 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Table : MonoBehaviour, IInteractive
+public class Table : InteractiveWithActions
 {
-    public bool IsShowHint { get; set; }
-    public bool CanInteract { get; set; } = true;
-
-    public void HideHint()
+    private Renderer _renderer;
+    
+    protected override void Awake()
     {
-        if (!IsShowHint) return;
-        IsShowHint = false;
-
-        // 获取渲染组件并将颜色设置为红色
-        Renderer renderer = GetComponent<Renderer>();
-        if (renderer != null)
+        base.Awake();
+        _renderer = GetComponent<Renderer>();
+    }
+    
+    protected override void StoreOriginalVisualState()
+    {
+        if (_renderer != null)
         {
-            renderer.material.color = Color.yellow;     
+            originalColor = _renderer.material.color;
         }
     }
-
-    public void Interact()
+    
+    protected override void SetVisualState(Color color)
     {
-        Debug.Log("Interact table");
-        // CanInteract = false;
+        if (_renderer != null)
+        {
+            _renderer.material.color = color;
+        }
     }
-
-    public void ShowHint()
+    
+    public override void ShowHint()
     {
         if (IsShowHint) return;
         IsShowHint = true;
-
-        // 获取渲染组件并将颜色设置为红色
-        Renderer renderer = GetComponent<Renderer>();
-        if (renderer != null)
+        
+        if (_renderer != null)
         {
-            renderer.material.color = Color.red;
+            _renderer.material.color = Color.red;
+        }
+    }
+    
+    public override void HideHint()
+    {
+        if (!IsShowHint) return;
+        IsShowHint = false;
+        
+        if (_renderer != null)
+        {
+            _renderer.material.color = originalColor;
         }
     }
 }
