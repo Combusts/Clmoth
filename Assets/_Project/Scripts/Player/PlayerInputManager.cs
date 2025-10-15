@@ -13,7 +13,6 @@ public class PlayerInputManager : MonoBehaviour
     public Action<float> OnMoveActionCanceled;
     public Action OnEseActionPerformed;
     public Action OnInteractActionPerformed;
-    public Action<float> OnNavigateActionPerformed;
     
     [Header("Input State")]
     [SerializeField] private bool gameplayInputEnabled = true;
@@ -35,8 +34,6 @@ public class PlayerInputManager : MonoBehaviour
         inputActions.Player.Move.canceled += OnMoveCanceled;
         inputActions.Player.Ese.performed += OnEsePerformed;
         inputActions.Player.Interact.performed += OnInteractPerformed;
-        // TODO: Uncomment after Unity regenerates Actions.cs with Navigate action
-        // inputActions.Player.Navigate.performed += OnNavigatePerformed;
         inputActions.Enable();
     }
     
@@ -50,8 +47,6 @@ public class PlayerInputManager : MonoBehaviour
             inputActions.Player.Move.canceled -= OnMoveCanceled;
             inputActions.Player.Ese.performed -= OnEsePerformed;
             inputActions.Player.Interact.performed -= OnInteractPerformed;
-            // TODO: Uncomment after Unity regenerates Actions.cs with Navigate action
-            // inputActions.Player.Navigate.performed -= OnNavigatePerformed;
         }
     }
 
@@ -86,15 +81,6 @@ public class PlayerInputManager : MonoBehaviour
         if (!gameplayInputEnabled) return;
         
         OnInteractActionPerformed?.Invoke();
-    }
-    
-    // 导航事件
-    void OnNavigatePerformed(InputAction.CallbackContext context)
-    {
-        if (!gameplayInputEnabled) return;
-        
-        float value = context.ReadValue<float>();
-        OnNavigateActionPerformed?.Invoke(value);
     }
     
     // Public methods for dialogue system

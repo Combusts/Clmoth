@@ -351,4 +351,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roundedRadius: 20
   borderWidth: 5
-  borderColor: {r: 1, g: 1, b: 1, a: 1}
+  borderColor: {r: 0.3915094, g: 1, b: 0.9817524, a: 1}

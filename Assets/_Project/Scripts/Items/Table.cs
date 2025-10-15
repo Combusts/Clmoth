@@ -1,52 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Table : InteractiveWithActions
+public class Table : IInteractive
 {
-    private Renderer _renderer;
-    
-    protected override void Awake()
+    [SerializeField] private string dialogueNode;
+
+    public override void Interact()
     {
-        base.Awake();
-        _renderer = GetComponent<Renderer>();
-    }
-    
-    protected override void StoreOriginalVisualState()
-    {
-        if (_renderer != null)
-        {
-            originalColor = _renderer.material.color;
-        }
-    }
-    
-    protected override void SetVisualState(Color color)
-    {
-        if (_renderer != null)
-        {
-            _renderer.material.color = color;
-        }
-    }
-    
-    public override void ShowHint()
-    {
-        if (IsShowHint) return;
-        IsShowHint = true;
-        
-        if (_renderer != null)
-        {
-            _renderer.material.color = Color.red;
-        }
-    }
-    
-    public override void HideHint()
-    {
-        if (!IsShowHint) return;
-        IsShowHint = false;
-        
-        if (_renderer != null)
-        {
-            _renderer.material.color = originalColor;
-        }
+        Debug.Log("Interact table");
+        CanInteract = false; // 交互后禁用再次交互
+        // HideHint(); // 移除多余的HideHint调用，Player.Interact()已经调用了
+        YarnSpinnerManager.Instance.StartDialogue(dialogueNode);
     }
 }

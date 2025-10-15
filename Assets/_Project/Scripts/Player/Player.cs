@@ -168,7 +168,16 @@ public class Player : MonoBehaviour
     {
         if (closestInteractive != null)
         {
+            closestInteractive.HideHint();
             closestInteractive.Interact();
+            interactiveObjects.Remove(closestInteractive);
+
+            if (closestInteractive.CanInteract)
+            {
+                interactiveObjects.Add(closestInteractive);
+            }
+
+            closestInteractive = null;
         }
     }
 }

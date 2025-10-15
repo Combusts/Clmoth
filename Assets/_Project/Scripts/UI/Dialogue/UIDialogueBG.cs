@@ -57,8 +57,12 @@ public class UIDialogueBG : MonoBehaviour
             return;
         }
         
-        // Get material instance to avoid modifying shared material
-        materialInstance = image.material;
+        // Create material instance to avoid modifying shared material
+        if (image.material != null)
+        {
+            materialInstance = new Material(image.material);
+            image.material = materialInstance;
+        }
         
         // Initial setup
         UpdateShaderProperties();
@@ -110,4 +114,13 @@ public class UIDialogueBG : MonoBehaviour
     public float GetRoundedRadius() => roundedRadius;
     public float GetBorderWidth() => borderWidth;
     public Color GetBorderColor() => borderColor;
+    
+    // Cleanup material instance when object is destroyed
+    private void OnDestroy()
+    {
+        if (materialInstance != null)
+        {
+            DestroyImmediate(materialInstance);
+        }
+    }
 }

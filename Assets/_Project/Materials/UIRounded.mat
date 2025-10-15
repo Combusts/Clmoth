@@ -44,7 +44,7 @@ Material:
     - _BorderWidth: 5
     - _ColorMask: 15
     - _EnableExternalAlpha: 0
-    - _Height: 152.01999
+    - _Height: 0
     - _RoundedRadius: 20
     - _Stencil: 0
     - _StencilComp: 8
@@ -53,7 +53,7 @@ Material:
     - _StencilWriteMask: 255
     - _Width: 1520
     m_Colors:
-    - _BorderColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BorderColor: {r: 0.3915094, g: 1, b: 0.9817524, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
