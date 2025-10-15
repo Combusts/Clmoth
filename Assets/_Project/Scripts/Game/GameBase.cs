@@ -20,6 +20,8 @@ public class GameBase : MonoBehaviour
     private float lastShotTime = 0;
     [SerializeField]
     private GameObject hint;
+    [SerializeField]
+    private GameObject Shooter;
     private TargetColor nextColor;
 
     public static GameBase Instance { get; private set; }
@@ -36,7 +38,8 @@ public class GameBase : MonoBehaviour
     private void Start()
     {
         nextColor = (TargetColor)Random.Range(0, System.Enum.GetNames(typeof(TargetColor)).Length);
-        hint.GetComponent<SpriteRenderer>().color = ColoredItem.GetColor(nextColor);
+        hint.GetComponent<ColoredItem>().SwitchToColor(nextColor);
+        Shooter.GetComponent<ColoredItem>().SwitchToColor(nextColor);
     }
     void Update()
     {
@@ -64,7 +67,8 @@ public class GameBase : MonoBehaviour
                 Instantiate(bullet, controlItem.transform.position, Quaternion.identity);
 
                 nextColor = (TargetColor)Random.Range(0, System.Enum.GetNames(typeof(TargetColor)).Length);
-                hint.GetComponent<SpriteRenderer>().color = ColoredItem.GetColor(nextColor);
+                hint.GetComponent<ColoredItem>().SwitchToColor(nextColor);
+                Shooter.GetComponent<ColoredItem>().SwitchToColor(nextColor);
             }
         }
     }

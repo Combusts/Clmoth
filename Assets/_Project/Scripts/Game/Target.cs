@@ -48,8 +48,10 @@ public class Target : ColoredItem
         patienceIcon_1.SetActive(false);
         patienceIcon_2.SetActive(false);
         patienceIcon_3.SetActive(false);
-        TextMeshProUGUI patienceText = GetComponentInChildren<TextMeshProUGUI>();
-        patienceText.text = patience.ToString();
+
+        // 调试用，显示耐心值
+        // TextMeshProUGUI patienceText = GetComponentInChildren<TextMeshProUGUI>();
+        // patienceText.text = patience.ToString();
 
         GameBase.Instance.AddEnemyCount();
     }
