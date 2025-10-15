@@ -70,4 +70,46 @@ public class UICinematicBars : PanelBase
         TopBlackBar.SetActive(false);
         BottomBlackBar.SetActive(false);
     }
+
+    /// <summary>
+    /// 在Inspector中值改变时自动调用，用于实时更新黑边设置
+    /// </summary>
+    void OnValidate()
+    {
+        if (Application.isPlaying && TopBlackBar != null && BottomBlackBar != null)
+        {
+            ReloadCinematicBars();
+        }
+    }
+
+    /// <summary>
+    /// 重新加载黑边设置，更新黑边位置和相机位置
+    /// </summary>
+    public void ReloadCinematicBars()
+    {
+        if (TopBlackBar == null || BottomBlackBar == null)
+        {
+            Debug.LogWarning("Black bars not found, cannot reload cinematic bars");
+            return;
+        }
+
+        // 重新设置上黑边
+        RectTransform topRect = TopBlackBar.GetComponent<RectTransform>();
+        topRect.anchorMin = new Vector2(0, 1 - topBarHeight);
+        topRect.anchorMax = new Vector2(1, 1);
+        topRect.offsetMin = Vector2.zero;
+        topRect.offsetMax = Vector2.zero;
+
+        // 重新设置下黑边
+        RectTransform bottomRect = BottomBlackBar.GetComponent<RectTransform>();
+        bottomRect.anchorMin = new Vector2(0, 0);
+        bottomRect.anchorMax = new Vector2(1, bottomBarHeight);
+        bottomRect.offsetMin = Vector2.zero;
+        bottomRect.offsetMax = Vector2.zero;
+
+        // 重新设置相机位置
+        SetCameraPosition();
+
+        Debug.Log($"Cinematic bars reloaded - Top: {topBarHeight:F2}, Bottom: {bottomBarHeight:F2}");
+    }
 }

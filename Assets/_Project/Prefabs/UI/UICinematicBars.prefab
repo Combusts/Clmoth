@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topBarHeight: 0.12
-  bottomBarHeight: 0.12
+  bottomBarHeight: 0.27
 --- !u!1 &8040585298806068261
 GameObject:
   m_ObjectHideFlags: 0
