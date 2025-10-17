@@ -4,13 +4,16 @@ position: -378,-299
 <<declare $mainName = "" as string>>
 <<declare $managerName = "" as string>>
 <<declare $newName = "" as string>>
+<<declare $AName = "" as string>>
 <<set $mainName to "克络斯">>
 <<set $managerName to "金总">>
 <<set $AName to "泰勒">>
 <<set $newName to "墨森">>
 //对话框可以没有前面的冒号，在对话框左上方显示名字/头像框
 <<sleepy>>
+<<center_dialogue 120>>
 "喂，快醒醒！" // 这里改为对话框放中间
+<<restore_dialogue>>
 <<wake_up>>
 {$mainName}: ！！！//可以加个“突然发生什么事情”的音效
 【你打瞌睡的样子刚好被上司撞见】
@@ -36,6 +39,7 @@ position: -378,-299
 {$mainName}: “{$managerName}，我……
 {$managerName}: “算了，多的不说了。今天务必把档案资料整理好发给我。”
 {$mainName}: “好的好的，我会尽快给您发过去。”
+<<animator_play_and_wait MainScene "Manager_Exit">>  // 等待动画播放完成后再继续对话
 自白: 呼……终于走了。
 自白: *看向钟表
 自白: 怎么已经11点了？！
