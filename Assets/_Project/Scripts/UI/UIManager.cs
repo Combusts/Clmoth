@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -39,17 +40,6 @@ public class UIManager : MonoBehaviour
         uiPathDic["Pause"] = "UIPause";
         uiPathDic["GameOver"] = "UIGameOver";
         uiPathDic["GameWin"] = "UIGameWin";
-    }
-
-    void Start()
-    {
-        GameManager.Instance.OnStartGame += () =>
-        {
-            HideAllUI();
-
-            // 临时
-            ShowUI("Playing");
-        };
     }
 
     public void ShowUI(string uiName)
@@ -110,5 +100,15 @@ public class UIManager : MonoBehaviour
     {
         if (openPanels.Count == 0) return false;
         return openPanels[openPanels.Count - 1].gameObject.name == uiName;
+    }
+
+    public void ShowLoadingImage()
+    {
+        gameObject.GetComponent<Image>().color = new Color(0, 0, 0, 1f);
+    }
+
+    public void HideLoadingImage()
+    {
+        gameObject.GetComponent<Image>().CrossFadeAlpha(0, 0.2f, true);
     }
 }

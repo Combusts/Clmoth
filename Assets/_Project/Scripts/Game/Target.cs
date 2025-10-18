@@ -75,6 +75,7 @@ public class Target : ColoredItem
         {
             if (otherColoredItem.color == color)
             {   
+                AudioManager.Instance.PlayAudio("RightEmail");
                 GameBase.Instance.RemoveEnemyCount();
                 GameBase.Instance.CheckGameWin();
                 Destroy(collision.gameObject);
@@ -84,6 +85,7 @@ public class Target : ColoredItem
             {
                 Destroy(collision.gameObject);
                 patience--;
+                AudioManager.Instance.PlayAudio("WrongEmail");
 
                 // 更新耐心图标
                 switch (patience)

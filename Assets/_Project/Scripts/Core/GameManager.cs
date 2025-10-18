@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -28,11 +29,17 @@ public class GameManager : MonoBehaviour
         levelDic["Main"] = 0;
         levelDic["Game"] = 1;
 
+        // 初始化UI
         SceneManager.sceneLoaded += (scene, mode)=>{
             if (scene.name == "Main")
             {
                 UIManager.Instance.HideAllUI();
                 UIManager.Instance.ShowUI("Main");
+            } 
+            else if (scene.name == "Game")
+            {
+                UIManager.Instance.HideAllUI();
+                UIManager.Instance.ShowUI("Playing");
             }
         };
     }
@@ -45,8 +52,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         OnStartGame?.Invoke();
-
-        SceneManager.LoadScene(levelDic["Game"]);
+        SceneTransitionManager.Instance.LoadSceneWithFade("Game");
     }
 
     public void PauseGame()
@@ -60,6 +66,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void ToLevel(string levelName){
-        SceneManager.LoadScene(levelDic[levelName]);  
+        Debug.Log($"ToLevel: {levelName}");
+        SceneTransitionManager.Instance.LoadSceneWithFade(levelName);
     }
 }

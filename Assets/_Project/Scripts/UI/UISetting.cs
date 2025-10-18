@@ -9,7 +9,7 @@ public class UISetting : PanelBase
         PlayerInputManager.Instance.OnEseActionPerformed += OnEseActionPerformed;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         PlayerInputManager.Instance.OnEseActionPerformed -= OnEseActionPerformed;
     }
