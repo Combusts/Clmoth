@@ -8,8 +8,7 @@ public class AudioManager : MonoBehaviour
 {
     public List<AudioData> audioDatas;
 
-    [SerializeField]
-    private AudioMixer AudioMixer;
+    [SerializeField] private AudioMixer AudioMixer;
 
 
     public Dictionary<string, GameObject> audioGameObjects = new Dictionary<string, GameObject>();
@@ -52,6 +51,11 @@ public class AudioManager : MonoBehaviour
                     break;
             }
 
+            if (audioData.playOnStart)
+            {
+                audioSource.Play();
+            }
+
             audioGameObjects.Add(audioData.audioName, audioGameObject);
         }
     }
@@ -82,6 +86,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetVolume(string volumeName, float volume)
     {
+        Debug.Log($"SetVolume: {volumeName} volume: {volume}");
         AudioMixer.SetFloat(volumeName, Mathf.Log10(volume) * 20);
     }
 
@@ -101,6 +106,7 @@ public class AudioData
     public float pitch = 1;
     public bool playOnAwake = false;
     public AudioType type = AudioType.SFX;
+    public bool playOnStart = false;
 
     public AudioClip audioClip;
 }

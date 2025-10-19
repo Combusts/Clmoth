@@ -4,3 +4,5 @@
 *.png filter=lfs diff=lfs merge=lfs -text
 Assets/StreamingAssets/assetbundles/assetbundles filter=lfs diff=lfs merge=lfs -text
 *.mp3 filter=lfs diff=lfs merge=lfs -text
+Assets/StreamingAssets/assetbundles/characters filter=lfs diff=lfs merge=lfs -text
+Assets/StreamingAssets/assetbundles/assetbundles filter=lfs diff=lfs merge=lfs -text

@@ -405,7 +405,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.4745098, g: 0.19215688, b: 0.24970801, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -845,6 +845,7 @@ MonoBehaviour:
     pitch: 1
     playOnAwake: 0
     type: 1
+    playOnStart: 0
     audioClip: {fileID: 8300000, guid: 49d52c64c0f993b46b75805d4fc28885, type: 3}
   - audioName: WrongEmail
     isLoop: 0
@@ -852,7 +853,16 @@ MonoBehaviour:
     pitch: 1
     playOnAwake: 0
     type: 1
+    playOnStart: 0
     audioClip: {fileID: 8300000, guid: 38450a534487a344599eec80b0394484, type: 3}
+  - audioName: BGM
+    isLoop: 1
+    volume: 1
+    pitch: 1
+    playOnAwake: 1
+    type: 0
+    playOnStart: 1
+    audioClip: {fileID: 8300000, guid: ddc32a67925c13c408703d6f1ae64a64, type: 3}
   AudioMixer: {fileID: 24100000, guid: 5eba0e3dee944984eb2a8a091c13c2a6, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
