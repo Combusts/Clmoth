@@ -26,6 +26,7 @@ position: -378,-299
 -> 转移话题
     {$mainName}: “哈…哈哈…{$managerName}，最近行情怎么样？”
     【{$managerName}的脸色似乎更黑了。】
+<<set_emotion Manager 1>>
 {$managerName}: “你怎么回事，最近的工作完全不在状态。”
 {$managerName}: “你知道这会影响到其他同事的工作进度吗？”
 {$managerName}: “现在房地产行业整体环境又不乐观，公司生存压力那么大，你难道不知道吗？”
@@ -37,6 +38,7 @@ position: -378,-299
     【话到嘴边，你又咽了回去。】
 {$managerName}: “如果你近期业绩没有改善，我们可能需要重新评估你是否适合继续在这个岗位上工作。”
 {$mainName}: “{$managerName}，我……
+<<clear_emotion Manager>>
 {$managerName}: “算了，多的不说了。今天务必把档案资料整理好发给我。”
 {$mainName}: “好的好的，我会尽快给您发过去。”
 <<animator_play_and_wait MainScene "Manager_Exit">>  // 等待动画播放完成后再继续对话
@@ -68,13 +70,17 @@ position: -380,47
 ---
 【一份入职申请简历吸引了你的注意】
 -> 阅读
+    // 阅读档案
+    <<animator_play_and_wait MainScene "DocumentPop">>
 -> 偷看别人的资料不太好吧……
     【似乎这份文件散发着魔力，你还是忍不住打开了。】
+    // 阅读档案
 自白: 他的信息怎么这么奇怪，难道是有bug吗？
 {$AName}: “Hey {$mainName}，come over，我有事找你。”
 【隔壁桌的同事打断了你的思绪。】
 自白: 不会他又要把工作推给我了吧。
-
+// 退出档案
+<<animator_play_and_wait MainScene "DocumentExit">>
 ===
 title:A
 position: -75,45
@@ -101,12 +107,14 @@ title:window
 position: 243,43
 ---
 【你打开窗户，正准备端详窗外风景时。一双手突然抓住你的腰背，用力地把你推出窗外。】
-<<jump badream>>
+<<animator_play_and_stay MainScene "Fall">>
 ===
 title:badream
 position: -387,288
 ---
+<<sleepy>>
 {$mainName}: “唔……”
+<<wake_up>>
 自白: 我是做了一个噩梦吗……
 {$mainName}: *看向时钟
 【时钟显示11点】

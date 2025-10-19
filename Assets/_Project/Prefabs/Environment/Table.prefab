@@ -145,6 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isShowHint: 0
   canInteract: 1
-  hintItemPrefab: {fileID: 0}
+  hintItemPrefab: {fileID: 2391147566988140086, guid: 526bb7a3fa4e844c4acf8edf8c8744e5, type: 3}
   hintText: 
   hintOffset: {x: 0, y: 1, z: 0}
+  dialogueNode: 

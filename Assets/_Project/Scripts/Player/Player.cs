@@ -6,6 +6,13 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float speed = 10f;
 
+    [Header("摄像机跟随")]
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private float cameraFollowThreshold = 3f; // 触发跟随的距离阈值
+    [SerializeField] private float cameraSmoothSpeed = 5f; // 平滑跟随速度
+    [SerializeField] private float cameraMinX = -10f; // 摄像机X轴最小位置
+    [SerializeField] private float cameraMaxX = 10f; // 摄像机X轴最大位置
+
     private List<IInteractive> interactiveObjects = new();
 
     private IInteractive closestInteractive = null;
@@ -17,6 +24,12 @@ public class Player : MonoBehaviour
     {
         // 设置默认朝向为左
         FlipSprite(true);
+        
+        // 初始化摄像机引用
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
     }
 
     void OnEnable()
@@ -42,6 +55,9 @@ public class Player : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Abs(direction));
 
         UpdateClosestInteractive();
+        
+        // 摄像机跟随逻辑
+        UpdateCameraFollow();
     }
 
     void OnDisable()
@@ -178,6 +194,44 @@ public class Player : MonoBehaviour
             }
 
             closestInteractive = null;
+        }
+    }
+
+    // 摄像机跟随逻辑
+    private void UpdateCameraFollow()
+    {
+        if (mainCamera == null) return;
+
+        // 计算玩家相对于屏幕中心的偏移距离
+        Vector3 playerScreenPos = mainCamera.WorldToScreenPoint(transform.position);
+        Vector3 screenCenter = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, playerScreenPos.z);
+        float offsetDistance = Mathf.Abs(playerScreenPos.x - screenCenter.x);
+
+        // 当偏移超过阈值时，开始跟随
+        if (offsetDistance > cameraFollowThreshold)
+        {
+            // 计算目标摄像机位置
+            Vector3 currentCameraPos = mainCamera.transform.position;
+            Vector3 targetCameraPos = new Vector3(transform.position.x, currentCameraPos.y, currentCameraPos.z);
+
+            // 限制摄像机位置在指定范围内
+            targetCameraPos.x = Mathf.Clamp(targetCameraPos.x, cameraMinX, cameraMaxX);
+
+            // 使用 Lerp 实现平滑跟随
+            Vector3 newCameraPos = Vector3.Lerp(currentCameraPos, targetCameraPos, cameraSmoothSpeed * Time.deltaTime);
+            mainCamera.transform.position = newCameraPos;
+        }
+    }
+
+    // 编辑器实时预览
+    private void OnValidate()
+    {
+        if (mainCamera != null)
+        {
+            // 立即应用摄像机位置限制
+            Vector3 currentPos = mainCamera.transform.position;
+            currentPos.x = Mathf.Clamp(currentPos.x, cameraMinX, cameraMaxX);
+            mainCamera.transform.position = currentPos;
         }
     }
 }

@@ -64,6 +64,9 @@ public abstract class IInteractive : MonoBehaviour
             {
                 textComponent.text = hintText;
             }
+            
+            // 验证并确保材质正确应用
+            ValidateAndFixMaterial();
         }
         
         if (currentHintItem != null)
@@ -75,6 +78,71 @@ public abstract class IInteractive : MonoBehaviour
         if (TryGetComponent<Renderer>(out var renderer))
         {
             renderer.material.color = Color.gray;
+        }
+    }
+    
+    /// <summary>
+    /// 验证并修复 HintItem 的材质问题
+    /// </summary>
+    private void ValidateAndFixMaterial()
+    {
+        if (currentHintItem == null) return;
+        
+        // 获取 Image 组件
+        var image = currentHintItem.GetComponentInChildren<UnityEngine.UI.Image>();
+        if (image == null)
+        {
+            Debug.LogWarning($"IInteractive: No Image component found in HintItem for {gameObject.name}");
+            return;
+        }
+        
+        // 检查材质是否正确
+        bool hasCorrectMaterial = false;
+        if (image.material != null)
+        {
+            // 检查是否是圆角材质
+            if (image.material.name.Contains("UIRounded") || 
+                image.material.shader.name.Contains("RoundConorNew"))
+            {
+                hasCorrectMaterial = true;
+                Debug.Log($"IInteractive: HintItem for {gameObject.name} has correct rounded material");
+            }
+            else
+            {
+                Debug.LogWarning($"IInteractive: HintItem for {gameObject.name} has incorrect material: {image.material.name}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"IInteractive: HintItem for {gameObject.name} has no material assigned");
+        }
+        
+        // 如果材质不正确，尝试修复
+        if (!hasCorrectMaterial)
+        {
+            // 尝试从 Resources 加载正确的材质
+            var correctMaterial = Resources.Load<Material>("Materials/UIRounded");
+            if (correctMaterial != null)
+            {
+                image.material = correctMaterial;
+                Debug.Log($"IInteractive: Successfully loaded and applied rounded material to HintItem for {gameObject.name}");
+            }
+            else
+            {
+                Debug.LogError($"IInteractive: Could not find UIRounded material in Resources/Materials/ for {gameObject.name}");
+            }
+        }
+        
+        // 确保 UIDialogueBG 组件正确初始化
+        var uiDialogueBG = currentHintItem.GetComponentInChildren<UIDialogueBG>();
+        if (uiDialogueBG != null)
+        {
+            // UIDialogueBG 的 Awake() 应该已经调用了，但我们可以确保它正确工作
+            Debug.Log($"IInteractive: UIDialogueBG component found and should be initialized for {gameObject.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"IInteractive: No UIDialogueBG component found in HintItem for {gameObject.name}");
         }
     }
 
