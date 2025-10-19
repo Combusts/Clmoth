@@ -1,0 +1,124 @@
+title: Start
+position: -378,-299
+---
+<<declare $mainName = "" as string>>
+<<declare $managerName = "" as string>>
+<<declare $newName = "" as string>>
+<<declare $AName = "" as string>>
+<<set $mainName to "克络斯">>
+<<set $managerName to "金总">>
+<<set $AName to "泰勒">>
+<<set $newName to "墨森">>
+//对话框可以没有前面的冒号，在对话框左上方显示名字/头像框
+<<sleepy>>
+<<center_dialogue 120>>
+"喂，快醒醒！" // 这里改为对话框放中间
+<<restore_dialogue>>
+<<wake_up>>
+{$mainName}: ！！！//可以加个“突然发生什么事情”的音效
+【你打瞌睡的样子刚好被上司撞见】
+-> 道歉
+    {$mainName}: “对不起！{$managerName}，我昨晚……
+-> 狡辩
+    {$mainName}: “啊不好意思{$managerName}，我刚才在研究我们公司地毯的材质……
+    自白: 可恶啊，我在说什么。
+    //自白的对话，只留对话内容。文字位置需要调整到对话框中间。“自白：”格式都要改。
+-> 转移话题
+    {$mainName}: “哈…哈哈…{$managerName}，最近行情怎么样？”
+    【{$managerName}的脸色似乎更黑了。】
+<<set_emotion Manager 1>>
+{$managerName}: “你怎么回事，最近的工作完全不在状态。”
+{$managerName}: “你知道这会影响到其他同事的工作进度吗？”
+{$managerName}: “现在房地产行业整体环境又不乐观，公司生存压力那么大，你难道不知道吗？”
+-> 知道
+    【也许{$managerName}并不关心你的回答。】
+-> 不知道
+    【或许是太小声了，{$managerName}并没有理睬。】
+-> 关我屁事
+    【话到嘴边，你又咽了回去。】
+{$managerName}: “如果你近期业绩没有改善，我们可能需要重新评估你是否适合继续在这个岗位上工作。”
+{$mainName}: “{$managerName}，我……
+<<clear_emotion Manager>>
+{$managerName}: “算了，多的不说了。今天务必把档案资料整理好发给我。”
+{$mainName}: “好的好的，我会尽快给您发过去。”
+<<animator_play_and_wait MainScene "Manager_Exit">>  // 等待动画播放完成后再继续对话
+自白: 呼……终于走了。
+自白: *看向钟表
+自白: 怎么已经11点了？！
+自白: 一定是昨天加班太晚了，今天才会在办公室打瞌睡。
+自白: 先想想今天要做什么。
+-> 办公
+    //结束对话，进入自由状态
+    <<stop>>
+-> 午饭
+    自白: 中午吃什么呢？
+    自白: 食堂好难吃，要不去点外卖吧……
+-> 白日梦
+    自白: 我们公司不是房地产公司吗？
+    自白: 空闲的房子这么多，什么时候给我发一套房子……
+自白: 唉，别想了。还是赶紧开始今天的工作吧。
+===
+title: work
+position: -51,-298
+---
+自白: {$managerName}需要一份档案资料，那就先从整理档案开始吧: 
+这里是小游戏的文本部门，后面将会按照小游戏进行补充
+
+===
+title:file
+position: -380,47
+---
+【一份入职申请简历吸引了你的注意】
+-> 阅读
+    // 阅读档案
+    <<animator_play_and_wait MainScene "DocumentPop">>
+-> 偷看别人的资料不太好吧……
+    【似乎这份文件散发着魔力，你还是忍不住打开了。】
+    // 阅读档案
+自白: 他的信息怎么这么奇怪，难道是有bug吗？
+{$AName}: “Hey {$mainName}，come over，我有事找你。”
+【隔壁桌的同事打断了你的思绪。】
+自白: 不会他又要把工作推给我了吧。
+// 退出档案
+<<animator_play_and_wait MainScene "DocumentExit">>
+===
+title:A
+position: -75,45
+---
+{$AName}: “可以帮我check一下这里的代码吗，我点击run之后总是发生error，so annoying。”
+{$AName}: “还有这个file，待会帮我copy然后print一下哦~”
+-> “好的。”
+-> “这些不是你自己的工作吗？”
+    {$AName}: “哎呀哎呀，这些你比较skilled嘛～”
+-> “可是我还有其他的工作。”
+    {$AName}: “我们不是一个team吗，帮我点小忙应该no problem吧。”
+{$AName}: “我还有自己的schedule要忙啦，记得不要告诉leader哦~”
+自白: 同事A喜欢四处打听消息，说不定他知道简历的事情。
+{$mainName}: “等一下，但我还有一个问题。”
+{$AName}: “What’s problem?快点说，我可busy呢。”
+{$mainName}: “我找到一份奇怪的简历，你看看这是哪里……”
+{$AName}: “我说你呀，是不是stress太大出现幻觉了。”
+{$AName}: “要不去窗台透透气relax一下，别耽误到我focus了。”
+自白: 也许真是自己出现幻觉了，公司档案怎么会出现这么离谱的数据。
+自白: 还是先去窗台那里放松一下再工作吧。
+
+===
+title:window
+position: 243,43
+---
+【你打开窗户，正准备端详窗外风景时。一双手突然抓住你的腰背，用力地把你推出窗外。】
+<<animator_play_and_stay MainScene "Fall">>
+===
+title:badream
+position: -387,288
+---
+<<sleepy>>
+{$mainName}: “唔……”
+<<wake_up>>
+自白: 我是做了一个噩梦吗……
+{$mainName}: *看向时钟
+【时钟显示11点】
+【一道身影挡住了你的视线。】
+新人: “Hello!前辈，我是{$newName}。初次见面，请多指教。”
+{$mainName}: ？！//可以加个“突然发生什么事情”的音效
+===
