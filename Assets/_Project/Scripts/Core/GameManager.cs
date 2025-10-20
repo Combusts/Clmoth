@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Yarn.Unity;
 
 public class GameManager : MonoBehaviour
 {
@@ -53,11 +54,27 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
+        GameObject dialogueSystemVariant = GameObject.Find("Dialogue System Variant");
+        if (dialogueSystemVariant != null)
+        {
+            dialogueSystemVariant.transform.Find("Line Advancer").gameObject.SetActive(false);
+        }else
+        {
+            Debug.LogError("Dialogue System Variant not found");
+        }
         Time.timeScale = 0;
     }
 
     public void ResumeGame()
     {
+        GameObject dialogueSystemVariant = GameObject.Find("Dialogue System Variant");
+        if (dialogueSystemVariant != null)
+        {
+            dialogueSystemVariant.transform.Find("Line Advancer").gameObject.SetActive(true);
+        }else
+        {
+            Debug.LogError("Dialogue System Variant not found");
+        }
         Time.timeScale = 1;
     }
 
