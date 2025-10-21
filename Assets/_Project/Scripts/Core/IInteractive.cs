@@ -8,6 +8,13 @@ public abstract class IInteractive : MonoBehaviour
     [SerializeField] private GameObject hintItemPrefab; // 改为Prefab引用
     [SerializeField] private string hintText;
     [SerializeField] private Vector3 hintOffset = new(0, 1, 0); // 提示位置偏移
+    [SerializeField] private Vector3 hintScale = Vector3.one; // 提示大小缩放
+    
+    [Header("存档系统")]
+    [SerializeField] private string interactiveID = ""; // 唯一标识符
+    [SerializeField] private string linkedDialogueNode = ""; // 关联的对话节点
+    [SerializeField] private bool disableAfterDialogue = true; // 对话后是否禁用交互
+    [SerializeField] private bool deactivateAfterDialogue = false; // 对话后是否隐藏物件
     
     private GameObject currentHintItem; // 当前显示的提示实例
 
@@ -29,22 +36,187 @@ public abstract class IInteractive : MonoBehaviour
         set => hintText = value;
     }
 
+    public Vector3 HintScale
+    {
+        get => hintScale;
+        set => hintScale = value;
+    }
+
+    void Awake()
+    {
+        // 确保isShowHint初始状态为false，避免第一次触碰不显示hint的问题
+        isShowHint = false;
+        
+        // 如果没有设置ID，使用游戏物件名称作为ID
+        if (string.IsNullOrEmpty(interactiveID))
+        {
+            interactiveID = gameObject.name;
+        }
+    }
+    
+    protected virtual void Start()
+    {
+        // 检查存档状态，恢复交互物件的状态
+        CheckSaveState();
+    }
+
     // 修改变量自动重载
     private void OnValidate()
     {
-        // OnValidate期间不能调用SendMessage，所以只更新文本和位置
+        // OnValidate期间不能调用SendMessage，所以只更新文本、位置和大小
         if (currentHintItem != null)
         {
-            var textComponent = currentHintItem.GetComponentInChildren<TMPro.TextMeshPro>();
+            var textComponent = currentHintItem.GetComponentInChildren<TMPro.TextMeshProUGUI>();
             if (textComponent != null)
             {
                 textComponent.text = hintText;
             }
             currentHintItem.transform.localPosition = hintOffset;
+            currentHintItem.transform.localScale = hintScale;
         }
     }
 
     public abstract void Interact();
+    
+    /// <summary>
+    /// 检查存档状态并恢复物件状态
+    /// </summary>
+    protected virtual void CheckSaveState()
+    {
+        if (SaveManager.Instance == null) 
+        {
+            Debug.LogWarning($"[IInteractive] SaveManager.Instance is null for {gameObject.name}");
+            return;
+        }
+        
+        Debug.Log($"[IInteractive] CheckSaveState for {gameObject.name} (ID: {interactiveID})");
+        
+        // 首先检查是否有直接保存的交互物体状态
+        bool canInteract = SaveManager.Instance.GetInteractiveObjectCanInteract(interactiveID);
+        bool isActivated = SaveManager.Instance.GetInteractiveObjectIsActivated(interactiveID);
+        
+        Debug.Log($"[IInteractive] Saved state for {gameObject.name}: CanInteract={canInteract}, IsActivated={isActivated}");
+        
+        if (!canInteract || !isActivated)
+        {
+            Debug.Log($"[IInteractive] Restoring saved state for {gameObject.name} - CanInteract: {canInteract}, IsActivated: {isActivated}");
+            
+            if (!canInteract)
+            {
+                CanInteract = false;
+                Debug.Log($"[IInteractive] Set CanInteract=false for {gameObject.name}");
+            }
+            
+            if (!isActivated)
+            {
+                gameObject.SetActive(false);
+                Debug.Log($"[IInteractive] Set active=false for {gameObject.name}");
+            }
+        }
+        // 如果没有直接保存的状态，检查对话节点完成状态
+        else if (!string.IsNullOrEmpty(linkedDialogueNode))
+        {
+            bool isDialogueCompleted = SaveManager.Instance.IsDialogueCompleted(linkedDialogueNode);
+            Debug.Log($"[IInteractive] Checking dialogue completion for {gameObject.name}: {linkedDialogueNode} = {isDialogueCompleted}");
+            
+            if (isDialogueCompleted)
+            {
+                Debug.Log($"[IInteractive] Dialogue '{linkedDialogueNode}' completed for {gameObject.name}, updating state");
+                
+                // 根据设置更新状态
+                if (disableAfterDialogue)
+                {
+                    CanInteract = false;
+                    Debug.Log($"[IInteractive] Disabled interaction for {gameObject.name} after dialogue");
+                }
+                
+                if (deactivateAfterDialogue)
+                {
+                    gameObject.SetActive(false);
+                    Debug.Log($"[IInteractive] Deactivated {gameObject.name} after dialogue");
+                }
+                
+                // 保存当前状态到存档
+                Debug.Log($"[IInteractive] Saving state for {gameObject.name}: CanInteract={CanInteract}, IsActivated={gameObject.activeSelf}");
+                SaveManager.Instance.SetInteractiveObjectState(interactiveID, CanInteract, gameObject.activeSelf);
+            }
+        }
+        else
+        {
+            Debug.Log($"[IInteractive] No linked dialogue node for {gameObject.name}, using default state");
+        }
+    }
+    
+    /// <summary>
+    /// 获取交互物件ID
+    /// </summary>
+    public string GetInteractiveID()
+    {
+        return interactiveID;
+    }
+    
+    /// <summary>
+    /// 获取关联的对话节点
+    /// </summary>
+    public string GetLinkedDialogueNode()
+    {
+        return linkedDialogueNode;
+    }
+    
+    /// <summary>
+    /// 设置关联的对话节点
+    /// </summary>
+    /// <param name="nodeName">对话节点名称</param>
+    public void SetLinkedDialogueNode(string nodeName)
+    {
+        linkedDialogueNode = nodeName;
+    }
+    
+    /// <summary>
+    /// 处理对话完成后的状态更新
+    /// </summary>
+    /// <param name="completedNodeName">完成的对话节点名称</param>
+    public virtual void OnDialogueCompleted(string completedNodeName)
+    {
+        Debug.Log($"[IInteractive] OnDialogueCompleted called for {gameObject.name} with node: {completedNodeName}");
+        Debug.Log($"[IInteractive] Linked dialogue node: {linkedDialogueNode}");
+        Debug.Log($"[IInteractive] Disable after dialogue: {disableAfterDialogue}");
+        Debug.Log($"[IInteractive] Deactivate after dialogue: {deactivateAfterDialogue}");
+        
+        // 检查是否是关联的对话节点
+        if (!string.IsNullOrEmpty(linkedDialogueNode) && linkedDialogueNode == completedNodeName)
+        {
+            Debug.Log($"[IInteractive] Dialogue '{completedNodeName}' completed for {gameObject.name}, updating state");
+            
+            // 根据设置更新状态
+            if (disableAfterDialogue)
+            {
+                CanInteract = false;
+                Debug.Log($"[IInteractive] Disabled interaction for {gameObject.name}");
+            }
+            
+            if (deactivateAfterDialogue)
+            {
+                gameObject.SetActive(false);
+                Debug.Log($"[IInteractive] Deactivated {gameObject.name}");
+            }
+            
+            // 保存当前状态到存档
+            if (SaveManager.Instance != null)
+            {
+                Debug.Log($"[IInteractive] Saving state for {gameObject.name}: CanInteract={CanInteract}, IsActivated={gameObject.activeSelf}");
+                SaveManager.Instance.SetInteractiveObjectState(interactiveID, CanInteract, gameObject.activeSelf);
+            }
+            else
+            {
+                Debug.LogError($"[IInteractive] SaveManager.Instance is null for {gameObject.name}!");
+            }
+        }
+        else
+        {
+            Debug.Log($"[IInteractive] Node {completedNodeName} does not match linked node {linkedDialogueNode} for {gameObject.name}");
+        }
+    }
 
     public virtual void ShowHint()
     {
@@ -57,9 +229,10 @@ public abstract class IInteractive : MonoBehaviour
         {
             currentHintItem = Instantiate(hintItemPrefab, transform);
             currentHintItem.transform.localPosition = hintOffset;
+            currentHintItem.transform.localScale = hintScale;
             
             // 设置文本内容
-            var textComponent = currentHintItem.GetComponentInChildren<TMPro.TextMeshPro>();
+            var textComponent = currentHintItem.GetComponentInChildren<TMPro.TextMeshProUGUI>();
             if (textComponent != null)
             {
                 textComponent.text = hintText;

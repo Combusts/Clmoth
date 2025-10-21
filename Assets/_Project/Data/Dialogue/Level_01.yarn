@@ -1,10 +1,10 @@
 title: Start
-position: -378,-299
+position: -405,-332
 ---
-<<declare $mainName = "" as string>>
-<<declare $managerName = "" as string>>
-<<declare $newName = "" as string>>
-<<declare $AName = "" as string>>
+<<declare $mainName = "克络斯" as string>>
+<<declare $managerName = "金总" as string>>
+<<declare $newName = "泰勒" as string>>
+<<declare $AName = "墨森" as string>>
 <<set $mainName to "克络斯">>
 <<set $managerName to "金总">>
 <<set $AName to "泰勒">>
@@ -59,14 +59,16 @@ position: -378,-299
 自白: 唉，别想了。还是赶紧开始今天的工作吧。
 ===
 title: work
-position: -51,-298
+position: -401,-200
 ---
 自白: {$managerName}需要一份档案资料，那就先从整理档案开始吧: 
 这里是小游戏的文本部门，后面将会按照小游戏进行补充
-
+<<toggle_object CommandManager "2 without doc">>
+<<activate_object CommandManager "2 with doc">>
+<<enable_interaction CommandManager "2 with doc">>
 ===
 title:file
-position: -380,47
+position: -411,65
 ---
 【一份入职申请简历吸引了你的注意】
 -> 阅读
@@ -81,9 +83,11 @@ position: -380,47
 自白: 不会他又要把工作推给我了吧。
 // 退出档案
 <<animator_play_and_wait MainScene "DocumentExit">>
+<<disable_interaction CommandManager "2 with doc">>
+<<toggle_interaction CommandManager "1">>
 ===
 title:A
-position: -75,45
+position: -418,-63
 ---
 {$AName}: “可以帮我check一下这里的代码吗，我点击run之后总是发生error，so annoying。”
 {$AName}: “还有这个file，待会帮我copy然后print一下哦~”
@@ -104,10 +108,11 @@ position: -75,45
 
 ===
 title:window
-position: 243,43
+position: -263,153
 ---
+<<sleepy>>
+<<center_dialogue 160>>
 【你打开窗户，正准备端详窗外风景时。一双手突然抓住你的腰背，用力地把你推出窗外。】
-<<animator_play_and_stay MainScene "Fall">>
 ===
 title:badream
 position: -387,288
