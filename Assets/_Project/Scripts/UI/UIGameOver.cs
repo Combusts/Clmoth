@@ -6,6 +6,6 @@ public class UIGameOver : PanelBase
 {
     public void OnMainButtonClick(){
         Time.timeScale = 1;
-        GameManager.Instance.ToLevel("Main");
+        GameManager.Instance.ToLevel("Level_01", GameManager.playerPosition, 2);
     }
 }

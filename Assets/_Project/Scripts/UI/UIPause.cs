@@ -16,6 +16,6 @@ public class UIPause : PanelBase
 
     public void OnMainMenu(){
         GameManager.Instance.ResumeGame();
-        GameManager.Instance.ToLevel("Main");
+        GameManager.Instance.ToLevel("Main", Vector2.zero, 0);
     }
 }

@@ -73,12 +73,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 936bc5f21ef6ff04285330d0aa233fee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 98d76da2554a34bf8b88fa7814d9f9e7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6.52, y: 4.44}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -157,12 +157,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 5a1d19a0926afa548b0243b5450aada9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 413ed8d8c4f944de9a78157e2e5fbaba, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6.52, y: 4.44}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -195,7 +195,7 @@ Transform:
   m_GameObject: {fileID: 5584027897874907642}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.10328, y: -1.5310267, z: 0}
+  m_LocalPosition: {x: -6.10328, y: -2.285571, z: 0}
   m_LocalScale: {x: 0.108939186, y: 0.10060836, z: 0.1799148}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28a80fe3e8ea0f54d8fc7cf941fb653f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 2
+  color: 0
   redIcon: {fileID: 1954440372197475914}
   yellowIcon: {fileID: 265453326902411323}
   blueIcon: {fileID: 7491683659983865205}
@@ -339,12 +339,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 82421c258186c8b47ad81f67fb2487c7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 780848b91342b40bdab691b2b6031484, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6.52, y: 4.44}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

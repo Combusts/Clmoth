@@ -88,7 +88,7 @@ public class GameBase : MonoBehaviour
         {
             Debug.Log("GameWin");
             UIManager.Instance.HideAllUI();
-            UIManager.Instance.ShowUI("GameWin");
+            UIManager.Instance.ShowUI("MiniGameWin");
             Time.timeScale = 0;
         }
     }
@@ -97,7 +97,7 @@ public class GameBase : MonoBehaviour
     {
         Debug.Log("GameOver");
         UIManager.Instance.HideAllUI();
-        UIManager.Instance.ShowUI("GameOver");
+        UIManager.Instance.ShowUI("MiniGameOver");
         Time.timeScale = 0;
     }
 

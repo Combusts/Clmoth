@@ -14,6 +14,12 @@ public class GameManager : MonoBehaviour
 
     public Action OnStartGame;
 
+    public static Vector2 playerPosition;
+
+    public static int level;
+
+    public static int dialogueProcess;
+
     void Awake()
     {
         // 单例模式
@@ -28,6 +34,7 @@ public class GameManager : MonoBehaviour
         // 初始化场景字典
         levelDic["Main"] = 0;
         levelDic["Level_01"] = 1;
+        levelDic["Game"] = 2;
 
         SceneManager.sceneLoaded += (scene, mode)=>{
             Debug.Log($"Scene Loaded: {scene.name}");
@@ -36,6 +43,8 @@ public class GameManager : MonoBehaviour
             if (scene.name == "Level_01")
             {
                 SetCameraPositionAfterSceneLoad();
+                UIManager.Instance.ShowUI("Playing");
+                UIManager.Instance.ShowUI("CinematicBars");
             }
         };
     }
@@ -49,7 +58,7 @@ public class GameManager : MonoBehaviour
     {
         OnStartGame?.Invoke();
 
-        SceneManager.LoadScene(levelDic["Level_01"]);
+        ToLevel("Level_01", Vector2.zero, 0);
     }
 
     public void PauseGame()
@@ -78,8 +87,30 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    public void ToLevel(string levelName){
-        SceneManager.LoadScene(levelDic[levelName]);  
+    public void ToLevel(string levelName, Vector2 playerPostion, int dialogueProcess){
+        SceneTransitionManager.Instance.LoadSceneWithFade(levelDic[levelName]);  
+
+        SceneTransitionManager.Instance.OnSceneLoaded += () =>
+        {
+            // 初始化场景
+            Level level = FindObjectOfType<Level>();
+            if (level != null)
+            {
+                Debug.Log($"场景初始化: playerPostion={playerPostion}, dialogueProcess={dialogueProcess}");
+                level.InitializeLevel(playerPostion, dialogueProcess);
+            } else 
+            {
+                Debug.Log($"Level component not found in scene {levelName}");
+            }
+        };
+
+
+    }
+
+    [YarnCommand("PlayGame")]
+    public void PlayGame()
+    {
+        ToLevel("Game", Vector2.zero, 0);
     }
 
     private void SetCameraPositionAfterSceneLoad()
@@ -108,5 +139,13 @@ public class GameManager : MonoBehaviour
                 Debug.LogWarning("UICinematicBars not found after scene load");
             }
         }
+    }
+
+    public static void SetGameProcess(int level, Vector2 playerPosition, int process)
+    {
+        Debug.Log($"SetGameProcess: level={level}, playerPosition={playerPosition}, process={process}");
+        GameManager.level = level;
+        GameManager.playerPosition = playerPosition;
+        GameManager.dialogueProcess = process;
     }
 }

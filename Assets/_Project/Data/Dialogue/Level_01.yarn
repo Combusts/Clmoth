@@ -57,13 +57,15 @@ position: -378,-299
     自白: 我们公司不是房地产公司吗？
     自白: 空闲的房子这么多，什么时候给我发一套房子……
 自白: 唉，别想了。还是赶紧开始今天的工作吧。
+<<SetDialogueProcess Level1 1>>
 ===
 title: work
 position: -51,-298
 ---
 自白: {$managerName}需要一份档案资料，那就先从整理档案开始吧: 
 这里是小游戏的文本部门，后面将会按照小游戏进行补充
-
+<<SetDialogueProcess Level1 2>>
+<<PlayGame GameManager>>
 ===
 title:file
 position: -380,47

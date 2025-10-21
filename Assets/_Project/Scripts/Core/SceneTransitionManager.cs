@@ -24,12 +24,12 @@ public class SceneTransitionManager : MonoBehaviour
         }
     }
 
-    public void LoadSceneWithFade(string sceneName)
+    public void LoadSceneWithFade(int sceneIndex)
     {
-        StartCoroutine(FadeAndLoadScene(sceneName));
+        StartCoroutine(FadeAndLoadScene(sceneIndex));
     }
 
-    private System.Collections.IEnumerator FadeAndLoadScene(string sceneName)
+    private System.Collections.IEnumerator FadeAndLoadScene(int sceneIndex)
     {
 
         // 渐变到黑屏
@@ -39,17 +39,19 @@ public class SceneTransitionManager : MonoBehaviour
         UIManager.Instance.HideAllUI();
 
         // 加载新场景
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex);
         while (!asyncLoad.isDone)
         {
             yield return null;
         }
+        
+        // 触发场景加载事件
+        OnSceneLoaded?.Invoke();
+
+        OnSceneLoaded = null;
 
         // 渐变关闭黑屏
         yield return StartCoroutine(FadeFromBlack());
-
-        // 触发场景加载事件
-        OnSceneLoaded?.Invoke();
     }
 
     private System.Collections.IEnumerator FadeToBlack()
