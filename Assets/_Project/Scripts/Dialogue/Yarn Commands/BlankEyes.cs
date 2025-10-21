@@ -31,7 +31,7 @@ public class BlankEyes : MonoBehaviour
     private static void CreateBlinkUI()
     {
         // Create Canvas
-        GameObject canvasObj = new GameObject("BlinkCanvas");
+        GameObject canvasObj = new("BlinkCanvas");
         blinkCanvas = canvasObj.AddComponent<Canvas>();
         blinkCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         blinkCanvas.sortingOrder = 9;

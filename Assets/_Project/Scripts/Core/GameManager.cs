@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Yarn.Unity;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,12 +12,6 @@ public class GameManager : MonoBehaviour
     public Dictionary<string, int> levelDic = new();  
 
     public Action OnStartGame;
-
-    public static Vector2 playerPosition;
-
-    public static int level;
-
-    public static int dialogueProcess;
 
     void Awake()
     {
@@ -34,17 +27,15 @@ public class GameManager : MonoBehaviour
         // 初始化场景字典
         levelDic["Main"] = 0;
         levelDic["Level_01"] = 1;
-        levelDic["Game"] = 2;
 
         SceneManager.sceneLoaded += (scene, mode)=>{
             Debug.Log($"Scene Loaded: {scene.name}");
             
-            // 如果是游戏场景，设置相机位置
-            if (scene.name == "Level_01")
+            // 如果是游戏场景，设置相机位置和初始化命令管理器
+            if (scene.name == "Level_01" || scene.name == "Level_01_01")
             {
                 SetCameraPositionAfterSceneLoad();
-                UIManager.Instance.ShowUI("Playing");
-                UIManager.Instance.ShowUI("CinematicBars");
+                InitializeCommandManager();
             }
         };
     }
@@ -52,65 +43,103 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         UIManager.Instance.ShowUI("Main");
+        
+        // 初始化存档系统
+        InitializeSaveSystem();
+    }
+    
+    /// <summary>
+    /// 初始化存档系统
+    /// </summary>
+    private void InitializeSaveSystem()
+    {
+        // 确保SaveManager存在
+        if (SaveManager.Instance == null)
+        {
+            GameObject saveManagerGO = new GameObject("SaveManager");
+            saveManagerGO.AddComponent<SaveManager>();
+            DontDestroyOnLoad(saveManagerGO);
+        }
+        
+        Debug.Log("[GameManager] Save system initialized");
+    }
+    
+    /// <summary>
+    /// 初始化命令管理器
+    /// </summary>
+    private void InitializeCommandManager()
+    {
+        // 检查场景中是否已有CommandManager
+        GameObject existingCommandManager = GameObject.Find("CommandManager");
+        if (existingCommandManager == null)
+        {
+            // 创建CommandManager
+            GameObject commandManagerGO = new GameObject("CommandManager");
+            
+            // 添加GameObjectCommands组件
+            commandManagerGO.AddComponent<GameObjectCommands>();
+            
+            // 添加InteractiveCommands组件
+            commandManagerGO.AddComponent<InteractiveCommands>();
+            
+            Debug.Log("[GameManager] CommandManager created with GameObjectCommands and InteractiveCommands");
+        }
+        else
+        {
+            Debug.Log("[GameManager] CommandManager already exists in scene");
+        }
+        
+        // 检查Start节点是否完成，如果未完成则自动开始对话
+        StartCoroutine(CheckAndStartDialogueIfNeeded());
+    }
+    
+    /// <summary>
+    /// 检查Start节点是否完成，如果未完成则自动开始对话
+    /// </summary>
+    private IEnumerator CheckAndStartDialogueIfNeeded()
+    {
+        // 等待一帧确保所有系统初始化完成
+        yield return null;
+        
+        // 检查Start节点是否已完成
+        if (SaveManager.Instance != null && YarnSpinnerManager.Instance != null)
+        {
+            // 使用YarnSpinnerManager的StartDialogueSafe方法，它会自动检查存档状态
+            Debug.Log("[GameManager] Checking Start dialogue completion status...");
+            YarnSpinnerManager.Instance.StartDialogueSafe("Start", true);
+        }
+        else
+        {
+            if (SaveManager.Instance == null)
+            {
+                Debug.LogWarning("[GameManager] SaveManager.Instance is null! Cannot check dialogue completion status.");
+            }
+            if (YarnSpinnerManager.Instance == null)
+            {
+                Debug.LogWarning("[GameManager] YarnSpinnerManager.Instance is null! Cannot start dialogue.");
+            }
+        }
     }
 
     public void StartGame()
     {
         OnStartGame?.Invoke();
 
-        ToLevel("Level_01", Vector2.zero, 0);
+        SceneManager.LoadScene(levelDic["Level_01"]);
     }
 
     public void PauseGame()
     {
-        GameObject dialogueSystemVariant = GameObject.Find("Dialogue System Variant");
-        if (dialogueSystemVariant != null)
-        {
-            dialogueSystemVariant.transform.Find("Line Advancer").gameObject.SetActive(false);
-        }else
-        {
-            Debug.LogError("Dialogue System Variant not found");
-        }
         Time.timeScale = 0;
     }
 
     public void ResumeGame()
     {
-        GameObject dialogueSystemVariant = GameObject.Find("Dialogue System Variant");
-        if (dialogueSystemVariant != null)
-        {
-            dialogueSystemVariant.transform.Find("Line Advancer").gameObject.SetActive(true);
-        }else
-        {
-            Debug.LogError("Dialogue System Variant not found");
-        }
         Time.timeScale = 1;
     }
 
-    public void ToLevel(string levelName, Vector2 playerPostion, int dialogueProcess){
-        SceneTransitionManager.Instance.LoadSceneWithFade(levelDic[levelName]);  
-
-        SceneTransitionManager.Instance.OnSceneLoaded += () =>
-        {
-            // 初始化场景
-            Level level = FindObjectOfType<Level>();
-            if (level != null)
-            {
-                Debug.Log($"场景初始化: playerPostion={playerPostion}, dialogueProcess={dialogueProcess}");
-                level.InitializeLevel(playerPostion, dialogueProcess);
-            } else 
-            {
-                Debug.Log($"Level component not found in scene {levelName}");
-            }
-        };
-
-
-    }
-
-    [YarnCommand("PlayGame")]
-    public void PlayGame()
-    {
-        ToLevel("Game", Vector2.zero, 0);
+    public void ToLevel(string levelName){
+        SceneManager.LoadScene(levelDic[levelName]);  
     }
 
     private void SetCameraPositionAfterSceneLoad()
@@ -139,13 +168,5 @@ public class GameManager : MonoBehaviour
                 Debug.LogWarning("UICinematicBars not found after scene load");
             }
         }
-    }
-
-    public static void SetGameProcess(int level, Vector2 playerPosition, int process)
-    {
-        Debug.Log($"SetGameProcess: level={level}, playerPosition={playerPosition}, process={process}");
-        GameManager.level = level;
-        GameManager.playerPosition = playerPosition;
-        GameManager.dialogueProcess = process;
     }
 }

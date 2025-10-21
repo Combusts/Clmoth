@@ -30,6 +30,9 @@ public class Player : MonoBehaviour
         {
             mainCamera = Camera.main;
         }
+        
+        // 检查是否有存档需要恢复位置
+        RestorePlayerPosition();
     }
 
     void OnEnable()
@@ -58,6 +61,9 @@ public class Player : MonoBehaviour
         
         // 摄像机跟随逻辑
         UpdateCameraFollow();
+        
+        // 定期保存玩家位置
+        SavePlayerPosition();
     }
 
     void OnDisable()
@@ -73,7 +79,6 @@ public class Player : MonoBehaviour
 
     public void OnTriggerEnter2D(UnityEngine.Collider2D collision)
     {
-        Debug.Log("OnTriggerEnter");
         if (collision.TryGetComponent(out IInteractive interactiveObject) && interactiveObject.CanInteract)
         {
             interactiveObjects.Add(interactiveObject);
@@ -81,7 +86,6 @@ public class Player : MonoBehaviour
     }
     public void OnTriggerExit2D(UnityEngine.Collider2D collision)
     {
-        Debug.Log("OnTriggerExit");
         if (collision.TryGetComponent(out IInteractive interactiveObject))
         {
             interactiveObject.HideHint();
@@ -142,7 +146,10 @@ public class Player : MonoBehaviour
 
     private IInteractive FindClosestInteractive()
     {
-        if (interactiveObjects.Count == 0) return null;
+        if (interactiveObjects.Count == 0) 
+        {
+            return null;
+        }
 
         IInteractive closestInteractive = interactiveObjects[0];
         float closestDistance = Vector3.Distance(transform.position, ((MonoBehaviour)closestInteractive).transform.position);
@@ -150,7 +157,6 @@ public class Player : MonoBehaviour
         for (int i = 1; i < interactiveObjects.Count; i++)
         {
             IInteractive currentInteractive = interactiveObjects[i];
-
             float currentDistance = Vector3.Distance(transform.position, ((MonoBehaviour)currentInteractive).transform.position);
 
             if (currentDistance < closestDistance)
@@ -165,6 +171,7 @@ public class Player : MonoBehaviour
 
     private void UpdateClosestInteractive()
     {
+        IInteractive previousClosest = closestInteractive;
         closestInteractive = FindClosestInteractive();
         
         foreach (IInteractive interactiveObject in interactiveObjects)
@@ -223,6 +230,38 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 恢复玩家位置
+    /// </summary>
+    private void RestorePlayerPosition()
+    {
+        if (SaveManager.Instance != null && SaveManager.Instance.HasSaveData())
+        {
+            Vector3 savedPosition = SaveManager.Instance.GetPlayerPosition();
+            string savedScene = SaveManager.Instance.GetCurrentSceneName();
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            
+            // 只有在相同场景时才恢复位置
+            if (!string.IsNullOrEmpty(savedScene) && savedScene == currentScene && savedPosition != Vector3.zero)
+            {
+                transform.position = savedPosition;
+                Debug.Log($"[Player] Position restored to: {savedPosition}");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 保存玩家位置
+    /// </summary>
+    private void SavePlayerPosition()
+    {
+        if (SaveManager.Instance != null)
+        {
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            SaveManager.Instance.SetPlayerData(transform.position, currentScene);
+        }
+    }
+    
     // 编辑器实时预览
     private void OnValidate()
     {
