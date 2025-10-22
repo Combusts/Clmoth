@@ -1,13 +1,10 @@
 title: Start
 position: -378,-299
 ---
-<<declare $mainName = "" as string>>
-<<declare $managerName = "" as string>>
-<<declare $newName = "" as string>>
-<<set $mainName to "克络斯">>
-<<set $managerName to "金总">>
-<<set $AName to "泰勒">>
-<<set $newName to "墨森">>
+<<declare $mainName = "克络斯" as string>>
+<<declare $managerName = "金总" as string>>
+<<declare $AName = "泰勒" as string>>
+<<declare $newName = "墨森" as string>>
 //对话框可以没有前面的冒号，在对话框左上方显示名字/头像框
 <<sleepy>>
 "喂，快醒醒！" // 这里改为对话框放中间
@@ -57,19 +54,21 @@ position: -51,-298
 ---
 自白: {$managerName}需要一份档案资料，那就先从整理档案开始吧: 
 这里是小游戏的文本部门，后面将会按照小游戏进行补充
-
+自白：呼，终于整理完档案了，待会给金总送过去。
+自白：现在先看看有没有新的工作邮件发过来。
 ===
 title:file
 position: -380,47
 ---
-【一份入职申请简历吸引了你的注意】
+【此时一份入职申请简历吸引了你的注意】
+自白：这是写错收信人了吗？
 -> 阅读
 -> 偷看别人的资料不太好吧……
     【似乎这份文件散发着魔力，你还是忍不住打开了。】
 自白: 他的信息怎么这么奇怪，难道是有bug吗？
 {$AName}: “Hey {$mainName}，come over，我有事找你。”
 【隔壁桌的同事打断了你的思绪。】
-自白: 不会他又要把工作推给我了吧。
+自白: 他不会又要把工作推给我了吧。
 
 ===
 title:A
