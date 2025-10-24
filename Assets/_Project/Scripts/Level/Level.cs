@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class Level : MonoBehaviour
 {
-    public abstract void InitializeLevel(Vector2 playerPosition, int dialogueProgress);
+    public abstract void InitializeLevel();
 }

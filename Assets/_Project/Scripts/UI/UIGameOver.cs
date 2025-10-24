@@ -6,6 +6,9 @@ public class UIGameOver : PanelBase
 {
     public void OnMainButtonClick(){
         Time.timeScale = 1;
-        GameManager.Instance.ToLevel("Level_01", GameManager.playerPosition, 2);
+        // 需要通过对话进度去判断跳转场景的状态
+
+        // 在第一章玩完 
+        GameManager.Instance.ToLevel("Level_01");
     }
 }

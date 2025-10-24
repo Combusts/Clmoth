@@ -44,6 +44,13 @@ public class SceneTransitionManager : MonoBehaviour
         {
             yield return null;
         }
+
+        // 初始化新场景中的Level脚本
+        Level newLevel = FindObjectOfType<Level>();
+        if (newLevel != null)
+        {
+            newLevel.InitializeLevel();
+        }
         
         // 触发场景加载事件
         OnSceneLoaded?.Invoke();

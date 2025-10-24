@@ -57,6 +57,7 @@ position: -405,-332
     自白: 我们公司不是房地产公司吗？
     自白: 空闲的房子这么多，什么时候给我发一套房子……
 自白: 唉，别想了。还是赶紧开始今天的工作吧。
+
 ===
 title: work
 position: -401,-200
@@ -66,6 +67,9 @@ position: -401,-200
 <<toggle_object CommandManager "2 without doc">>
 <<activate_object CommandManager "2 with doc">>
 <<enable_interaction CommandManager "2 with doc">>
+<<ToLevel GameManager "MiniGame">>
+
+
 ===
 title:file
 position: -411,65
@@ -77,6 +81,7 @@ position: -411,65
 -> 偷看别人的资料不太好吧……
     【似乎这份文件散发着魔力，你还是忍不住打开了。】
     // 阅读档案
+    <<animator_play_and_wait MainScene "DocumentPop">>
 自白: 他的信息怎么这么奇怪，难道是有bug吗？
 {$AName}: “Hey {$mainName}，come over，我有事找你。”
 【隔壁桌的同事打断了你的思绪。】
@@ -85,6 +90,8 @@ position: -411,65
 <<animator_play_and_wait MainScene "DocumentExit">>
 <<disable_interaction CommandManager "2 with doc">>
 <<toggle_interaction CommandManager "1">>
+
+
 ===
 title:A
 position: -418,-63
@@ -106,6 +113,7 @@ position: -418,-63
 自白: 也许真是自己出现幻觉了，公司档案怎么会出现这么离谱的数据。
 自白: 还是先去窗台那里放松一下再工作吧。
 
+
 ===
 title:window
 position: -263,153
@@ -113,6 +121,8 @@ position: -263,153
 <<sleepy>>
 <<center_dialogue 160>>
 【你打开窗户，正准备端详窗外风景时。一双手突然抓住你的腰背，用力地把你推出窗外。】
+
+
 ===
 title:badream
 position: -387,288
@@ -126,4 +136,5 @@ position: -387,288
 【一道身影挡住了你的视线。】
 新人: “Hello!前辈，我是{$newName}。初次见面，请多指教。”
 {$mainName}: ？！//可以加个“突然发生什么事情”的音效
+
 ===

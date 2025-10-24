@@ -4084,7 +4084,7 @@ MonoBehaviour:
   controlItem: {fileID: 1959414461}
   upperBound: 0
   lowerBound: -4.5
-  moveSpeed: 1
+  moveSpeed: 1.5
   bulletPrefab: {fileID: 5584027897874907642, guid: dafb2f211f743de4f93f48c1ee8c8eb1, type: 3}
   shotCooldown: 2
   hint: {fileID: 609823714}

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Yarn.Unity;
 
 public class GameManager : MonoBehaviour
 {
@@ -27,15 +28,27 @@ public class GameManager : MonoBehaviour
         // 初始化场景字典
         levelDic["Main"] = 0;
         levelDic["Level_01"] = 1;
+        levelDic["MiniGame"] = 2;
 
         SceneManager.sceneLoaded += (scene, mode)=>{
             Debug.Log($"Scene Loaded: {scene.name}");
             
-            // 如果是游戏场景，设置相机位置和初始化命令管理器
-            if (scene.name == "Level_01" || scene.name == "Level_01_01")
+            // 初始化UI
+            
+            UIManager.Instance.HideAllUI();
+
+            if (scene.name == "Main")
+            {
+                UIManager.Instance.ShowUI("Main");
+            } 
+            else if (scene.name == "Level_01" || scene.name == "Level_01_01")
             {
                 SetCameraPositionAfterSceneLoad();
                 InitializeCommandManager();
+                UIManager.Instance.ShowUI("Playing");
+            } 
+            else if (scene.name == "Game"){
+                UIManager.Instance.ShowUI("Playing");
             }
         };
     }
@@ -124,8 +137,8 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         OnStartGame?.Invoke();
-
-        SceneManager.LoadScene(levelDic["Level_01"]);
+        SaveManager.Instance.DeleteSaveData();
+        SceneTransitionManager.Instance.LoadSceneWithFade(levelDic["Level_01"]);
     }
 
     public void PauseGame()
@@ -138,8 +151,9 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
+    [YarnCommand("ToLevel")]
     public void ToLevel(string levelName){
-        SceneManager.LoadScene(levelDic[levelName]);  
+        SceneTransitionManager.Instance.LoadSceneWithFade(levelDic[levelName]);
     }
 
     private void SetCameraPositionAfterSceneLoad()

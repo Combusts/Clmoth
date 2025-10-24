@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using Yarn.Unity;
 
 public class SaveManager : MonoBehaviour
 {
@@ -168,6 +169,7 @@ public class SaveManager : MonoBehaviour
     /// 添加已完成的对话节点
     /// </summary>
     /// <param name="nodeName">对话节点名称</param>
+    [YarnCommand("AddCompletedDialogueNode")]
     public void AddCompletedDialogueNode(string nodeName)
     {
         if (currentSaveData != null)

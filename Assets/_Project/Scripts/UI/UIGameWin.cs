@@ -6,6 +6,6 @@ public class UIGameWin : PanelBase
 {
     public void OnMainButtonClick(){
         Time.timeScale = 1;
-        GameManager.Instance.ToLevel("Level_01", GameManager.playerPosition, 2);
+        GameManager.Instance.ToLevel("Level_01");
     }
 }
