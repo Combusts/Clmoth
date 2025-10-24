@@ -261,4 +261,51 @@ public class GameObjectCommands : MonoBehaviour
             Debug.LogError("[GameObjectCommands] 未找到DialogueRunner，无法设置变量");
         }
     }
+
+
+    /// <summary>
+    /// 设置GameObject AnchoredPosition
+    /// </summary>
+    /// <param name="objectName">GameObject名称</param>
+    /// <param name="anchoredPositionx">AnchoredPositionX</param>
+    /// <param name="anchoredPositiony">AnchoredPositionY</param>
+    [YarnCommand("set_anchored_position")]
+    public void SetAnchoredPosition(string objectName, float anchoredPositionx, float anchoredPositiony)
+    {
+        GameObject targetObject = FindGameObjectByName(objectName);
+        Debug.Log($"[GameObjectCommands] 正在设置GameObject '{objectName}' 的AnchoredPosition为: {anchoredPositionx}, {anchoredPositiony}");
+        if (targetObject != null && targetObject.TryGetComponent<RectTransform>(out var rectTransform))
+        {
+            rectTransform.anchoredPosition = new Vector2(anchoredPositionx, anchoredPositiony);
+            Debug.Log($"[GameObjectCommands] 已设置GameObject '{objectName}' 的AnchoredPosition为: {anchoredPositionx}, {anchoredPositiony}");
+        }
+        else
+        {
+            Debug.LogWarning($"[GameObjectCommands] 未找到名为 '{objectName}' 的GameObject");
+        }
+    }
+
+
+    /// <summary>
+    /// 设置GameObject 方向，使用ScaleX和ScaleY的正负来确定方向
+    /// </summary>
+    /// <param name="objectName">GameObject名称</param>
+    /// <param name="scaleX">ScaleX</param>
+    /// <param name="scaleY">ScaleY</param>
+    [YarnCommand("set_direction")]
+    public void SetDirection(string objectName, bool isLeft = true)
+    {
+        GameObject targetObject = FindGameObjectByName(objectName);
+        // 获取GameObject的原始Scale
+        Vector3 originalScale = targetObject.transform.localScale;
+        // 如果isLeft为true，则设置ScaleX为-1
+        if (isLeft)
+        {
+            targetObject.transform.localScale = new Vector3(-originalScale.x, originalScale.y, originalScale.z);
+        }
+        else
+        {
+            targetObject.transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
+        }
+    }
 }
