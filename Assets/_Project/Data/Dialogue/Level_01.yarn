@@ -110,7 +110,7 @@ position: -418,-63
 {$AName}: “要不去窗台透透气relax一下，别耽误到我focus了。”
 自白: 也许真是自己出现幻觉了，公司档案怎么会出现这么离谱的数据。
 自白: 还是先去窗台那里放松一下再工作吧。
-
+<<enable_interaction CommandManager "窗边休息">>
 
 ===
 title:window

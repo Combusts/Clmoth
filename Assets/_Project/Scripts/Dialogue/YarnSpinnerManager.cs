@@ -16,6 +16,9 @@ public class YarnSpinnerManager : MonoBehaviour
     
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
+
+    [Header("Illustration")]
+    [SerializeField] private GameObject illustrationPanel;
     
     private readonly Dictionary<string, List<string>> sceneToNodesMap = new();
     private bool isDialogueActive = false;

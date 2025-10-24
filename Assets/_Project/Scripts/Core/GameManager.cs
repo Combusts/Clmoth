@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
                 SetCameraPositionAfterSceneLoad();
                 InitializeCommandManager();
                 UIManager.Instance.ShowUI("Playing");
+                UIManager.Instance.ShowUI("CinematicBars");
             } 
             else if (scene.name == "Game"){
                 UIManager.Instance.ShowUI("Playing");
