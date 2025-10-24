@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class Player : MonoBehaviour
 {
@@ -108,6 +109,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    // 移动事件取消
     void Movecanceled(float direction)
     {
         this.direction = 0f;

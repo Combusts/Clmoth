@@ -85,7 +85,11 @@ public class PlayerInputManager : MonoBehaviour
     
     // Public methods for dialogue system
     public void DisableGameplayInput()
-    {
+    {   
+        // 先取消移动事件
+        OnMoveActionCanceled?.Invoke(0f);
+
+        // 禁止输入
         gameplayInputEnabled = false;
         Debug.Log("[PlayerInputManager] Gameplay input disabled");
     }
