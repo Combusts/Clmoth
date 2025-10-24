@@ -11,7 +11,9 @@ position: -403,-349
 "喂，快醒醒！" // 这里改为对话框放中间
 <<restore_dialogue>>
 <<wake_up>>
+<<show_illustration CommandManager "IllustrationPanel" "ClothCloseEyes" true>>
 {$mainName}: ！！！//可以加个“突然发生什么事情”的音效
+<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" true>>
 【你打瞌睡的样子刚好被上司撞见】
 -> 道歉
     {$mainName}: “对不起！{$managerName}，我昨晚……
@@ -44,8 +46,6 @@ position: -403,-349
 自白: 一定是昨天加班太晚了，今天才会在办公室打瞌睡。
 自白: 先想想今天要做什么。
 -> 办公
-    //结束对话，进入自由状态
-    <<stop>>
 -> 午饭
     自白: 中午吃什么呢？
     自白: 食堂好难吃，要不去点外卖吧……
@@ -53,11 +53,13 @@ position: -403,-349
     自白: 我们公司不是房地产公司吗？
     自白: 空闲的房子这么多，什么时候给我发一套房子……
 自白: 唉，别想了。还是赶紧开始今天的工作吧。
-
+<<enable_interaction CommandManager "Table">>
+<<hide_illustration CommandManager "IllustrationPanel">>
 ===
 title: work
 position: -401,-200
 ---
+<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" false>>
 自白: {$managerName}需要一份档案资料，那就先从整理档案开始吧: 
 这里是小游戏的文本部门，后面将会按照小游戏进行补充
 自白：呼，终于整理完档案了，待会给金总送过去。

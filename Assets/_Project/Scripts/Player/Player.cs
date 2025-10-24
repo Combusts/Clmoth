@@ -233,6 +233,19 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
+    /// 手动添加交互对象到列表中（用于处理玩家已在范围内但交互对象刚启用的情况）
+    /// </summary>
+    /// <param name="interactiveObject">要添加的交互对象</param>
+    public void AddInteractiveObject(IInteractive interactiveObject)
+    {
+        if (interactiveObject != null && interactiveObject.CanInteract && !interactiveObjects.Contains(interactiveObject))
+        {
+            interactiveObjects.Add(interactiveObject);
+            Debug.Log($"[Player] 手动添加交互对象: {interactiveObject.gameObject.name}");
+        }
+    }
+
+    /// <summary>
     /// 恢复玩家位置
     /// </summary>
     private void RestorePlayerPosition()

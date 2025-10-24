@@ -308,4 +308,68 @@ public class GameObjectCommands : MonoBehaviour
             targetObject.transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
         }
     }
+
+    /// <summary>
+    /// 显示立绘
+    /// 格式：<<show_illustration "IllustrationPanel" "ClothOpenEyes" false>>
+    /// </summary>
+    /// <param name="panelName">立绘面板名称</param>
+    /// <param name="illustrationName">立绘名称</param>
+    /// <param name="isLeft">是否显示在左侧</param>
+    [YarnCommand("show_illustration")]
+    public void ShowIllustration(string panelName, string illustrationName, bool isLeft)
+    {
+        Debug.Log($"[GameObjectCommands] 显示立绘: {illustrationName} 在 {panelName} {(isLeft ? "左侧" : "右侧")}");
+        
+        GameObject illustrationPanel = FindGameObjectByName(panelName);
+        
+        if (illustrationPanel != null)
+        {
+            IllustrationController controller = illustrationPanel.GetComponent<IllustrationController>();
+            if (controller != null)
+            {
+                controller.ShowIllustration(illustrationName, isLeft);
+                Debug.Log($"[GameObjectCommands] 已显示立绘: {illustrationName}");
+            }
+            else
+            {
+                Debug.LogError($"[GameObjectCommands] IllustrationController组件未找到在 {panelName} 上");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[GameObjectCommands] 未找到名为 '{panelName}' 的立绘面板");
+        }
+    }
+
+    /// <summary>
+    /// 隐藏立绘
+    /// 格式：<<hide_illustration "IllustrationPanel">>
+    /// </summary>
+    /// <param name="panelName">立绘面板名称</param>
+    [YarnCommand("hide_illustration")]
+    public void HideIllustration(string panelName)
+    {
+        Debug.Log($"[GameObjectCommands] 隐藏立绘: {panelName}");
+        
+        GameObject illustrationPanel = FindGameObjectByName(panelName);
+        
+        if (illustrationPanel != null)
+        {
+            IllustrationController controller = illustrationPanel.GetComponent<IllustrationController>();
+            if (controller != null)
+            {
+                controller.HideIllustration();
+                Debug.Log($"[GameObjectCommands] 已隐藏立绘: {panelName}");
+            }
+            else
+            {
+                Debug.LogError($"[GameObjectCommands] IllustrationController组件未找到在 {panelName} 上");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[GameObjectCommands] 未找到名为 '{panelName}' 的立绘面板");
+        }
+    }
 }

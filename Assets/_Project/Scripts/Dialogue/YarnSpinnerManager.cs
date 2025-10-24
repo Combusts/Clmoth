@@ -67,6 +67,10 @@ public class YarnSpinnerManager : MonoBehaviour
         
         // Load nodes for current scene
         LoadNodesForCurrentScene();
+
+        // Create IllustrationPanel in don't destroy on load
+        illustrationPanel = Instantiate(Resources.Load<GameObject>("Prefabs/UI/InGame/IllustrationPanel"), transform);
+        illustrationPanel.name = "IllustrationPanel";
     }
     
     void OnDestroy()
