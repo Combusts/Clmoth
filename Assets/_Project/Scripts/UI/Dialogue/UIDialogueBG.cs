@@ -19,7 +19,7 @@ public class UIDialogueBG : MonoBehaviour
     private static readonly int BorderWidthProperty = Shader.PropertyToID("_BorderWidth");
     private static readonly int BorderColorProperty = Shader.PropertyToID("_BorderColor");
     
-    private void Start()
+    private void Awake()
     {
         InitializeComponents();
     }
@@ -57,8 +57,49 @@ public class UIDialogueBG : MonoBehaviour
             return;
         }
         
-        // Get material instance to avoid modifying shared material
-        materialInstance = image.material;
+        // Validate and create material instance
+        if (image.material != null)
+        {
+            // Check if the material is the correct rounded material
+            if (image.material.name.Contains("UIRounded") || image.material.shader.name.Contains("RoundConorNew"))
+            {
+                materialInstance = new Material(image.material);
+                image.material = materialInstance;
+                Debug.Log($"UIDialogueBG: Successfully initialized rounded material for {gameObject.name}");
+            }
+            else
+            {
+                Debug.LogWarning($"UIDialogueBG: Material '{image.material.name}' is not a rounded material. Expected UIRounded material.", this);
+                // Try to load the correct material from Resources
+                Material correctMaterial = Resources.Load<Material>("Materials/UIRounded");
+                if (correctMaterial != null)
+                {
+                    materialInstance = new Material(correctMaterial);
+                    image.material = materialInstance;
+                    Debug.Log($"UIDialogueBG: Loaded correct rounded material from Resources for {gameObject.name}");
+                }
+                else
+                {
+                    Debug.LogError("UIDialogueBG: Could not find UIRounded material in Resources folder!", this);
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"UIDialogueBG: No material assigned to Image component on {gameObject.name}. Attempting to load default rounded material.", this);
+            // Try to load the correct material from Resources
+            Material correctMaterial = Resources.Load<Material>("Materials/UIRounded");
+            if (correctMaterial != null)
+            {
+                materialInstance = new Material(correctMaterial);
+                image.material = materialInstance;
+                Debug.Log($"UIDialogueBG: Loaded rounded material from Resources for {gameObject.name}");
+            }
+            else
+            {
+                Debug.LogError("UIDialogueBG: Could not find UIRounded material in Resources folder!", this);
+            }
+        }
         
         // Initial setup
         UpdateShaderProperties();
@@ -110,4 +151,13 @@ public class UIDialogueBG : MonoBehaviour
     public float GetRoundedRadius() => roundedRadius;
     public float GetBorderWidth() => borderWidth;
     public Color GetBorderColor() => borderColor;
+    
+    // Cleanup material instance when object is destroyed
+    private void OnDestroy()
+    {
+        if (materialInstance != null)
+        {
+            DestroyImmediate(materialInstance);
+        }
+    }
 }

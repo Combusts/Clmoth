@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -32,11 +31,14 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         // 初始化UI路径字典
-        uiPathDic["Main"] = "Assets/_Project/Prefabs/UI/UIMain.prefab";
-        uiPathDic["Setting"] = "Assets/_Project/Prefabs/UI/UISetting.prefab";
-        uiPathDic["Playing"] = "Assets/_Project/Prefabs/UI/UIPlaying.prefab";
-        uiPathDic["Pause"] = "Assets/_Project/Prefabs/UI/UIPause.prefab";
-        uiPathDic["CinematicBars"] = "Assets/_Project/Prefabs/UI/UICinematicBars.prefab";
+        uiPathDic["Main"] = "Prefabs/UI/UIMain";
+        uiPathDic["Setting"] = "Prefabs/UI/UISetting";
+        uiPathDic["Playing"] = "Prefabs/UI/UIPlaying";
+        uiPathDic["Pause"] = "Prefabs/UI/UIPause";
+        uiPathDic["CinematicBars"] = "Prefabs/UI/UICinematicBars";
+        uiPathDic["MiniGameWin"] = "Prefabs/UI/UIGameWin";
+        uiPathDic["MiniGameOver"] = "Prefabs/UI/UIGameOver";
+
 
     }
 
@@ -44,9 +46,9 @@ public class UIManager : MonoBehaviour
     {
         GameManager.Instance.OnStartGame += () =>
         {
-            HideAllUI();
-            ShowUI("CinematicBars");
-            ShowUI("Playing");
+            // HideAllUI();
+            // ShowUI("CinematicBars");
+            // ShowUI("Playing");
         };
     }
 
@@ -54,7 +56,7 @@ public class UIManager : MonoBehaviour
     {
         if (uiPathDic.ContainsKey(uiName) && !uiDic.ContainsKey(uiName))
         {
-            GameObject ui = AssetDatabase.LoadAssetAtPath(uiPathDic[uiName], typeof(GameObject)) as GameObject;;
+            GameObject ui = Resources.Load<GameObject>(uiPathDic[uiName]);
 
             if (ui == null)
             {

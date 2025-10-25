@@ -1,52 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Table : InteractiveWithActions
+public class Table : IInteractive
 {
-    private Renderer _renderer;
-    
-    protected override void Awake()
+    [SerializeField] private string dialogueNode;
+
+    public override void Interact()
     {
-        base.Awake();
-        _renderer = GetComponent<Renderer>();
-    }
-    
-    protected override void StoreOriginalVisualState()
-    {
-        if (_renderer != null)
-        {
-            originalColor = _renderer.material.color;
-        }
-    }
-    
-    protected override void SetVisualState(Color color)
-    {
-        if (_renderer != null)
-        {
-            _renderer.material.color = color;
-        }
-    }
-    
-    public override void ShowHint()
-    {
-        if (IsShowHint) return;
-        IsShowHint = true;
+        Debug.Log("Interact table");
         
-        if (_renderer != null)
+        // 启动对话
+        if (!string.IsNullOrEmpty(dialogueNode))
         {
-            _renderer.material.color = Color.red;
+            YarnSpinnerManager.Instance.StartDialogue(dialogueNode);
+        }
+        else
+        {
+            Debug.LogWarning("Table has no dialogue node assigned!");
         }
     }
     
-    public override void HideHint()
+    protected override void Start()
     {
-        if (!IsShowHint) return;
-        IsShowHint = false;
-        
-        if (_renderer != null)
+        // 设置关联的对话节点
+        if (!string.IsNullOrEmpty(dialogueNode))
         {
-            _renderer.material.color = originalColor;
+            SetLinkedDialogueNode(dialogueNode);
         }
+        
+        // 调用基类的存档状态检查
+        base.Start();
     }
 }

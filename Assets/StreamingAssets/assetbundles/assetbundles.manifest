@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 2566220255
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: uiprefab.u3d
+      Dependencies: {}
+    Info_1:
+      Name: characters
+      Dependencies: {}

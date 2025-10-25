@@ -1,10 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private float speed = 10f;
+
+    [Header("摄像机跟随")]
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private float cameraFollowThreshold = 3f; // 触发跟随的距离阈值
+    [SerializeField] private float cameraSmoothSpeed = 5f; // 平滑跟随速度
+    [SerializeField] private float cameraMinX = -10f; // 摄像机X轴最小位置
+    [SerializeField] private float cameraMaxX = 10f; // 摄像机X轴最大位置
 
     private List<IInteractive> interactiveObjects = new();
 
@@ -17,6 +25,15 @@ public class Player : MonoBehaviour
     {
         // 设置默认朝向为左
         FlipSprite(true);
+        
+        // 初始化摄像机引用
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
+        
+        // 检查是否有存档需要恢复位置
+        RestorePlayerPosition();
     }
 
     void OnEnable()
@@ -42,6 +59,12 @@ public class Player : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Abs(direction));
 
         UpdateClosestInteractive();
+        
+        // 摄像机跟随逻辑
+        UpdateCameraFollow();
+        
+        // 定期保存玩家位置
+        SavePlayerPosition();
     }
 
     void OnDisable()
@@ -57,7 +80,6 @@ public class Player : MonoBehaviour
 
     public void OnTriggerEnter2D(UnityEngine.Collider2D collision)
     {
-        Debug.Log("OnTriggerEnter");
         if (collision.TryGetComponent(out IInteractive interactiveObject) && interactiveObject.CanInteract)
         {
             interactiveObjects.Add(interactiveObject);
@@ -65,7 +87,6 @@ public class Player : MonoBehaviour
     }
     public void OnTriggerExit2D(UnityEngine.Collider2D collision)
     {
-        Debug.Log("OnTriggerExit");
         if (collision.TryGetComponent(out IInteractive interactiveObject))
         {
             interactiveObject.HideHint();
@@ -88,6 +109,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    // 移动事件取消
     void Movecanceled(float direction)
     {
         this.direction = 0f;
@@ -126,7 +148,10 @@ public class Player : MonoBehaviour
 
     private IInteractive FindClosestInteractive()
     {
-        if (interactiveObjects.Count == 0) return null;
+        if (interactiveObjects.Count == 0) 
+        {
+            return null;
+        }
 
         IInteractive closestInteractive = interactiveObjects[0];
         float closestDistance = Vector3.Distance(transform.position, ((MonoBehaviour)closestInteractive).transform.position);
@@ -134,7 +159,6 @@ public class Player : MonoBehaviour
         for (int i = 1; i < interactiveObjects.Count; i++)
         {
             IInteractive currentInteractive = interactiveObjects[i];
-
             float currentDistance = Vector3.Distance(transform.position, ((MonoBehaviour)currentInteractive).transform.position);
 
             if (currentDistance < closestDistance)
@@ -149,6 +173,7 @@ public class Player : MonoBehaviour
 
     private void UpdateClosestInteractive()
     {
+        IInteractive previousClosest = closestInteractive;
         closestInteractive = FindClosestInteractive();
         
         foreach (IInteractive interactiveObject in interactiveObjects)
@@ -168,7 +193,99 @@ public class Player : MonoBehaviour
     {
         if (closestInteractive != null)
         {
+            closestInteractive.HideHint();
             closestInteractive.Interact();
+            interactiveObjects.Remove(closestInteractive);
+
+            if (closestInteractive.CanInteract)
+            {
+                interactiveObjects.Add(closestInteractive);
+            }
+
+            closestInteractive = null;
+        }
+    }
+
+    // 摄像机跟随逻辑
+    private void UpdateCameraFollow()
+    {
+        if (mainCamera == null) return;
+
+        // 计算玩家相对于屏幕中心的偏移距离
+        Vector3 playerScreenPos = mainCamera.WorldToScreenPoint(transform.position);
+        Vector3 screenCenter = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, playerScreenPos.z);
+        float offsetDistance = Mathf.Abs(playerScreenPos.x - screenCenter.x);
+
+        // 当偏移超过阈值时，开始跟随
+        if (offsetDistance > cameraFollowThreshold)
+        {
+            // 计算目标摄像机位置
+            Vector3 currentCameraPos = mainCamera.transform.position;
+            Vector3 targetCameraPos = new Vector3(transform.position.x, currentCameraPos.y, currentCameraPos.z);
+
+            // 限制摄像机位置在指定范围内
+            targetCameraPos.x = Mathf.Clamp(targetCameraPos.x, cameraMinX, cameraMaxX);
+
+            // 使用 Lerp 实现平滑跟随
+            Vector3 newCameraPos = Vector3.Lerp(currentCameraPos, targetCameraPos, cameraSmoothSpeed * Time.deltaTime);
+            mainCamera.transform.position = newCameraPos;
+        }
+    }
+
+    /// <summary>
+    /// 手动添加交互对象到列表中（用于处理玩家已在范围内但交互对象刚启用的情况）
+    /// </summary>
+    /// <param name="interactiveObject">要添加的交互对象</param>
+    public void AddInteractiveObject(IInteractive interactiveObject)
+    {
+        if (interactiveObject != null && interactiveObject.CanInteract && !interactiveObjects.Contains(interactiveObject))
+        {
+            interactiveObjects.Add(interactiveObject);
+            Debug.Log($"[Player] 手动添加交互对象: {interactiveObject.gameObject.name}");
+        }
+    }
+
+    /// <summary>
+    /// 恢复玩家位置
+    /// </summary>
+    private void RestorePlayerPosition()
+    {
+        if (SaveManager.Instance != null && SaveManager.Instance.HasSaveData())
+        {
+            Vector3 savedPosition = SaveManager.Instance.GetPlayerPosition();
+            string savedScene = SaveManager.Instance.GetCurrentSceneName();
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            
+            // 只有在相同场景时才恢复位置
+            if (!string.IsNullOrEmpty(savedScene) && savedScene == currentScene && savedPosition != Vector3.zero)
+            {
+                transform.position = savedPosition;
+                Debug.Log($"[Player] Position restored to: {savedPosition}");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 保存玩家位置
+    /// </summary>
+    private void SavePlayerPosition()
+    {
+        if (SaveManager.Instance != null)
+        {
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            SaveManager.Instance.SetPlayerData(transform.position, currentScene);
+        }
+    }
+    
+    // 编辑器实时预览
+    private void OnValidate()
+    {
+        if (mainCamera != null)
+        {
+            // 立即应用摄像机位置限制
+            Vector3 currentPos = mainCamera.transform.position;
+            currentPos.x = Mathf.Clamp(currentPos.x, cameraMinX, cameraMaxX);
+            mainCamera.transform.position = currentPos;
         }
     }
 }
