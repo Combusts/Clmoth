@@ -38,9 +38,6 @@ public class Level1 : Level
             // 第一章小游戏结束
             Debug.Log("Level1 Mini Game Completed");
             
-            tableWithDoc.SetActive(true);
-            tableWithoutDoc.SetActive(false);
-            boss.SetActive(false);
         }
     }
 }

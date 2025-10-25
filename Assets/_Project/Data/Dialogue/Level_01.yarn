@@ -65,7 +65,7 @@ position: -403,-349
     自白: 我们公司不是房地产公司吗？
     自白: 空闲的房子这么多，什么时候给我发一套房子……
 自白: 唉，别想了。还是赶紧开始今天的工作吧。
-<<enable_interaction CommandManager "Table">>
+<<enable_interaction CommandManager "Cloth Table">>
 <<hide_illustration CommandManager "IllustrationPanel">>
 ===
 title: work
@@ -78,8 +78,9 @@ position: -401,-200
 自白：现在先看看有没有新的工作邮件发过来。
 <<activate_object CommandManager "2 with doc">>
 <<enable_interaction CommandManager "2 with doc">>
+<<deactivate_object CommandManager "2 without doc">>
+<<hide_illustration CommandManager "IllustrationPanel">>
 <<ToLevel GameManager "MiniGame">>
-
 
 ===
 title:file
@@ -143,8 +144,9 @@ position: -387,288
 <<sleepy>>
 {$mainName}: “唔……”
 <<set_anchored_position CommandManager "Player" -6.41 -3.56>>
-<<set_direction CommandManager "Player" isLeft=true>>
+<<set_direction CommandManager "Player" isLeft>>
 <<wake_up>>
+<<reset_dialogue_position>>
 自白: 我是做了一个噩梦吗……
 {$mainName}: *看向时钟
 【时钟显示11点】

@@ -6,20 +6,20 @@ using Yarn.Unity;
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
-    
+
     [Header("存档设置")]
     [SerializeField] private string saveFileName = "gamesave.json";
     [SerializeField] private bool enableAutoSave = true;
     [SerializeField] private bool enableDebugLogs = true;
-    
+
     private GameSaveData currentSaveData;
     private string savePath;
-    
+
     // 事件
     public static event Action<GameSaveData> OnSaveDataLoaded;
     public static event Action<GameSaveData> OnSaveDataSaved;
     public static event Action OnSaveDataCleared;
-    
+
     void Awake()
     {
         // 单例模式
@@ -30,22 +30,22 @@ public class SaveManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        
+
         // 初始化存档路径
         savePath = Path.Combine(Application.persistentDataPath, saveFileName);
-        
+
         // 初始化存档数据
         currentSaveData = new GameSaveData();
-        
+
         LogDebug($"SaveManager initialized. Save path: {savePath}");
     }
-    
+
     void Start()
     {
         // 尝试加载现有存档
         LoadSaveData();
     }
-    
+
     /// <summary>
     /// 保存存档数据
     /// </summary>
@@ -55,13 +55,13 @@ public class SaveManager : MonoBehaviour
         {
             // 更新保存时间
             currentSaveData.saveTime = DateTime.Now;
-            
+
             // 序列化为JSON
             string jsonData = JsonUtility.ToJson(currentSaveData, true);
-            
+
             // 写入文件
             File.WriteAllText(savePath, jsonData);
-            
+
             OnSaveDataSaved?.Invoke(currentSaveData);
         }
         catch (Exception e)
@@ -69,7 +69,7 @@ public class SaveManager : MonoBehaviour
             LogError($"Failed to save game: {e.Message}");
         }
     }
-    
+
     /// <summary>
     /// 加载存档数据
     /// </summary>
@@ -81,31 +81,19 @@ public class SaveManager : MonoBehaviour
             {
                 string jsonData = File.ReadAllText(savePath);
                 currentSaveData = JsonUtility.FromJson<GameSaveData>(jsonData);
-                
-        // 确保子数据类不为null并刷新内部结构
-        if (currentSaveData.playerData == null)
-        {
-            currentSaveData.playerData = new PlayerData();
-        }
-        if (currentSaveData.interactiveObjectData == null)
-        {
-            currentSaveData.interactiveObjectData = new InteractiveObjectData();
-        }
-        if (currentSaveData.dialogueProcessData == null)
-        {
-            currentSaveData.dialogueProcessData = new DialogueProcessData();
-        }
-        if (currentSaveData.sceneAnimationData == null)
-        {
-            currentSaveData.sceneAnimationData = new SceneAnimationData();
-        }
-        
-        // 刷新所有子数据类的内部字典/集合
-        currentSaveData.RefreshDataStructures();
-                
+
+                // 确保子数据类不为null并刷新内部结构
+                currentSaveData.playerData ??= new PlayerData();
+                currentSaveData.interactiveObjectData ??= new InteractiveObjectData();
+                currentSaveData.dialogueProcessData ??= new DialogueProcessData();
+                currentSaveData.sceneAnimationData ??= new SceneAnimationData();
+
+                // 刷新所有子数据类的内部字典/集合
+                currentSaveData.RefreshDataStructures();
+
                 LogDebug($"Game loaded successfully from: {savePath}");
                 LogDebug($"Loaded {currentSaveData.dialogueProcessData.completedNodes.Count} completed dialogue nodes");
-                
+
                 // 添加详细的动画数据debug信息
                 LogDebug($"=== 动画存档数据详情 ===");
                 LogDebug($"场景动画数据是否为空: {currentSaveData.sceneAnimationData == null}");
@@ -118,7 +106,7 @@ public class SaveManager : MonoBehaviour
                     }
                 }
                 LogDebug($"=== 动画存档数据详情结束 ===");
-                
+
                 OnSaveDataLoaded?.Invoke(currentSaveData);
             }
             else
@@ -133,7 +121,7 @@ public class SaveManager : MonoBehaviour
             currentSaveData = new GameSaveData();
         }
     }
-    
+
     /// <summary>
     /// 检查存档文件是否存在
     /// </summary>
@@ -142,7 +130,7 @@ public class SaveManager : MonoBehaviour
     {
         return File.Exists(savePath);
     }
-    
+
     /// <summary>
     /// 删除存档文件
     /// </summary>
@@ -155,7 +143,7 @@ public class SaveManager : MonoBehaviour
                 File.Delete(savePath);
                 LogDebug("Save file deleted successfully");
             }
-            
+
             currentSaveData.Clear();
             OnSaveDataCleared?.Invoke();
         }
@@ -164,7 +152,7 @@ public class SaveManager : MonoBehaviour
             LogError($"Failed to delete save file: {e.Message}");
         }
     }
-    
+
     /// <summary>
     /// 添加已完成的对话节点
     /// </summary>
@@ -176,7 +164,7 @@ public class SaveManager : MonoBehaviour
         {
             currentSaveData.AddCompletedDialogueNode(nodeName);
             LogDebug($"Added completed dialogue node: {nodeName}");
-            
+
             // 自动保存
             if (enableAutoSave)
             {
@@ -184,7 +172,7 @@ public class SaveManager : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// 检查对话节点是否已完成
     /// </summary>
@@ -194,7 +182,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData != null && currentSaveData.IsDialogueNodeCompleted(nodeName);
     }
-    
+
     /// <summary>
     /// 设置玩家位置和场景
     /// </summary>
@@ -205,7 +193,7 @@ public class SaveManager : MonoBehaviour
         if (currentSaveData != null)
         {
             currentSaveData.SetPlayerData(position, sceneName);
-            
+
             // 自动保存
             if (enableAutoSave)
             {
@@ -213,7 +201,7 @@ public class SaveManager : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// 获取玩家位置
     /// </summary>
@@ -222,7 +210,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData != null ? currentSaveData.playerData.position : Vector3.zero;
     }
-    
+
     /// <summary>
     /// 获取当前场景名称
     /// </summary>
@@ -231,7 +219,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData != null ? currentSaveData.playerData.sceneName : "";
     }
-    
+
     /// <summary>
     /// 获取存档数据
     /// </summary>
@@ -240,7 +228,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData;
     }
-    
+
     /// <summary>
     /// 获取已完成的对话节点数量
     /// </summary>
@@ -249,7 +237,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData != null ? currentSaveData.dialogueProcessData.completedNodes.Count : 0;
     }
-    
+
     /// <summary>
     /// 获取存档时间
     /// </summary>
@@ -258,7 +246,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData != null ? currentSaveData.saveTime : DateTime.MinValue;
     }
-    
+
     /// <summary>
     /// 添加已完成的场景动画
     /// </summary>
@@ -269,7 +257,7 @@ public class SaveManager : MonoBehaviour
         {
             currentSaveData.AddCompletedSceneAnimation(animationName);
             LogDebug($"Added completed scene animation: {animationName}");
-            
+
             // 自动保存
             if (enableAutoSave)
             {
@@ -277,7 +265,7 @@ public class SaveManager : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// 检查场景动画是否已完成
     /// </summary>
@@ -289,7 +277,7 @@ public class SaveManager : MonoBehaviour
         LogDebug($"检查动画完成状态: {animationName} = {result}");
         return result;
     }
-    
+
     /// <summary>
     /// 设置场景动画状态
     /// </summary>
@@ -301,7 +289,7 @@ public class SaveManager : MonoBehaviour
         {
             currentSaveData.SetSceneAnimationState(animationName, progress);
             LogDebug($"Set scene animation state: {animationName} = {progress}");
-            
+
             // 自动保存
             if (enableAutoSave)
             {
@@ -309,7 +297,7 @@ public class SaveManager : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// 获取场景动画状态
     /// </summary>
@@ -321,7 +309,7 @@ public class SaveManager : MonoBehaviour
         LogDebug($"获取动画状态: {animationName} = {result}");
         return result;
     }
-    
+
     /// <summary>
     /// 获取已完成的场景动画数量
     /// </summary>
@@ -330,7 +318,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData != null ? currentSaveData.sceneAnimationData.animations.Count : 0;
     }
-    
+
     /// <summary>
     /// 设置交互物体状态
     /// </summary>
@@ -343,7 +331,7 @@ public class SaveManager : MonoBehaviour
         {
             currentSaveData.SetInteractiveObjectState(interactiveID, canInteract, isActivated);
             LogDebug($"Set interactive object state: {interactiveID} - CanInteract: {canInteract}, IsActivated: {isActivated}");
-            
+
             // 自动保存
             if (enableAutoSave)
             {
@@ -351,7 +339,7 @@ public class SaveManager : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// 获取交互物体是否可交互
     /// </summary>
@@ -361,7 +349,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData != null && currentSaveData.GetInteractiveObjectCanInteract(interactiveID);
     }
-    
+
     /// <summary>
     /// 获取交互物体是否激活
     /// </summary>
@@ -371,7 +359,7 @@ public class SaveManager : MonoBehaviour
     {
         return currentSaveData != null && currentSaveData.GetInteractiveObjectIsActivated(interactiveID);
     }
-    
+
     // 向后兼容方法 - 保持旧API可用
     /// <summary>
     /// 设置交互物体状态（向后兼容）
@@ -384,7 +372,7 @@ public class SaveManager : MonoBehaviour
     {
         SetInteractiveObjectState(interactiveID, !isDisabled, !isDeactivated);
     }
-    
+
     /// <summary>
     /// 获取交互物体是否禁用（向后兼容）
     /// </summary>
@@ -395,7 +383,7 @@ public class SaveManager : MonoBehaviour
     {
         return !GetInteractiveObjectCanInteract(interactiveID);
     }
-    
+
     /// <summary>
     /// 获取交互物体是否隐藏（向后兼容）
     /// </summary>
@@ -406,7 +394,7 @@ public class SaveManager : MonoBehaviour
     {
         return !GetInteractiveObjectIsActivated(interactiveID);
     }
-    
+
     // 调试方法
     private void LogDebug(string message)
     {
@@ -415,25 +403,25 @@ public class SaveManager : MonoBehaviour
             Debug.Log($"[SaveManager] {message}");
         }
     }
-    
+
     private void LogError(string message)
     {
         Debug.LogError($"[SaveManager] {message}");
     }
-    
+
     // 编辑器调试
     [ContextMenu("Save Game")]
     private void EditorSaveGame()
     {
         SaveGame();
     }
-    
+
     [ContextMenu("Load Game")]
     private void EditorLoadGame()
     {
         LoadSaveData();
     }
-    
+
     [ContextMenu("Delete Save")]
     private void EditorDeleteSave()
     {

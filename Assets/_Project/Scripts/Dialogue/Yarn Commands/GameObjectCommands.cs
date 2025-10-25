@@ -56,6 +56,10 @@ public class GameObjectCommands : MonoBehaviour
         {
             targetObject.SetActive(false);
             Debug.Log($"[GameObjectCommands] 已停用GameObject: {objectName}");
+
+            // 保存状态到存档
+            SaveManager.Instance.SetInteractiveObjectState(objectName, false, false);
+            Debug.Log($"[GameObjectCommands] 已保存状态到存档: {objectName}");
         }
         else
         {
@@ -295,6 +299,7 @@ public class GameObjectCommands : MonoBehaviour
     [YarnCommand("set_direction")]
     public void SetDirection(string objectName, bool isLeft = true)
     {
+        Debug.Log($"[GameObjectCommands] 正在设置GameObject '{objectName}' 的方向为: {(isLeft ? "左侧" : "右侧")}");
         GameObject targetObject = FindGameObjectByName(objectName);
         // 获取GameObject的原始Scale
         Vector3 originalScale = targetObject.transform.localScale;
