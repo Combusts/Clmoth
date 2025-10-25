@@ -31,13 +31,21 @@ public class IllustrationController : MonoBehaviour
         Debug.Log("ShowIllustration: " + name + " " + isLeft);
         if (isLeft)
         {
+            // 将左边Illustration的颜色变亮
+            leftIllustration.GetComponent<Image>().color = new Color(1, 1, 1, 1);
             leftIllustration.GetComponent<Image>().sprite = illustrations.Find(x => x.name == name)?.sprite;
             leftIllustration.SetActive(true);
+            // 将右边Illustration的颜色变灰
+            rightIllustration.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
         else
         {
+            // 将右边Illustration的颜色变亮
+            rightIllustration.GetComponent<Image>().color = new Color(1, 1, 1, 1);
             rightIllustration.GetComponent<Image>().sprite = illustrations.Find(x => x.name == name)?.sprite;
             rightIllustration.SetActive(true);
+            // 将左边Illustration的颜色变灰
+            leftIllustration.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
     }
 
