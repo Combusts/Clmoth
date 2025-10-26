@@ -248,10 +248,10 @@ public abstract class IInteractive : MonoBehaviour
         }
         
         // 获取渲染组件并将颜色设置为灰色
-        if (TryGetComponent<Renderer>(out var renderer))
-        {
-            renderer.material.color = Color.gray;
-        }
+        // if (TryGetComponent<Renderer>(out var renderer))
+        // {
+        //     renderer.material.color = Color.gray;
+        // }
     }
     
     /// <summary>
