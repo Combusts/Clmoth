@@ -30,9 +30,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _GlobalLight: 0.956
-    - _IlluminationIntensity: 4.8
+    - _IlluminationIntensity: 12.4
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _IlluminationOffset: {r: -16.3, g: -14.9, b: 0, a: 0}
-    - _IlluminationScale: {r: 35.9, g: 22.1, b: 0, a: 0}
+    - _IlluminationOffset: {r: -16.4, g: -7, b: 0, a: 0}
+    - _IlluminationScale: {r: 34.64, g: 12.6, b: 0, a: 0}
   m_BuildTextureStacks: []
