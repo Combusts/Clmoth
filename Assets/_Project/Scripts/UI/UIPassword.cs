@@ -9,9 +9,12 @@ public class UIPassword : PanelBase
 {
     public List<int> password = new(4);
 
-    [SerializeField] private TextMeshProUGUI[] passwordNumTexts;
-
+    [SerializeField] private TextMeshProUGUI[] passwordNumTexts; 
+    
+    [SerializeField] private GameObject greenLight;
     public event Action OnPasswordCorrect;
+
+    bool isPasswordCorrect = false;
 
     private int currentIndex = 0;
 
@@ -21,6 +24,8 @@ public class UIPassword : PanelBase
     {
         base.Show();
         ResetPasswordInput();
+        greenLight.SetActive(false);
+        isPasswordCorrect = false;
     }
     
     public void SetPassword(int num1, int num2, int num3, int num4)
@@ -57,7 +62,9 @@ public class UIPassword : PanelBase
             {
                 // 密码正确
                 Debug.Log("密码正确");
-                OnPasswordCorrect?.Invoke();
+                isPasswordCorrect = true;
+                greenLight.SetActive(true);
+                
             }
             else
             {
@@ -85,5 +92,15 @@ public class UIPassword : PanelBase
             currentIndex--;
             passwordNumTexts[currentIndex].text = "-";
         }
+    }
+
+    public void OnCloseButtonClick()
+    {
+        if (isPasswordCorrect)
+        {
+            OnPasswordCorrect?.Invoke();
+        }
+
+        UIManager.Instance.HideUI("Password");
     }
 }

@@ -6,6 +6,11 @@ using Yarn.Unity;
 public class LevelLoop : MonoBehaviour
 {
     [SerializeField] private Door[] Doors;
+    [SerializeField] private SpriteShiftItem[] Screen;
+
+    [SerializeField] private SpriteShiftItem[] FileSenders;
+    [SerializeField] private SpriteShiftItem[] Windows;
+
     [SerializeField] private DialogueRunner dialogueRunner;
     [SerializeField] private GameObject waterFountainBefore;
     [SerializeField] private GameObject waterFountainAfter;
@@ -80,10 +85,60 @@ public class LevelLoop : MonoBehaviour
         }
     }
 
+    [YarnCommand("ScreenShift")]
+    public void ScreenShift(int loopNum, int shiftNum)
+    {
+        switch (loopNum)
+        {
+            case 0:
+                Screen[0].ShiftSprite(shiftNum);
+                break;
+            case 1:
+                Screen[1].ShiftSprite(shiftNum);
+                break;
+            case 2:
+                Screen[2].ShiftSprite(shiftNum);
+                break;
+            case 3:
+                Screen[3].ShiftSprite(shiftNum);    
+                break;
+            case 4:
+                Screen[4].ShiftSprite(shiftNum);
+                break;
+            default:
+                break;
+        }
+    }
+
+    [YarnCommand("WindowShift")]
+    public void WindowShift(int loopNum, int shiftNum)
+    {
+        switch (loopNum)
+        {
+            case 0:
+                Windows[0].ShiftSprite(shiftNum);
+                break;
+            case 1:
+                Windows[1].ShiftSprite(shiftNum);
+                break;
+            case 2:
+                Windows[2].ShiftSprite(shiftNum);
+                break;
+            case 3:
+                Windows[3].ShiftSprite(shiftNum);    
+                break;
+            case 4:
+                Windows[4].ShiftSprite(shiftNum);
+                break;
+            default:
+                break;
+        }
+    }
+
     void OnPasswordCorrect()
     {   
         Debug.Log("[LevelLoop] 密码正确");
-        UIManager.Instance.HideUI("Password");
+        FileSenders[curLoopNum].ShiftSprite(1);
         dialogueRunner.VariableStorage.SetValue($"$Loop{curLoopNum}RightPassw", true);
         YarnSpinnerManager.Instance.StartDialogue($"Loop{curLoopNum}FileSender"); //Loop0FileSender
     }

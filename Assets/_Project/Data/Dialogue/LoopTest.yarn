@@ -18,6 +18,8 @@ title: Setup
 
 title: Loop0FileSender
 ---
+
+// 如果没有输入过正确的密码
 <<if !$Loop0RightPassw>>
     看起来需要输入密码
     // 调起输入密码的UI
@@ -25,10 +27,13 @@ title: Loop0FileSender
     <<stop>>
 <<endif>>
 
+// 如果没有投入过文件
 <<if !$Loop0HasSendFile>>
     看起来需要投入文件
     <<if $Loop0HasFile>>
         -> 投入文件
+            你注意到右边的门发出了响声，也许应该去看看什么个事。
+            <<ScreenShift LevelLoop 0 2>>
             <<set $Loop0HasSendFile to true>>
         -> 离开
             <<stop>>
@@ -38,7 +43,7 @@ title: Loop0FileSender
     <<endif>>
 <<endif>>
 
-你注意到右边的门发出了响声，也许应该去看看什么个事。
+也许应该去右边看看什么个事。
 ===
 
 title: Loop0File
@@ -49,6 +54,7 @@ title: Loop0File
         <<animator_play_and_wait Loop0 "DocumentPop">>
         获得了文件*1
         <<animator_play_and_wait Loop0 "DocumentExit">>
+        <<ScreenShift LevelLoop 0 3>>
         <<set $Loop0HasFile to true>>
     -> 离开
         <<stop>>
