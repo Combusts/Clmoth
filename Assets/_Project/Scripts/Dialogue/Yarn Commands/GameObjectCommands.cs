@@ -56,6 +56,10 @@ public class GameObjectCommands : MonoBehaviour
         {
             targetObject.SetActive(false);
             Debug.Log($"[GameObjectCommands] 已停用GameObject: {objectName}");
+
+            // 保存状态到存档
+            SaveManager.Instance.SetInteractiveObjectState(objectName, false, false);
+            Debug.Log($"[GameObjectCommands] 已保存状态到存档: {objectName}");
         }
         else
         {
@@ -259,6 +263,118 @@ public class GameObjectCommands : MonoBehaviour
         else
         {
             Debug.LogError("[GameObjectCommands] 未找到DialogueRunner，无法设置变量");
+        }
+    }
+
+
+    /// <summary>
+    /// 设置GameObject AnchoredPosition
+    /// </summary>
+    /// <param name="objectName">GameObject名称</param>
+    /// <param name="anchoredPositionx">AnchoredPositionX</param>
+    /// <param name="anchoredPositiony">AnchoredPositionY</param>
+    [YarnCommand("set_anchored_position")]
+    public void SetAnchoredPosition(string objectName, float anchoredPositionx, float anchoredPositiony)
+    {
+        GameObject targetObject = FindGameObjectByName(objectName);
+        Debug.Log($"[GameObjectCommands] 正在设置GameObject '{objectName}' 的AnchoredPosition为: {anchoredPositionx}, {anchoredPositiony}");
+        if (targetObject != null && targetObject.TryGetComponent<RectTransform>(out var rectTransform))
+        {
+            rectTransform.anchoredPosition = new Vector2(anchoredPositionx, anchoredPositiony);
+            Debug.Log($"[GameObjectCommands] 已设置GameObject '{objectName}' 的AnchoredPosition为: {anchoredPositionx}, {anchoredPositiony}");
+        }
+        else
+        {
+            Debug.LogWarning($"[GameObjectCommands] 未找到名为 '{objectName}' 的GameObject");
+        }
+    }
+
+
+    /// <summary>
+    /// 设置GameObject 方向，使用ScaleX和ScaleY的正负来确定方向
+    /// </summary>
+    /// <param name="objectName">GameObject名称</param>
+    /// <param name="scaleX">ScaleX</param>
+    /// <param name="scaleY">ScaleY</param>
+    [YarnCommand("set_direction")]
+    public void SetDirection(string objectName, bool isLeft = true)
+    {
+        Debug.Log($"[GameObjectCommands] 正在设置GameObject '{objectName}' 的方向为: {(isLeft ? "左侧" : "右侧")}");
+        GameObject targetObject = FindGameObjectByName(objectName);
+        // 获取GameObject的原始Scale
+        Vector3 originalScale = targetObject.transform.localScale;
+        // 如果isLeft为true，则设置ScaleX为-1
+        if (isLeft)
+        {
+            targetObject.transform.localScale = new Vector3(-originalScale.x, originalScale.y, originalScale.z);
+        }
+        else
+        {
+            targetObject.transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
+        }
+    }
+
+    /// <summary>
+    /// 显示立绘
+    /// 格式：<<show_illustration "IllustrationPanel" "ClothOpenEyes" false>>
+    /// </summary>
+    /// <param name="panelName">立绘面板名称</param>
+    /// <param name="illustrationName">立绘名称</param>
+    /// <param name="isLeft">是否显示在左侧</param>
+    [YarnCommand("show_illustration")]
+    public void ShowIllustration(string panelName, string illustrationName, bool isLeft)
+    {
+        Debug.Log($"[GameObjectCommands] 显示立绘: {illustrationName} 在 {panelName} {(isLeft ? "左侧" : "右侧")}");
+        
+        GameObject illustrationPanel = FindGameObjectByName(panelName);
+        
+        if (illustrationPanel != null)
+        {
+            IllustrationController controller = illustrationPanel.GetComponent<IllustrationController>();
+            if (controller != null)
+            {
+                controller.ShowIllustration(illustrationName, isLeft);
+                Debug.Log($"[GameObjectCommands] 已显示立绘: {illustrationName}");
+            }
+            else
+            {
+                Debug.LogError($"[GameObjectCommands] IllustrationController组件未找到在 {panelName} 上");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[GameObjectCommands] 未找到名为 '{panelName}' 的立绘面板");
+        }
+    }
+
+    /// <summary>
+    /// 隐藏立绘
+    /// 格式：<<hide_illustration "IllustrationPanel">>
+    /// </summary>
+    /// <param name="panelName">立绘面板名称</param>
+    [YarnCommand("hide_illustration")]
+    public void HideIllustration(string panelName)
+    {
+        Debug.Log($"[GameObjectCommands] 隐藏立绘: {panelName}");
+        
+        GameObject illustrationPanel = FindGameObjectByName(panelName);
+        
+        if (illustrationPanel != null)
+        {
+            IllustrationController controller = illustrationPanel.GetComponent<IllustrationController>();
+            if (controller != null)
+            {
+                controller.HideIllustration();
+                Debug.Log($"[GameObjectCommands] 已隐藏立绘: {panelName}");
+            }
+            else
+            {
+                Debug.LogError($"[GameObjectCommands] IllustrationController组件未找到在 {panelName} 上");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[GameObjectCommands] 未找到名为 '{panelName}' 的立绘面板");
         }
     }
 }

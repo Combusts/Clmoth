@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
                 SetCameraPositionAfterSceneLoad();
                 InitializeCommandManager();
                 UIManager.Instance.ShowUI("Playing");
+                UIManager.Instance.ShowUI("CinematicBars");
             } 
             else if (scene.name == "Game"){
                 UIManager.Instance.ShowUI("Playing");
@@ -137,7 +138,6 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         OnStartGame?.Invoke();
-        SaveManager.Instance.DeleteSaveData();
         SceneTransitionManager.Instance.LoadSceneWithFade(levelDic["Level_01"]);
     }
 

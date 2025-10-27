@@ -45,6 +45,9 @@ public class InteractiveCommands : MonoBehaviour
             // 保存状态到存档
             SaveInteractiveState(interactiveObject);
             
+            // 检查玩家是否已经在交互范围内
+            CheckPlayerInRange(interactiveObject);
+            
             // 再次验证状态
             Debug.Log($"[InteractiveCommands] 验证最终CanInteract状态: {interactiveObject.CanInteract}");
         }
@@ -326,6 +329,48 @@ public class InteractiveCommands : MonoBehaviour
         
         Debug.LogWarning($"[InteractiveCommands] 未找到名为 '{objectName}' 的交互对象");
         return null;
+    }
+
+    /// <summary>
+    /// 检查玩家是否已经在指定交互对象的范围内
+    /// </summary>
+    /// <param name="interactiveObject">要检查的交互对象</param>
+    private void CheckPlayerInRange(IInteractive interactiveObject)
+    {
+        // 获取玩家对象
+        Player player = FindObjectOfType<Player>();
+        if (player == null)
+        {
+            Debug.LogWarning("[InteractiveCommands] 未找到Player对象");
+            return;
+        }
+        
+        // 获取交互对象的Collider2D
+        if (!interactiveObject.TryGetComponent<Collider2D>(out var interactiveCollider))
+        {
+            Debug.LogWarning($"[InteractiveCommands] 交互对象 {interactiveObject.gameObject.name} 没有Collider2D组件");
+            return;
+        }
+        
+        // 获取玩家的Collider2D
+        if (!player.TryGetComponent<Collider2D>(out var playerCollider))
+        {
+            Debug.LogWarning("[InteractiveCommands] Player没有Collider2D组件");
+            return;
+        }
+        
+        // 检查玩家是否在交互对象的触发范围内
+        if (interactiveCollider.bounds.Intersects(playerCollider.bounds))
+        {
+            Debug.Log($"[InteractiveCommands] 检测到玩家已在 {interactiveObject.gameObject.name} 的交互范围内，立即添加到交互列表");
+            
+            // 手动触发OnTriggerEnter2D的逻辑
+            player.AddInteractiveObject(interactiveObject);
+        }
+        else
+        {
+            Debug.Log($"[InteractiveCommands] 玩家不在 {interactiveObject.gameObject.name} 的交互范围内");
+        }
     }
 
     /// <summary>

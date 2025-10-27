@@ -16,6 +16,9 @@ public class YarnSpinnerManager : MonoBehaviour
     
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
+
+    [Header("Illustration")]
+    [SerializeField] private GameObject illustrationPanel;
     
     private readonly Dictionary<string, List<string>> sceneToNodesMap = new();
     private bool isDialogueActive = false;
@@ -64,6 +67,10 @@ public class YarnSpinnerManager : MonoBehaviour
         
         // Load nodes for current scene
         LoadNodesForCurrentScene();
+
+        // Create IllustrationPanel in don't destroy on load
+        illustrationPanel = Instantiate(Resources.Load<GameObject>("Prefabs/UI/InGame/IllustrationPanel"), transform);
+        illustrationPanel.name = "IllustrationPanel";
     }
     
     void OnDestroy()
