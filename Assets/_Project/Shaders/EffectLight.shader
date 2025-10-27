@@ -9,6 +9,12 @@ Shader "Custom/2D_MultiPointLight"
         _FlickerSpeed ("Flicker Speed", Range(0, 10)) = 1.0
         _FlickerIntensity ("Flicker Intensity", Range(0, 1)) = 0.3
         _FlickerPattern ("Flicker Pattern", Range(0, 1)) = 0.5
+        _LightIntensityMultiplier ("Light Intensity Multiplier", Range(0, 50)) = 1.0
+        _IlluminationTex ("Illumination Texture", 2D) = "white" {}
+        _IlluminationIntensity ("Illumination Intensity", Range(0, 100)) = 0.5
+        _UseWorldSpace ("Use World Space UV", Float) = 0.0
+        _IlluminationScale ("Illumination Scale", Vector) = (1, 1, 0, 0)
+        _IlluminationOffset ("Illumination Offset", Vector) = (0, 0, 0, 0)
     }
 
     SubShader
@@ -31,7 +37,12 @@ Shader "Custom/2D_MultiPointLight"
             float _FlickerSpeed;
             float _FlickerIntensity;
             float _FlickerPattern;
-
+            float _LightIntensityMultiplier;
+            sampler2D _IlluminationTex;
+            float _IlluminationIntensity;
+            float _UseWorldSpace;
+            float4 _IlluminationScale;
+            float4 _IlluminationOffset;
             // 光源参数数组（最多8个）
             #define MAX_LIGHTS 8
             float4 _LightPosArray[MAX_LIGHTS];   // xyz位置
@@ -119,7 +130,23 @@ Shader "Custom/2D_MultiPointLight"
                 }
 
                 // 1. 先改变光照强度（乘法操作，让像素更亮）
-                col.rgb *= (1 + lightIntensity*50);
+                col.rgb *= (1 + lightIntensity*_LightIntensityMultiplier);
+
+                // 计算光照贴图的UV坐标
+                // 将世界坐标转换为光照贴图的局部坐标(0-1范围)
+                float2 lightmapLocalPos = i.worldPos.xy - _IlluminationOffset.xy;
+                
+                // 转换为UV坐标 (0-1范围)
+                lightmapLocalPos /= _IlluminationScale.xy;
+
+                // 检查是否在光照贴图范围内
+                bool isInRange = lightmapLocalPos.x >= 0.0 && lightmapLocalPos.x <= 1.0 && lightmapLocalPos.y >= 0.0 && lightmapLocalPos.y <= 1.0;
+                if (isInRange)
+                {
+                    fixed4 illuminationColor = tex2D(_IlluminationTex, lightmapLocalPos);
+                    col.rgb *= (1+illuminationColor.rgb*_IlluminationIntensity);
+                }
+                
                 
                 // 2. 再叠加光源的颜色（染色效果）
                 // col.rgb += totalLightColor;
