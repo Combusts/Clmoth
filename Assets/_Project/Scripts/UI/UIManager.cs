@@ -116,6 +116,15 @@ public class UIManager : MonoBehaviour
         return openPanels[openPanels.Count - 1].gameObject.name == uiName;
     }
 
+    public bool IsUIOpen(string uiName)
+    {
+        if(uiDic.ContainsKey(uiName))
+        {
+            return openPanels.Contains(uiDic[uiName]);
+        }
+        return false;
+    }
+
     public PanelBase GetPanelByName(string uiName)
     {
         if (uiDic.ContainsKey(uiName))

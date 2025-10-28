@@ -14,6 +14,9 @@ public class Eye : MonoBehaviour
     private void Awake()
     {
         originalPosition = transform.position;
+        if (player == null) {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
     }
 
     private void Update()

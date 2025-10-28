@@ -84,6 +84,18 @@ public class Player : MonoBehaviour
         {
             interactiveObjects.Add(interactiveObject);
         }
+
+        if (collision.TryGetComponent(out Trap trap))
+        {
+            // 触发对话
+            YarnSpinnerManager.Instance.StartDialogue(trap.dialogueNodeName);
+            
+            // 如果是一次性陷阱，移除碰撞组件
+            if (trap.isOneTime)
+            {
+                collision.gameObject.SetActive(false);
+            }
+        }
     }
     public void OnTriggerExit2D(UnityEngine.Collider2D collision)
     {

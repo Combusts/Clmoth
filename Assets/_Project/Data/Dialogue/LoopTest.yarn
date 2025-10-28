@@ -5,16 +5,16 @@ title: Door
 这个门被锁住了
 ===
 
-title: Setup
----
-<<declare $Loop0RightPassw = false>>
-<<declare $Loop0HasSendFile = false>>
-<<declare $Loop0HasFile = false>>
+// title: Setup2
+// ---
+// <<declare $Loop0RightPassw = false>>
+// <<declare $Loop0HasSendFile = false>>
+// <<declare $Loop0HasFile = false>>
 
-<<declare $Loop1RightPassw = false>>
-<<declare $Loop1HasSendFile = false>>
-<<declare $Loop1HasFile = false>>
-===
+// <<declare $Loop1RightPassw = false>>
+// <<declare $Loop1HasSendFile = false>>
+// <<declare $Loop1HasFile = false>>
+// ===
 
 title: Loop0FileSender
 ---

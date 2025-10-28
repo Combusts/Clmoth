@@ -140,7 +140,7 @@ public class LevelLoop : MonoBehaviour
         Debug.Log("[LevelLoop] 密码正确");
         FileSenders[curLoopNum].ShiftSprite(1);
         dialogueRunner.VariableStorage.SetValue($"$Loop{curLoopNum}RightPassw", true);
-        YarnSpinnerManager.Instance.StartDialogue($"Loop{curLoopNum}FileSender"); //Loop0FileSender
+        // YarnSpinnerManager.Instance.StartDialogue($"Loop{curLoopNum}FileSender"); //Loop0FileSender
     }
 
     [YarnCommand("WaterFountainChange")]
@@ -160,5 +160,20 @@ public class LevelLoop : MonoBehaviour
             waterFountainBefore.SetActive(false);
             waterFountainAfter.SetActive(true);
         }, 0.5f, 0.5f);
+    }
+
+    [YarnCommand("WaitForPasswordResult")]
+    public IEnumerator WaitForPasswordResult()
+    {
+        while (UIManager.Instance.IsUIOpen("Password") == true)
+        {
+            yield return null;
+        }
+    }
+
+    [YarnCommand("LoopEnd")]
+    public void LoopEnd()
+    {
+        Debug.Log($"[LevelLoop] 循环结束");
     }
 }

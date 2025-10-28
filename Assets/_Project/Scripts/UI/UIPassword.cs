@@ -16,6 +16,8 @@ public class UIPassword : PanelBase
 
     bool isPasswordCorrect = false;
 
+    bool isLocked = false; // 锁定，不能输入密码
+
     private int currentIndex = 0;
 
 
@@ -26,6 +28,8 @@ public class UIPassword : PanelBase
         ResetPasswordInput();
         greenLight.SetActive(false);
         isPasswordCorrect = false;
+        // 解锁密码输入
+        isLocked = false;
     }
     
     public void SetPassword(int num1, int num2, int num3, int num4)
@@ -49,6 +53,12 @@ public class UIPassword : PanelBase
 
     public void OnEnterPassword(int num)
     {
+        if (isLocked)
+        {
+            // 密码输入被锁定，不能输入
+            return;
+        }
+
         // 输入密码
         passwordNumTexts[currentIndex].text = num.ToString();
         currentIndex++;
@@ -64,7 +74,10 @@ public class UIPassword : PanelBase
                 Debug.Log("密码正确");
                 isPasswordCorrect = true;
                 greenLight.SetActive(true);
-                
+                // 锁定密码输入
+                isLocked = true;
+                // 触发密码正确事件
+                // OnPasswordCorrect?.Invoke();  （注释原因：关闭UI时触发）
             }
             else
             {
@@ -87,6 +100,12 @@ public class UIPassword : PanelBase
 
     public void OnBackspace()
     {
+        // 密码输入被锁定，不能删除
+        if (isLocked)
+        {
+            return;
+        }
+
         if (currentIndex > 0)
         {
             currentIndex--;
