@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: 1acf3a11680c2b945acb02f2f91d0d6e
+<<<<<<<< HEAD:Assets/_Project/Art/Sprites/Props/循环办公桌.png.meta
+guid: e0d508385a7439742827b1895f3ae827
+========
+guid: c82fb85c1685fa64e8a591e95c18d44f
+>>>>>>>> origin/Sytles-dev:Assets/_Project/Art/Animations/主角跑步优化后序列帧/frame_00_delay-0.5s.gif.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}

@@ -167,6 +167,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  mainCamera: {fileID: 0}
+  cameraFollowThreshold: 3
+  cameraSmoothSpeed: 5
+  cameraMinX: -10
+  cameraMaxX: 10
   animator: {fileID: 0}
 --- !u!95 &3685505772218176616
 Animator:
