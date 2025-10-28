@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6357399661524924279}
   - component: {fileID: 1808344060356525122}
   m_Layer: 0
-  m_Name: Right Illustration
+  m_Name: Left Illustration
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.085, y: 0}
   m_AnchorMax: {x: 0.35734576, y: 0.70500004}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -47, y: -43.699997}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6357399661524924279
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 8772570466021403451}
   - component: {fileID: 1653040790573817825}
   m_Layer: 0
-  m_Name: Left Illustration
+  m_Name: Right Illustration
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,7 +109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.64400005, y: 0}
   m_AnchorMax: {x: 0.9146543, y: 0.70500004}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 47, y: -43.74}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8772570466021403451
@@ -226,8 +226,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   illustrations:
   - name: ClothOpenEyes
-    sprite: {fileID: 21300000, guid: c07a52081c5f029439e4a78386c33188, type: 3}
+    sprite: {fileID: 21300000, guid: 5dc9d3cc13a6ca54ea7b63fd7d643880, type: 3}
   - name: ClothCloseEyes
-    sprite: {fileID: 21300000, guid: 508676c7caf0b264d8d9b4712b4c8b82, type: 3}
+    sprite: {fileID: 21300000, guid: 5df354c0b9b4cb3448b1d68b3a53027c, type: 3}
   - name: MothOpenEyes
-    sprite: {fileID: 21300000, guid: 766f3819b1f11b544a50461b05ff1b4d, type: 3}
+    sprite: {fileID: 21300000, guid: e8e53b3743458244e9c0cfb1c6ffedc4, type: 3}
+  - name: ANormal
+    sprite: {fileID: 21300000, guid: e5476e0493239084e98fe60df5ac29cd, type: 3}
+  - name: ASinisterSmile
+    sprite: {fileID: 21300000, guid: e4fdfec94f8e5c14eb11dff2cf047a93, type: 3}

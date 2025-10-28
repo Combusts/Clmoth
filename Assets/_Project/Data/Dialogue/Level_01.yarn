@@ -107,14 +107,18 @@ position: -434,74
 title:A
 position: -418,-63
 ---
+<<show_illustration CommandManager "IllustrationPanel" "ANormal" false>>
+<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" true>>
 {$AName}: “可以帮我check一下这里的代码吗，我点击run之后总是发生error。”
 {$AName}: “还有这个file，待会帮我copy然后print一下哦~”
 -> {$mainName}: 好的。
 -> {$mainName}: 这些不是你自己的工作吗？
+    <<show_illustration CommandManager "IllustrationPanel" "ASinisterSmile" false>>
     {$AName}: “哎呀哎呀，这些你比较skilled嘛～”
 -> 可是我还有其他的工作。
     {$AName}: “我们不是一个team吗，帮我点小忙应该没问题吧。”
 {$AName}: “我还有自己的schedule要忙啦，记得不要告诉leader哦~”
+<<show_illustration CommandManager "IllustrationPanel" "ANormal" false>>
  同事A喜欢四处打听消息，说不定他知道简历的事情。
 {$mainName}: “等一下，但我还有一个问题。”
 {$AName}: “What’s problem?快点说，我可忙着呢。”
@@ -125,6 +129,7 @@ position: -418,-63
  也许真是自己出现幻觉了，公司档案怎么会出现这么离谱的数据。
  还是先去窗台那里放松一下再工作吧。
 <<enable_interaction CommandManager "窗边休息">>
+<<hide_illustration CommandManager "IllustrationPanel">>  // 隐藏立绘
 
 ===
 title:window
@@ -173,7 +178,12 @@ position: -387,288
 {$newName}: “哦对，金总刚才说他有事找前辈。”
 {$newName}: “本来还想拜托前辈带我参观一下公司。”
 {$newName}: “但金总看起来还挺着急的，那我就先不打扰到前辈工作啦。”
+<<animator_play_and_stay MainScene "NewHireLeave">>
 【他说完，挥了挥手，回到了他自己的工位。】
 自白：金总找我有事，先去办公室吧。
 //进入自由状态
+===
+title: JumpToLoop
+---
+<<ToLevel GameManager "Loop">>
 ===
