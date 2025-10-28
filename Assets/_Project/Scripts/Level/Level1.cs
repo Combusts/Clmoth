@@ -12,6 +12,8 @@ public class Level1 : Level
     [SerializeField] private GameObject tableWithDoc;
 
     [SerializeField] private GameObject tableWithoutDoc;
+
+    [SerializeField] private GameObject balcony;
     
     private Level1 Instance;
     private Vector2 playerPosition;

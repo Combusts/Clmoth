@@ -18,7 +18,7 @@ public class LightItem : MonoBehaviour
             
             if (lightManager == null)
             {
-                GameObject managerObj = new GameObject("LightManager");
+                GameObject managerObj = new("LightManager");
                 lightManager = managerObj.AddComponent<LightManager2D>();
             }
         }
@@ -42,24 +42,28 @@ public class LightItem : MonoBehaviour
     {
         if (lightManager != null)
         {
-            lightManager.RemoveLight(this);
-            lightManager.AddLight(this);
+            lightManager.UpdateLight(this);
         }
     }
-    
-    private void OnDisable()
+
+    private void Update()
     {
         if (lightManager != null)
         {
-            lightManager.RemoveLight(this);
+            lightManager.UpdateLight(this);
+        }
+        else
+        {
+            Debug.LogError("LightManager not found");
         }
     }
     
     private void OnDestroy()
     {
         if (lightManager != null)
-        {
             lightManager.RemoveLight(this);
-        }
+        else
+            Debug.LogError("LightManager not found");
     }
+    
 }

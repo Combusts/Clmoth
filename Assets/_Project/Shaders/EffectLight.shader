@@ -148,8 +148,8 @@ Shader "Custom/2D_MultiPointLight"
                 }
                 
                 
-                // 2. 再叠加光源的颜色（染色效果）
-                // col.rgb += totalLightColor;
+                // 2. 颜色偏移效果：让物体颜色朝光源色方向偏移
+                col.rgb = lerp(col.rgb, col.rgb * (totalLightColor * 0.5 + 0.5), lightIntensity * 0.5);
 
                 return col;
             }

@@ -6,6 +6,7 @@ public class BaseCharacter : MonoBehaviour
 {
     [Header("移动状态")]
     [SerializeField] private bool onMove = false;
+    [SerializeField] private bool onRunning = false;
     
     [Header("表情控制")]
     [SerializeField] private int emotionState = 0;
@@ -13,6 +14,7 @@ public class BaseCharacter : MonoBehaviour
     
     private Animator animator;
     private bool lastOnMoveValue;
+    private bool lastOnRunningValue;
     private int lastEmotionState;
     
     // EmotionIcon相关组件引用
@@ -26,6 +28,16 @@ public class BaseCharacter : MonoBehaviour
         set
         {
             onMove = value;
+            UpdateAnimator();
+        }
+    }
+    
+    public bool OnRunning
+    {
+        get => onRunning;
+        set
+        {
+            onRunning = value;
             UpdateAnimator();
         }
     }
@@ -44,6 +56,7 @@ public class BaseCharacter : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         lastOnMoveValue = onMove;
+        lastOnRunningValue = onRunning;
         lastEmotionState = emotionState;
         
         // 初始化EmotionIcon相关组件
@@ -60,6 +73,13 @@ public class BaseCharacter : MonoBehaviour
         {
             UpdateAnimator();
             lastOnMoveValue = onMove;
+        }
+        
+        // 检查onRunning值是否在运行时被改变
+        if (onRunning != lastOnRunningValue)
+        {
+            UpdateAnimator();
+            lastOnRunningValue = onRunning;
         }
         
         // 检查emotionState值是否在运行时被改变
@@ -98,6 +118,7 @@ public class BaseCharacter : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("OnMove", onMove);
+            animator.SetBool("Running", onRunning);
         }
     }
     
@@ -246,6 +267,28 @@ public class BaseCharacter : MonoBehaviour
     {
         EmotionState = 0;
         Debug.Log("BaseCharacter: 清除表情");
+    }
+    
+    /// <summary>
+    /// 启动跑步动画
+    /// 用法: <<OnRunning>>
+    /// </summary>
+    [YarnCommand("OnRunning")]
+    public void OnRunningCommand()
+    {
+        OnRunning = true;
+        Debug.Log($"[BaseCharacter] OnRunning: {gameObject.name}");
+    }
+    
+    /// <summary>
+    /// 停止跑步动画
+    /// 用法: <<OnStopRunning>>
+    /// </summary>
+    [YarnCommand("OnStopRunning")]
+    public void OnStopRunningCommand()
+    {
+        OnRunning = false;
+        Debug.Log($"[BaseCharacter] OnStopRunning: {gameObject.name}");
     }
     
     #endregion

@@ -47,7 +47,7 @@ title: 往场景右侧走
 这怎么不是金总的办公室，难道是我昏头走错了？
 还是回走廊看看吧。
 ===
-title: Setup
+title: Setup0
 ---
 //screen = 眼睛显示屏(美术资产变化-1:雪花，2：眼睛，3：笑脸，4：息屏)
 //filebox = 拿取任务道具的文件夹
@@ -56,365 +56,762 @@ title: Setup
 //doorA = 场景中间的门
 //door = 进入下一个循环的门
 //password = 文件投送口，放任务道具和输密码的地方。
-<<declare $Loop0screen = false>>
-<<declare $Loop0filebox = false>>
-<<declare $Loop0door = false>>
-<<declare $Loop0password = false>>
+
+// Loop0
+<<declare $Loop0ScreenState = 1>> // 屏幕状态
+<<declare $Loop0HasFile = false>> // 获取了文件
+<<declare $Loop0RightPassw = false>> // 秘密正确
+<<declare $Loop0HasSendFile = false>> // 投送了文件
+<<declare $Loop0ScreenInteractionTime = 0>> // 查看屏幕的次数
+<<declare $Loop0WindowInteractionTime = 0>> // 查看屏幕的次数
+
 ===
 
 //---------循环0-------------------------------------------------------------
-title: Loop0screen
+title: Loop0Screen
 ---
-//没有互动文件夹：雪花状态
-显示屏看起来好像是坏了。
-//互动过文件夹：眼睛状态
+<<set $Loop0ScreenInteractionTime to $Loop0ScreenInteractionTime + 1>>
+<<if $Loop0ScreenState == 1>>
+    //没有互动文件夹：雪花状态
+    显示屏看起来好像是坏了。
+
+<<elseif $Loop0ScreenState == 2>>
+    //互动过文件夹：眼睛状态
+    <<if $Loop0ScreenInteractionTime == 1>>
     //第1次
     总感觉这个显示屏在监视我。
+    <<elseif $Loop0ScreenInteractionTime == 2>>
     //第2次
     {$mainName}：呃，您好？
     【无事发生】
+    <<else>>
     //第n次
     ……
-//互动文件投送口后输入密码0000：笑脸状态
+    <<endif>>
+<<elseif $Loop0ScreenState == 3>>
+    //互动文件投送口后输入密码0000：笑脸状态
+    <<if $Loop0ScreenInteractionTime == 1>>
     这是代表我完成任务了吗？//第1次
+    <<else>>
     去右边门口看看吧。//第2次
+    <<endif>>
+<<endif>>
+
+
 ===
-title: Loop0filebox
+title: Loop0Filebox
 ---
-欸，这是什么？
-【获得一份封口文件袋和一张写着《评估测试》的纸。】//同样是对话框内容，中括号需加上】
-员工评估测试……//从自由状态转成查看文件的状态，无法行动
-//玩家点击退出阅读，重新进入自由状态
+<<if !$Loop0HasFile>>
+    欸，这是什么？
+    【获得一份封口文件袋和一张写着《评估测试》的纸。】  //同样是对话框内容，中括号需加上】
+    <<animator_play_and_wait Loop0 "DocumentPop">>
+    <<set $Loop0HasFile to true>>
+    <<set $Loop0ScreenState to 2>> 
+    <<ScreenShift LevelLoop 0 3>>
+    <<set $Loop0ScreenInteractionTime to 0>> // 重置屏幕次数
+    员工评估测试……  //从自由状态转成查看文件的状态，无法行动
+    <<animator_play_and_wait Loop0 "DocumentExit">>
+    //玩家点击退出阅读，重新进入自由状态
+    <<stop>>
+<<endif>>
 
 //互动过一次文件夹之后，再次互动文件夹直接进入阅读评估测试的状态
 【需要重新查看《评估测试》吗？】
 -> 是
-    *进入阅读
+    // *进入阅读
+    <<animator_play_and_wait Loop0 "DocumentPop">>
+        员工评估测试……//从自由状态转成查看文件的状态，无法行动
+    <<animator_play_and_wait Loop0 "DocumentExit">>
 -> 否
-    *返回自由状态
+    // *返回自由状态
+    <<stop>>
 ===
-title: Loop0water
+title: Loop0Water
 ---
 我现在还不想喝水。
 ===
-title: Loop0window
+title: Loop0Window
 ---
+<<set $Loop0WindowInteractionTime to $Loop0WindowInteractionTime + 1>>
 //第1次
-【透过窗户，你什么都看不清，只能看到自己的倒影。】
-窗外好暗，也不知道对面是哪里。
+<<if $Loop0WindowInteractionTime == 1>>
+    【透过窗户，你什么都看不清，只能看到自己的倒影。】
+    窗外好暗，也不知道对面是哪里。
 //第n次
-除了我自己没什么好看的吧。
+<<else>>
+    除了我自己没什么好看的吧。
+<<endif>>
 ===
-title: Loop0doorA
+title: Loop0DoorA
 ---
 锁上了。
 ===
-title: Loop0door
+title: Loop0Door
 ---
 //没有互动文件投送口输入密码0000
-锁上了。
+<<if !$Loop0HasSendFile>>
+    锁上了。
 //输入密码0000
-【是否选择离开？】
--> 是
-    *进入循环1
--> 否
-    *返回
+<<else>>
+    【是否选择离开？】
+    -> 是
+        <<OpenDoorOfLoop LevelLoop 0>> // *进入循环1
+    -> 否
+        <<stop>>//*返回
+<<endif>>
 ===
 title: Loop0password
 ---
-//没有互动文件夹
-好奇怪的邮箱，看起来还需要输入密码才能投递文件。
-//互动文件夹
-这应该就是《评估测试》里提到的文件投送口。
-只要输入0000就可以把文件放进去了吧。//此时弹出输入密码的互动和画面
-//输入0000密码
-这就算完成测试中的任务了吧。//进入自由状态
-【右侧的门传来锁芯转动的声音。】
-好像右边的门开了，去看看能不能开。
-//输对密码之后再次互动
-文件已经放进去了。
-//输入其他密码
-这个密码不对，《评估测试》有提到输入密码0000，再试试看。
-===
+// <<if !$Loop0RightPassw>>
+//     //没有互动文件夹
+//     <<if !$Loop0HasFile>>
+//         好奇怪的邮箱，看起来还需要输入密码才能投递文件。
+//         <<OpenPasswordPanelWithLoop LevelLoop 0>>
+//         <<stop>>
+//     //互动文件夹
+//     <<else>>
+//         这应该就是《评估测试》里提到的文件投送口。
+//         只要输入0000就可以把文件放进去了吧。//此时弹出输入密码的互动和画面
+//         <<OpenPasswordPanelWithLoop LevelLoop 0>>
+//         <<WaitForPasswordResult LevelLoop>>
+//         //输入0000密码
+//         <<if $Loop0RightPassw>>
+//             这就算完成测试中的任务了吧。//进入自由状态
+//             【右侧的门传来锁芯转动的声音。】
+//             好像右边的门开了，去看看能不能开。
+//         <<else>>
+//             这个密码不对，《评估测试》有提到输入密码0000，再试试看。
+//         <<endif>>
+//     <<endif>>
+// <<else>>
 
----
+
+// //输入0000密码
+// 这就算完成测试中的任务了吧。//进入自由状态
+// 【右侧的门传来锁芯转动的声音。】
+// 好像右边的门开了，去看看能不能开。
+// //输对密码之后再次互动
+// 文件已经放进去了。
+// //输入其他密码
+// 这个密码不对，《评估测试》有提到输入密码0000，再试试看。
+// <<endif>>
+
+// 如果没有输入过正确的密码
+<<if !$Loop0RightPassw>>
+    好奇怪的邮箱，看起来还需要输入密码才能投递文件。
+    // 调起输入密码的UI
+    <<OpenPasswordPanelWithLoop LevelLoop 0>>
+    <<WaitForPasswordResult LevelLoop>>
+    <<if !$Loop0RightPassw>>
+        这个密码不对，《评估测试》有提到输入密码0000，再试试看。
+        <<stop>>
+    <<endif>>
+<<endif>>
+
+// 如果没有投入过文件
+<<if !$Loop0HasSendFile>>
+    看起来还需要投入文件
+    <<if $Loop0HasFile>>
+        -> 投入文件
+            这就算完成测试中的任务了吧。//进入自由状态
+            【右侧的门传来锁芯转动的声音。】
+            好像右边的门开了，去看看能不能开。
+            <<ScreenShift LevelLoop 0 2>>
+            <<set $Loop0ScreenState to 3>> 
+            <<set $Loop0HasSendFile to true>>
+            <<stop>>
+        -> 离开
+            <<stop>>
+    <<else>>
+        -> 离开
+            <<stop>>
+    <<endif>>
+<<endif>>
+
+文件已经放进去了。
+===
 //-------循环1----------------------------------------------------------
+title: Setup1
+---
+//screen = 眼睛显示屏(美术资产变化-1:雪花，2：眼睛，3：笑脸，4：息屏)
+//filebox = 拿取任务道具的文件夹
+//water = 饮水机（1：模糊不清，2：有文件，3：解体）
+//window = 窗户（1：没人，2：有人有密码）
+//doorA = 场景中间的门
+//door = 进入下一个循环的门
+//password = 文件投送口，放任务道具和输密码的地方。
+
+// Loop1
+<<declare $Loop1ScreenState = 2>> // 屏幕状态
+<<declare $Loop1HasInteractWithFileBox = false>>  // 是否和文件夹对话过
+<<declare $Loop1WaterFountainBreak = false>>  // 水桶是否分开
+<<declare $Loop1HasFile = false>> // 获取了文件
+<<declare $Loop1RightPassw = false>> // 秘密正确
+<<declare $Loop1HasSendFile = false>> // 投送了文件
+<<declare $Loop1ScreenInteractionTime = 0>> // 查看屏幕的次数
+<<declare $Loop1WindowInteractionTime = 0>> // 查看屏幕的次数
+
+===
+title: Loop1Enter
+---
 //进入场景后直接进入对话。
 怎么还是这个房间？
 难道评估测试没有结束吗？
 再去看看文件夹那里有没有文件吧。
+===
 
-title: Loop1screen
+
+title: Loop1Screen
 ---
 //眼睛状态
-【大眼瞪小眼.jpg】
-//互动文件投送口后输入密码1030：笑脸状态
-这个脸可真圆啊。
-===
-title: Loop1filebox
----
-【获得一份封口文件袋。】
-这次只有一份同样的文件袋了，看来测试还没有结束。
-但是密码呢？不会要让我凭空猜吧。
-算了，说不定是掉在哪里了，先在这个房间找找。
+<<if $Loop1ScreenState == 2>>
+    【大眼瞪小眼.jpg】
+    //互动文件投送口后输入密码1030：笑脸状态
+<<elseif $Loop1ScreenState == 3>>
+    这个脸可真圆啊。
+<<endif>>
 
-//互动过一次文件夹之后，再次互动文件夹
-里面已经没有其他文件了。
+
 ===
-title: Loop1water
+title: Loop1Filebox
 ---
-//未互动饮水机/未拆开水桶
-水龙头怎么没关？水桶里的水都流干了。
-桶里怎么还有一张小纸片。
-要把水桶卸下来看看吗？
--> 为什么不？/
-    *返回自由状态//饮水机变成机桶分离的状态
--> 我干嘛浪费这个力气。
-    *返回自由状态//再次互动直接从“要把水桶写下来看看吗？”继续
-//水桶已经变成分离状态，再次互动水桶
-【获得一张生日贺卡。】
-我的生日贺卡怎么会出现在水桶里了？
+<<if !$Loop1HasInteractWithFileBox>>
+    【获得一份封口文件袋。】
+    这次只有一份同样的文件袋了，看来测试还没有结束。
+    但是密码呢？不会要让我凭空猜吧。
+    算了，说不定是掉在哪里了，先在这个房间找找。
+    <<set $Loop1HasInteractWithFileBox to true>>
+<<else>>
+    //互动过一次文件夹之后，再次互动文件夹
+    里面已经没有其他文件了。
+<<endif>>
+
+
 ===
-title: Loop1window
+title: Loop1Water
+---
+<<if !$Loop1WaterFountainBreak>>
+    //未互动饮水机/未拆开水桶
+    水龙头怎么没关？水桶里的水都流干了。
+    桶里怎么还有一张小纸片。
+    要把水桶卸下来看看吗？
+    -> 为什么不？
+        // *返回自由状态//饮水机变成机桶分离的状态
+        <<WaterFountainChange LevelLoop>>
+        <<set $Loop1WaterFountainBreak to true>>
+        <<stop>>
+    -> 我干嘛浪费这个力气。
+        // *返回自由状态//再次互动直接从“要把水桶写下来看看吗？”继续
+        <<stop>>
+<<elseif !$Loop1HasFile>>
+    【获得一张生日贺卡。】
+    //水桶已经变成分离状态，再次互动水桶
+    <<animator_play_and_wait Loop1 "DocumentPop">>
+    <<set $Loop1HasFile to true>>
+    我的生日贺卡怎么会出现在水桶里了？
+    <<animator_play_and_wait Loop1 "DocumentExit">>
+<<else>>
+    //互动过一次文件夹之后，再次互动文件夹直接进入阅读评估测试的状态
+    【需要重新查看生日贺卡吗？】
+    -> 是
+        // *进入阅读
+        <<animator_play_and_wait Loop1 "DocumentPop">>
+        我的生日贺卡怎么会出现在水桶里了？
+        <<animator_play_and_wait Loop1 "DocumentExit">>
+    -> 否
+        // *返回自由状态
+        <<stop>>
+<<endif>>
+===
+title: Loop1Window
 ---
 什么都看不到。
 ===
-title: Loop1doorA
+title: Loop1DoorA
 ---
 还是锁上了。
 ===
-title: Loop1door
+title: Loop1Door
 ---
 //没有互动文件投送口输入密码1030
-看来得投完文件才能解锁了。
+<<if !$Loop1RightPassw>>
+    看来得投完文件才能解锁了。
 //输入密码1030
-【是否选择离开？】
--> 是
-    *进入循环2
--> 否
-    *返回
+<<else>>
+    【是否选择离开？】
+    -> 是
+        <<OpenDoorOfLoop LevelLoop 1>>  //*进入循环2
+    -> 否
+        <<stop>>//*返回
+<<endif>>
 ===
-title: Loop1password
+title: Loop1Password
 ---
-//互动文件夹
-说不定输入我的生日日期1030就可以启动了。
-//此时弹出输入密码的互动和画面
-//输入1030密码
-//进入自由状态
-还真是我的生日，真是不知道人事部的人在想什么。
-【右侧的门传来锁芯转动的声音。】
+// //互动文件夹
+// 说不定输入我的生日日期1030就可以启动了。
+// //此时弹出输入密码的互动和画面
+// //输入1030密码
+// //进入自由状态
+// 还真是我的生日，真是不知道人事部的人在想什么。
+// 【右侧的门传来锁芯转动的声音。】
+// 走吧，我还想快点下班呢。
+// //输入其他密码
+// 没辙了，要不试试自己的生日？
+
+
+// 如果没有输入过正确的密码
+<<if !$Loop1RightPassw>>
+    <<if $Loop1HasFile>>
+        说不定输入我的生日日期1030就可以启动了。
+    <<endif>>
+    // 调起输入密码的UI
+    <<OpenPasswordPanelWithLoop LevelLoop 1>>
+    <<WaitForPasswordResult LevelLoop>>
+    <<if !$Loop1RightPassw>>
+        <<if $Loop1HasFile>>
+            没辙了，要不试试自己的生日？
+        <<endif>>
+        <<stop>>
+    <<endif>>
+<<endif>>
+
+// 如果没有投入过文件
+<<if !$Loop1HasSendFile>>
+    看起来还需要投入文件
+    <<if $Loop1HasFile>>
+        -> 投入文件
+            还真是我的生日，真是不知道人事部的人在想什么。
+            【右侧的门传来锁芯转动的声音。】
+            走吧，我还想快点下班呢。
+            <<ScreenShift LevelLoop 1 2>>
+            <<set $Loop1ScreenState to 3>> 
+            <<set $Loop1HasSendFile to true>>
+            <<stop>>
+        -> 离开
+            <<stop>>
+    <<else>>
+        -> 离开
+            <<stop>>
+    <<endif>>
+<<endif>>
+
 走吧，我还想快点下班呢。
-//输入其他密码
-没辙了，要不试试自己的生日？
+
 ===
 
 //-------循环2----------------------------------------------------------
-title: Loop2screen
+title: Setup2
 ---
-//眼睛状态
-    //第一次互动：
-    {$mainName}：你好，我想请问一下这个测试是有多久啊？
-    //第2次互动：
-    它好像也没麦克风可以跟我对话。
-    //第n次互动：
-    ……
-//互动文件投送口后输入密码5115：笑脸状态
-……
+//screen = 眼睛显示屏(美术资产变化-1:雪花，2：眼睛，3：笑脸，4：息屏)
+//filebox = 拿取任务道具的文件夹
+//water = 饮水机（1：模糊不清，2：有文件，3：解体）
+//window = 窗户（1：没人，2：有人有密码）
+//doorA = 场景中间的门
+//door = 进入下一个循环的门
+//password = 文件投送口，放任务道具和输密码的地方。
+
+// Loop2
+<<declare $Loop2ScreenState = 2>> // 屏幕状态
+<<declare $Loop2HasInteractWithFileBox = false>>  // 是否和文件夹对话过
+<<declare $Loop2WaterFountainBreak = false>>  // 水桶是否分开
+<<declare $Loop2HasFile = false>> // 获取了文件
+<<declare $Loop2RightPassw = false>> // 密码正确
+<<declare $Loop2HasSendFile = false>> // 投送了文件
+<<declare $Loop2ScreenInteractionTime = 0>> // 查看屏幕的次数
+<<declare $Loop2WindowInteractionTime = 0>> // 查看窗户的次数
+
 ===
-title: Loop2filebox
+title: Loop2Screen
 ---
-【获得一份封口文件袋和一张广告宣传册。】
-//弹出《高科技公司宣传册》
-400-010-5115.
-以后填路边的问卷我就写这个号码。
-//互动过一次文件夹之后，再次互动文件夹
-怎么样都不可能凭空生出来一份新的文件吧。
+<<set $Loop2ScreenInteractionTime to $Loop2ScreenInteractionTime + 1>>
+<<if $Loop2ScreenState == 2>>
+    //眼睛状态
+    <<if $Loop2ScreenInteractionTime == 1>>
+        {$mainName}：你好，我想请问一下这个测试是有多久啊？
+    <<elseif $Loop2ScreenInteractionTime == 2>>
+        它好像也没麦克风可以跟我对话。
+    <<else>>
+        ……
+    <<endif>>
+<<elseif $Loop2ScreenState == 3>>
+    //笑脸状态
+    这个笑脸看起来有点熟悉。
+<<endif>>
 ===
-title: Loop2water
+title: Loop2Filebox
+---
+<<if !$Loop2HasInteractWithFileBox>>
+    【获得一份封口文件袋和一张广告宣传册。】
+    <<animator_play_and_wait Loop2 "DocumentPop">>
+    <<set $Loop2HasInteractWithFileBox to true>>
+    <<set $Loop2HasFile to true>>
+    //弹出《高科技公司宣传册》
+    400-010-5115.
+    以后填路边的问卷我就写这个号码。
+    <<animator_play_and_wait Loop2 "DocumentExit">>
+<<else>>
+    //互动过一次文件夹之后，再次互动文件夹
+    怎么样都不可能凭空生出来一份新的文件吧。
+<<endif>>
+===
+title: Loop2Water
 ---
 现在想喝水也喝不了了。
 ===
-title: Loop2window
+title: Loop2Window
 ---
 什么也没有。
 ===
-title: Loop2doorA
+title: Loop2DoorA
 ---
 还是锁上了。
 ===
-title: Loop2door
+title: Loop2Door
 ---
 //没有互动文件投送口输入密码5115
-上锁了。
-//输入密码1030
-【是否选择离开？】
--> 是
-    *进入循环3
--> 否
-    *返回
+<<if !$Loop2RightPassw>>
+    上锁了。
+//输入密码5115
+<<else>>
+    【是否选择离开？】
+    -> 是
+        <<OpenDoorOfLoop LevelLoop 2>>  //*进入循环3
+    -> 否
+        <<stop>>//*返回
+<<endif>>
 ===
-title: Loop2password
+title: Loop2Password
 ---
-//互动文件夹
-那份广告唯一出现的数字是那串电话号码。
-400-010-5115，密码会是这个吗？
-//此时弹出输入密码的互动和画面
-//输入5115密码
-//进入自由状态
-【右侧的门传来锁芯转动的声音。】
-……
-//输入其他密码
-再试试其他的？
-===
+// 如果没有输入过正确的密码
+<<if !$Loop2RightPassw>>
+    <<if $Loop2HasFile>>
+        那份广告唯一出现的数字是那串电话号码。
+        400-010-5115，密码会是这个吗？
+    <<endif>>
+    // 调起输入密码的UI
+    <<OpenPasswordPanelWithLoop LevelLoop 2>>
+    <<WaitForPasswordResult LevelLoop>>
+    <<if !$Loop2RightPassw>>
+        <<if $Loop2HasFile>>
+            再试试其他的？
+        <<endif>>
+        <<stop>>
+    <<endif>>
+<<endif>>
 
+// 如果没有投入过文件
+<<if !$Loop2HasSendFile>>
+    看起来还需要投入文件
+    <<if $Loop2HasFile>>
+        -> 投入文件
+            【右侧的门传来锁芯转动的声音。】
+            <<ScreenShift LevelLoop 2 2>>
+            <<set $Loop2ScreenState to 3>> 
+            <<set $Loop2HasSendFile to true>>
+            <<stop>>
+        -> 离开
+            <<stop>>
+    <<else>>
+        -> 离开
+            <<stop>>
+    <<endif>>
+<<endif>>
+
+文件已经放进去了。
+===
 //-------循环3----------------------------------------------------------
-title: Loop3screen
+title: Setup3
 ---
-//眼睛状态
-……
-//互动文件投送口后输入密码1467：笑脸状态
-……
+//screen = 眼睛显示屏(美术资产变化-1:雪花，2：眼睛，3：笑脸，4：息屏)
+//filebox = 拿取任务道具的文件夹
+//water = 饮水机（1：模糊不清，2：有文件，3：解体）
+//window = 窗户（1：没人，2：有人有密码）
+//doorA = 场景中间的门
+//door = 进入下一个循环的门
+//password = 文件投送口，放任务道具和输密码的地方。
+
+// Loop3
+<<declare $Loop3ScreenState = 2>> // 屏幕状态
+<<declare $Loop3HasInteractWithFileBox = false>>  // 是否和文件夹对话过
+<<declare $Loop3HasFile = false>> // 获取了文件
+<<declare $Loop3RightPassw = false>> // 密码正确
+<<declare $Loop3HasSendFile = false>> // 投送了文件
+<<declare $Loop3ScreenInteractionTime = 0>> // 查看屏幕的次数
+<<declare $Loop3WindowInteractionTime = 0>> // 查看窗户的次数
+
 ===
-title: Loop3filebox
+title: Loop3Screen
 ---
-【获得一份封口文件袋。】
-//互动过一次文件夹之后，再次互动文件夹
-    //第1次
+......
+===
+title: Loop3Filebox
+---
+<<if !$Loop3HasInteractWithFileBox>>
+    <<set $Loop3HasInteractWithFileBox to true>>
     我是笨蛋吗？
-    //第n次
+    <<set $Loop3HasFile to true>>
+<<else>>
     ……    
+<<endif>>
 ===
-title: Loop3water
+title: Loop3Water
 ---
 望桶止渴
 ===
-title: Loop3window
+title: Loop3Window
 ---
+<<set $Loop3WindowInteractionTime to $Loop3WindowInteractionTime + 1>>
 //第1次
-【窗上印着奇怪的符号】
-这是什么？看起来是从窗外涂的。
+<<if $Loop3WindowInteractionTime == 1>>
+    【窗上印着奇怪的符号】
+    这是什么？看起来是从窗外涂的。
+    <<WindowShift LevelLoop 3 1>>
 //第2次
-总感觉有人在窗外盯着我。
+<<else>>
+    总感觉有人在窗外盯着我。
+<<endif>>
 ===
-title: Loop3doorA
+title: Loop3DoorA
 ---
 还是锁上了。
 ===
-title: Loop3door
+title: Loop3Door
 ---
 //没有互动文件投送口输入密码1467
-锁上了。
+<<if !$Loop3HasSendFile>>
+    锁上了。
 //输入密码1467
-【是否选择离开？】
--> 是
-    *进入循环4
--> 否
-    *返回
+<<else>>
+    【是否选择离开？】
+    -> 是
+        <<OpenDoorOfLoop LevelLoop 3>>  //*进入循环4
+    -> 否
+        <<stop>>//*返回
+<<endif>>
 ===
-title: Loop3password
+title: Loop3Password
 ---
-//互动文件夹
-//此时弹出输入密码的互动和画面
-//输入1467密码
-//进入自由状态
-【右侧的门传来锁芯转动的声音。】
-//输入其他密码
+// 如果没有输入过正确的密码
+<<if !$Loop3RightPassw>>
+
+    // 调起输入密码的UI
+    <<OpenPasswordPanelWithLoop LevelLoop 3>>
+    <<WaitForPasswordResult LevelLoop>>
+    <<if !$Loop3RightPassw>>
+        <<stop>>
+    <<endif>>
+<<endif>>
+
+// 如果没有投入过文件
+<<if !$Loop3HasSendFile>>
+    看起来还需要投入文件
+    <<if $Loop3HasFile>>
+        -> 投入文件
+            【右侧的门传来锁芯转动的声音。】
+            <<ScreenShift LevelLoop 3 2>>
+            <<set $Loop3ScreenState to 3>> 
+            <<set $Loop3HasSendFile to true>>
+            <<stop>>
+        -> 离开
+            <<stop>>
+    <<else>>
+        -> 离开
+            <<stop>>
+    <<endif>>
+<<endif>>
+
+文件已经放进去了。
 ===
 //-------循环4----------------------------------------------------------
-title: Loop4screen
+title: Setup4
 ---
-//眼睛状态
-……
-//互动文件投送口后输入密码2442：笑脸状态
+//screen = 眼睛显示屏(美术资产变化-1:雪花，2：眼睛，3：笑脸，4：息屏)
+//filebox = 拿取任务道具的文件夹
+//water = 饮水机（1：模糊不清，2：有文件，3：解体）
+//window = 窗户（1：没人，2：有人有密码）
+//doorA = 场景中间的门
+//door = 进入下一个循环的门
+//password = 文件投送口，放任务道具和输密码的地方。
+
+// Loop4
+<<declare $Loop4ScreenState = 2>> // 屏幕状态
+<<declare $Loop4HasInteractWithFileBox = false>>  // 是否和文件夹对话过
+<<declare $Loop4HasFile = false>> // 获取了文件
+<<declare $Loop4RightPassw = false>> // 密码正确
+<<declare $Loop4HasSendFile = false>> // 投送了文件
+<<declare $Loop4ScreenInteractionTime = 0>> // 查看屏幕的次数
+<<declare $Loop4WindowInteractionTime = 0>> // 查看窗户的次数
+<<declare $Loop4HasOpenDoorA = false>> // 是否打开了doora
+===
+title: Loop4Screen
+---
+......
+===
+title: Loop4Filebox
+---
+<<if !$Loop4HasInteractWithFileBox>>
+    【获得一份封口文件袋。】
+    <<set $Loop4HasInteractWithFileBox to true>>
+<<else>>
+    //互动过一次文件夹之后，再次互动文件夹
+    ……    
+<<endif>>
+===
+title: Loop4Water
+---
 ……
 ===
-title: Loop4filebox
----
-【获得一份封口文件袋。】
-//互动过一次文件夹之后，再次互动文件夹
-……    
-===
-title: Loop4water
----
-……
-===
-title: Loop4window
+title: Loop4Window
 ---
 【窗外漆黑一片】
 ===
-title: Loop4doorA
+title: Loop4DoorA
 ---
-【是否要打开门？】
--> 是
-    【门依旧打不开】
-    {$mainName}：“喂，外面的能听到吗？”
-    ……
-    {$mainName}：“我这边门锁上了打不开，能帮帮忙嘛？”
-    【门外没有任何回应，敲门声也随即停止。】
-    门外的人是在帮我开门吗？从猫眼看下他在做什么。//弹出猫眼动画
-    ！！
-    【底下门缝传进一份拆封的工作信件。】
-    搞什么，也不用这么吓人的方式给我吧。//弹出房地产公司与高科技公司合同
-    //退出阅读
-    我们公司什么时候有钱跟高科技公司合作了。
-    什么智能系统？不会是因为这件事情准备裁员了吧。//返回自由状态
--> 否
-    *返回
+<<if !$Loop4HasOpenDoorA>>
+    门外好像有些动静...
+    【是否要打开门？】
+    -> 是
+        <<set $Loop4HasOpenDoorA to true>>
+        【门依旧打不开】
+        {$mainName}：“喂，外面的能听到吗？”
+        ……
+        {$mainName}：“我这边门锁上了打不开，能帮帮忙嘛？”
+        【门外没有任何回应，敲门声也随即停止。】
+        门外的人是在帮我开门吗？从猫眼看下他在做什么。//弹出猫眼动画
+        ！！
+        【底下门缝传进一份拆封的工作信件。】
+        <<animator_play_and_wait Loop4 "DocumentPop">>
+        <<set $Loop4HasFile to true>>
+        搞什么，也不用这么吓人的方式给我吧。//弹出房地产公司与高科技公司合同
+        <<animator_play_and_wait Loop4 "DocumentExit">>
+        //退出阅读
+        我们公司什么时候有钱跟高科技公司合作了。
+        什么智能系统？不会是因为这件事情准备裁员了吧。//返回自由状态
+    -> 否
+        <<stop>>
+<<else>>
+    【再看一眼合同？】
+    -> 是 
+        <<animator_play_and_wait Loop4 "DocumentPop">>
+        我们公司什么时候有钱跟高科技公司合作了。
+        <<animator_play_and_wait Loop4 "DocumentExit">>
+    -> 否
+        <<stop>>
+<<endif>>
+
 ===
-title: Loop4door
+title: Loop4Door
 ---
-//没有互动文件投送口输入密码2242
-锁上了。
-//输入密码2242
-【是否选择离开？】
--> 是
-    *进入循环5
--> 否
-    *返回
+//没有互动文件投送口输入密码2442
+<<if !$Loop4HasSendFile>>
+    锁上了。
+//输入密码2442
+<<else>>
+    【是否选择离开？】
+    -> 是
+        <<OpenDoorOfLoop LevelLoop 4>>  //*进入循环5
+    -> 否
+        <<stop>>//*返回
+<<endif>>
 ===
-title: Loop4password
+title: Loop4Password
 ---
-//互动文件夹
-//此时弹出输入密码的互动和画面
-//输入2242密码
-//进入自由状态
-【右侧的门传来锁芯转动的声音。】
-//输入其他密码
+// 如果没有输入过正确的密码
+<<if !$Loop4RightPassw>>
+    // 调起输入密码的UI
+    <<OpenPasswordPanelWithLoop LevelLoop 4>>
+    <<WaitForPasswordResult LevelLoop>>
+    <<if !$Loop4RightPassw>>
+        <<stop>>
+    <<endif>>
+<<endif>>
+
+// 如果没有投入过文件
+<<if !$Loop4HasSendFile>>
+    看起来还需要投入文件
+    <<if $Loop4HasFile>>
+        -> 投入文件
+            【右侧的门传来锁芯转动的声音。】
+            <<ScreenShift LevelLoop 4 2>>
+            <<set $Loop4ScreenState to 3>> 
+            <<set $Loop4HasSendFile to true>>
+            <<stop>>
+        -> 离开
+            <<stop>>
+    <<else>>
+        -> 离开
+            <<stop>>
+    <<endif>>
+<<endif>>
+
+文件已经放进去了。
 ===
 //-------循环5----------------------------------------------------------
-title: Loop5screen
+title: Setup5
 ---
-//息屏状态
-{$mainName}：“快醒醒，我还在上班呢。”
-【你拍了拍屏幕，没有任何反应】//后面再互动也是这行话
+//screen = 眼睛显示屏(美术资产变化-1:雪花，2：眼睛，3：笑脸，4：息屏)
+//filebox = 拿取任务道具的文件夹
+//water = 饮水机（1：模糊不清，2：有文件，3：解体）
+//window = 窗户（1：没人，2：有人有密码）
+//doorA = 场景中间的门
+//door = 进入下一个循环的门
+//password = 文件投送口，放任务道具和输密码的地方。
+
+// Loop5
+<<declare $Loop5ScreenState = 4>> // 屏幕状态（息屏）
+<<declare $Loop5HasInteractWithFileBox = false>>  // 是否和文件夹对话过
+<<declare $Loop5HasFile = false>> // 获取了文件
+<<declare $Loop5RightPassw = false>> // 密码正确
+<<declare $Loop5HasSendFile = false>> // 投送了文件
+<<declare $Loop5ScreenInteractionTime = 0>> // 查看屏幕的次数
+<<declare $Loop5WindowInteractionTime = 0>> // 查看窗户的次数
+
 ===
-title: Loop5filebox
+
+title: Loop5Screen
 ---
-怎么是空的？
-//互动过一次文件夹之后，再次互动文件夹
-……    
+<<set $Loop5ScreenInteractionTime to $Loop5ScreenInteractionTime + 1>>
+<<if $Loop5ScreenInteractionTime == 1>>
+    //息屏状态
+    {$mainName}："快醒醒，我还在上班呢。"
+    【你拍了拍屏幕，没有任何反应】//后面再互动也是这行话
+<<else>>
+    【你拍了拍屏幕，没有任何反应】//后面再互动也是这行话
+<<endif>>
 ===
-title: Loop5water
+title: Loop5Filebox
+---
+<<if !$Loop5HasInteractWithFileBox>>
+    怎么是空的？
+    <<set $Loop5HasInteractWithFileBox to true>>
+<<else>>
+    //互动过一次文件夹之后，再次互动文件夹
+    ……    
+<<endif>>
+===
+title: Loop5Water
 ---
 ……
 ===
-title: Loop5window
+title: Loop5Window
 ---
 ……
 ===
-title: Loop5doorA
+title: Loop5DoorA
 ---
 【是否要打开门？】
 -> 芝麻开门
     【门奇迹般地开了。】//进入循环？
+    <<LoopEnd LevelLoop>>
+    <<stop>>
 -> 否
-    *返回
+    <<stop>>//*返回
 ===
-title: Loop5door
+title: Loop5Door
 ---
 锁上了。
 ===
-title: Loop5password
+title: Loop5Password
 ---
 ……
 ===
