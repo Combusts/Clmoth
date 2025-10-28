@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class UIManager : MonoBehaviour
 
     // 根节点
     [SerializeField] public GameObject uiRoot;
+
+    [SerializeField] private Image fadeImage;
 
     void Awake()
     {
@@ -38,6 +41,7 @@ public class UIManager : MonoBehaviour
         uiPathDic["CinematicBars"] = "Prefabs/UI/UICinematicBars";
         uiPathDic["MiniGameWin"] = "Prefabs/UI/UIGameWin";
         uiPathDic["MiniGameOver"] = "Prefabs/UI/UIGameOver";
+        uiPathDic["Password"] = "Prefabs/UI/UIPassword";
 
 
     }
@@ -110,5 +114,73 @@ public class UIManager : MonoBehaviour
     {
         if (openPanels.Count == 0) return false;
         return openPanels[openPanels.Count - 1].gameObject.name == uiName;
+    }
+
+    public bool IsUIOpen(string uiName)
+    {
+        if(uiDic.ContainsKey(uiName))
+        {
+            return openPanels.Contains(uiDic[uiName]);
+        }
+        return false;
+    }
+
+    public PanelBase GetPanelByName(string uiName)
+    {
+        if (uiDic.ContainsKey(uiName))
+        {
+            return uiDic[uiName];
+        }
+        Debug.LogError($"[UIManager] 没有找到对应UI:{uiName}");
+        return null;
+    }
+
+    public void DoInDark(Action action, float fadeDuration = 0.5f, float fadeTransTime = 0.5f)
+    {
+        StartCoroutine(DoInDarkCoroutine(action, fadeTransTime, fadeDuration));
+    }
+
+    System.Collections.IEnumerator DoInDarkCoroutine(Action action, float fadeTransTime, float fadeDuration)
+    {
+        yield return StartCoroutine(FadeToBlack(fadeTransTime));
+        action?.Invoke();
+        yield return new WaitForSeconds(fadeDuration);
+        yield return StartCoroutine(FadeFromBlack(fadeTransTime));
+    }
+
+    private System.Collections.IEnumerator FadeToBlack(float fadeTransTime)
+    {
+        fadeImage.gameObject.SetActive(true);
+        float elapsedTime = 0f;
+        Color color = fadeImage.color;
+
+        while (elapsedTime < fadeTransTime)
+        {
+            elapsedTime += Time.deltaTime;
+            color.a = Mathf.Clamp01(elapsedTime / fadeTransTime);
+            fadeImage.color = color;
+            yield return null;
+        }
+
+        color.a = 1f;
+        fadeImage.color = color;
+    }
+
+    private System.Collections.IEnumerator FadeFromBlack(float fadeTransTime)
+    {
+        float elapsedTime = 0f;
+        Color color = fadeImage.color;
+
+        while (elapsedTime < fadeTransTime)
+        {
+            elapsedTime += Time.deltaTime;
+            color.a = 1f - Mathf.Clamp01(elapsedTime / fadeTransTime);
+            fadeImage.color = color;
+            yield return null;
+        }
+
+        color.a = 0f;
+        fadeImage.color = color;
+        fadeImage.gameObject.SetActive(false);
     }
 }

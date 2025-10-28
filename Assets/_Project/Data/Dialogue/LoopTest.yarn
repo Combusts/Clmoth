@@ -1,0 +1,152 @@
+﻿
+
+title: Door
+---
+这个门被锁住了
+===
+
+// title: Setup2
+// ---
+// <<declare $Loop0RightPassw = false>>
+// <<declare $Loop0HasSendFile = false>>
+// <<declare $Loop0HasFile = false>>
+
+// <<declare $Loop1RightPassw = false>>
+// <<declare $Loop1HasSendFile = false>>
+// <<declare $Loop1HasFile = false>>
+// ===
+
+title: Loop0FileSender
+---
+
+// 如果没有输入过正确的密码
+<<if !$Loop0RightPassw>>
+    看起来需要输入密码
+    // 调起输入密码的UI
+    <<OpenPasswordPanelWithLoop LevelLoop 0>>
+    <<stop>>
+<<endif>>
+
+// 如果没有投入过文件
+<<if !$Loop0HasSendFile>>
+    看起来需要投入文件
+    <<if $Loop0HasFile>>
+        -> 投入文件
+            你注意到右边的门发出了响声，也许应该去看看什么个事。
+            <<ScreenShift LevelLoop 0 2>>
+            <<set $Loop0HasSendFile to true>>
+        -> 离开
+            <<stop>>
+    <<else>>
+        -> 离开
+            <<stop>>
+    <<endif>>
+<<endif>>
+
+也许应该去右边看看什么个事。
+===
+
+title: Loop0File
+---
+<<if !$Loop0HasFile>>
+    有个文件
+    -> 拿起
+        <<animator_play_and_wait Loop0 "DocumentPop">>
+        获得了文件*1
+        <<animator_play_and_wait Loop0 "DocumentExit">>
+        <<ScreenShift LevelLoop 0 3>>
+        <<set $Loop0HasFile to true>>
+    -> 离开
+        <<stop>>
+<<endif>>
+
+没有什么值得注意了
+
+===
+
+title: Loop0NextLoopDoor
+---
+<<if !$Loop0HasSendFile>>
+这个门看起来是被锁上了，但对面隐约可以看到光亮
+-> 离开
+    <<stop>>
+<<endif>>
+
+开锁了！
+-> 开门
+    <<OpenDoorOfLoop LevelLoop 0>>
+
+===
+
+title: Loop1FileSender
+---
+<<if !$Loop1RightPassw>>
+    看起来需要输入密码
+    // 调起输入密码的UI
+    <<OpenPasswordPanelWithLoop LevelLoop 1>>
+    <<stop>>
+<<endif>>
+
+<<if !$Loop1HasSendFile>>
+    看起来需要投入文件
+    <<if $Loop1HasFile>>
+        -> 投入文件
+            <<set $Loop1HasSendFile to true>>
+        -> 离开
+            <<stop>>
+    <<else>>
+        -> 离开
+            <<stop>>
+    <<endif>>
+<<endif>>
+
+你注意到右边的门发出了响声，也许应该去看看什么个事。
+===
+
+title: Loop1File
+---
+<<if !$Loop1HasFile>>
+    有个文件
+    -> 拿起
+        <<animator_play_and_wait Loop1 "DocumentPop">>
+        获得了文件*1
+        <<animator_play_and_wait Loop1 "DocumentExit">>
+        <<set $Loop1HasFile to true>>
+    -> 离开
+        <<stop>>
+<<endif>>
+
+没有什么值得注意了
+
+===
+
+title: Loop1NextLoopDoor
+---
+<<if !$Loop1HasSendFile>>
+这个门看起来是被锁上了，但对面隐约可以看到光亮
+-> 离开
+    <<stop>>
+<<endif>>
+
+开锁了！
+-> 开门
+    <<OpenDoorOfLoop LevelLoop 1>>
+
+===
+
+
+title: Loop1WaterFountain
+---
+饮水机的出水口被打开了，水一直往外流
+-> 关闭出水口
+    你注意到里面好有什么东西
+    -> 试着取下水桶
+        // 黑屏加载，将饮水机切换到分离状态
+        <<WaterFountainChange LevelLoop>>
+        <<stop>>
+    -> 多半是些脏东西，开溜
+        <<stop>>
+-> 爱咋地咋地
+    <<stop>>
+
+===
