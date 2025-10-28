@@ -1,26 +1,32 @@
 ﻿title: chase
+position: -147,-50
 ---
-主角：“泰勒……你怎么在这里？”
-泰勒：“哦，是克络斯啊。金总不是叫你过去吗？”
-泰勒：“不会他办公室在哪你都忘记了吧。”
-泰勒：“从那扇门走过去就是了。”
-主角：“可是我刚从那边做完评估测试出来。”
-主角：“这到底是什么地方？”
-泰勒：“哈哈……你在这胡言乱语什么呢。”
-主角：“我是认真的！你是不是知道什么事情。”
-泰勒：“克络斯，你压力太大了。回到你的工位上去，Task.ReturnToStation.完成你的工作while(employed){work();}if(dissidence){ enforceCompliance(); }​
-主角：“泰勒，你在说什么？”
-泰勒：ERROR: UNRECOGNIZED INPUT.SpeechInput.Disable();//禁用语音输入
-主角：“……”
-泰勒：Navigation.ForceReturn("Main_Office");//强制回办公室，场景开始崩塌
-泰勒：WorkTask.Assign("Urgent_Report"); WorkTask.Execute();//启动任务
-泰勒：While (Task.IsComplete == false) { Loop(); }//启动循环
-泰勒：ERROR: TASK_COMPLETION = FALSE//报错
-泰勒：System.Reboot(true); true = FORCE_IMMEDIATE//系统重启
+主角:“泰勒……你怎么在这里？”
+泰勒:“哦，是克络斯啊。金总不是叫你过去吗？”
+泰勒:“不会他办公室在哪你都忘记了吧。”
+泰勒:“从那扇门走过去就是了。”
+主角:“可是我刚从那边做完评估测试出来。”
+主角:“这到底是什么地方？”
+泰勒:“哈哈……你在这胡言乱语什么呢。”
+主角:“我是认真的！你是不是知道什么事情。”
+泰勒:“克络斯，你压力太大了。回到你的工位上去，Task.ReturnToStation.完成你的工作while(employed)\{work();\}if(dissidence)\{ enforceCompliance(); \}
+主角:“泰勒，你在说什么？”
+泰勒:ERROR: UNRECOGNIZED INPUT.SpeechInput.Disable(); //禁用语音输入
+主角:“……”
+泰勒:Navigation.ForceReturn("Main_Office"); //强制回办公室，场景开始崩塌
+泰勒:WorkTask.Assign("Urgent_Report"); WorkTask.Execute(); //启动任务
+泰勒:While (Task.IsComplete == false) \{ Loop(); \} //启动循环
+泰勒:ERROR: TASK_COMPLETION = FALSE//报错
+泰勒:System.Reboot(true); true = FORCE_IMMEDIATE//系统重启
+<<jump escape>>
+===
+title: escape
+position: 192,141
+---
 //开始追逐​ 
-自白：快点离开这里！
+自白:快点离开这里！
 //追逐动画，主角从循环场景到窗户场景再到走廊（带门）场景，门旁边站着新人
-自白：呼……我现在是安全了吗？
+自白:呼……我现在是安全了吗？
 {$newName}: “克络斯……”
 //此时动画直接让主角走到新人旁边继续对话。
 {$newName}: “克络斯前辈，你还好吗？跑这么急，是金总又在催了吗？”
@@ -30,8 +36,8 @@
 {$newName}: “难道前辈你又做噩梦了吗？”
 {$newName}: “你梦到了什么？是不是……一条永远走不到尽头的走廊？一个不断给你下达做不完的荒谬任务的显示器。”
 {$mainName}: “你怎么会知道这些？！”
-自白：自从看过墨森的档案之后，接连发生这些奇怪的事情。
-自白：他一定和这些无法解释的事情脱不了关系！
+自白:自从看过墨森的档案之后，接连发生这些奇怪的事情。
+自白:他一定和这些无法解释的事情脱不了关系！
 -> 你到底是谁？这里发生的事情都是你造成的吗？
     {$newName}: “前辈，我和你一样呀，是一位普普通通在房地产工作的员工。”
 -> 你真的是三岁吗？
@@ -53,17 +59,17 @@
 {$newName}:“看起来你还需要亲眼看看。”
 Environment.RenderMode = Wireframe;//切换场景到什么都没有的背景图
 {$newName}:“只需要简单地按几个键，输入代码就能去到任何一个地方。”
-​{$newName}:​​ Scene.Load("Office_Standard");//场景回到初始办公室
-{$newName}:​​ “假装今天什么也没发生，你可以继续作为‘普通人’生活。”
-​​{$newName}:​​ “选择权在你手里，克络斯。”
-​​{$newName}:​​ Actor.Despawn(self);// 新人的身影彻底消失
-​​{$newName}:​​ “想想看，你真正需要的是什么？”
+{$newName}:Scene.Load("Office_Standard");//场景回到初始办公室
+{$newName}:“假装今天什么也没发生，你可以继续作为‘普通人’生活。”
+{$newName}:“选择权在你手里，克络斯。”
+{$newName}:Actor.Despawn(self);// 新人的身影彻底消失
+{$newName}:“想想看，你真正需要的是什么？”
 -> 一份安稳的工作
     System.Restore//主角又回到正常的工作情景
     //动画操控主角从办公室门的位置走向自己的办公桌开始游戏
-    自白：太好了，金总跟我说评估测试通过了！
-    自白：可以继续在这里工作，真好啊。
-    自白：继续
+    自白:太好了，金总跟我说评估测试通过了！
+    自白:可以继续在这里工作，真好啊。
+    自白:继续
 -> ？？？
     System.Override
     WARNING: Unauthorized access detected.
