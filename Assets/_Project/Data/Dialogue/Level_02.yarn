@@ -809,7 +809,7 @@ title: Loop5DoorA
 -> 芝麻开门
     【门奇迹般地开了。】//进入循环？
     <<LoopEnd LevelLoop>>
-    <<stop>>
+    <<ToLevel GameManager "FinalLoop">>
 -> 否
     <<stop>>//*返回
 ===
