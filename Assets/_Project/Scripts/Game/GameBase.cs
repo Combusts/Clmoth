@@ -86,18 +86,18 @@ public class GameBase : MonoBehaviour
         Debug.Log("enemyCount: " + enemyCount);
         if (enemyCount == 0)
         {
-            Debug.Log("GameWin");
+            Debug.Log("[MiniGame]GameWin");
             UIManager.Instance.HideAllUI();
-            UIManager.Instance.ShowUI("GameWin");
+            UIManager.Instance.ShowUI("MiniGameWin");
             Time.timeScale = 0;
         }
     }
 
     public void GameOver()
     {
-        Debug.Log("GameOver");
+        Debug.Log("[MiniGame]GameOver");
         UIManager.Instance.HideAllUI();
-        UIManager.Instance.ShowUI("GameOver");
+        UIManager.Instance.ShowUI("MiniGameOver");
         Time.timeScale = 0;
     }
 

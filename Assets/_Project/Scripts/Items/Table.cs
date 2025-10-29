@@ -7,8 +7,27 @@ public class Table : IInteractive
     public override void Interact()
     {
         Debug.Log("Interact table");
-        CanInteract = false; // 交互后禁用再次交互
-        // HideHint(); // 移除多余的HideHint调用，Player.Interact()已经调用了
-        YarnSpinnerManager.Instance.StartDialogue(dialogueNode);
+        
+        // 启动对话
+        if (!string.IsNullOrEmpty(dialogueNode))
+        {
+            YarnSpinnerManager.Instance.StartDialogue(dialogueNode);
+        }
+        else
+        {
+            Debug.LogWarning("Table has no dialogue node assigned!");
+        }
+    }
+    
+    protected override void Start()
+    {
+        // 设置关联的对话节点
+        if (!string.IsNullOrEmpty(dialogueNode))
+        {
+            SetLinkedDialogueNode(dialogueNode);
+        }
+        
+        // 调用基类的存档状态检查
+        base.Start();
     }
 }

@@ -12,19 +12,23 @@ public class YarnSpinnerManager : MonoBehaviour
     [SerializeField] private DialogueRunner dialogueRunner;
     
     [Header("Scene Configuration")]
-    [SerializeField] private List<SceneDialogueConfig> sceneConfigs = new List<SceneDialogueConfig>();
+    [SerializeField] private List<SceneDialogueConfig> sceneConfigs = new();
     
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
+
+    [Header("Illustration")]
+    [SerializeField] private GameObject illustrationPanel;
     
-    private Dictionary<string, List<string>> sceneToNodesMap = new Dictionary<string, List<string>>();
+    private readonly Dictionary<string, List<string>> sceneToNodesMap = new();
     private bool isDialogueActive = false;
+    private string currentDialogueNode = "";
     
     [System.Serializable]
     public class SceneDialogueConfig
     {
         public string sceneName;
-        public List<string> nodeNames = new List<string>();
+        public List<string> nodeNames = new();
     }
     
     void Awake()
@@ -63,6 +67,10 @@ public class YarnSpinnerManager : MonoBehaviour
         
         // Load nodes for current scene
         LoadNodesForCurrentScene();
+
+        // Create IllustrationPanel in don't destroy on load
+        illustrationPanel = Instantiate(Resources.Load<GameObject>("Prefabs/UI/InGame/IllustrationPanel"), transform);
+        illustrationPanel.name = "IllustrationPanel";
     }
     
     void OnDestroy()
@@ -133,6 +141,8 @@ public class YarnSpinnerManager : MonoBehaviour
         {
             dialogueRunner.onDialogueStart.AddListener(OnDialogueStart);
             dialogueRunner.onDialogueComplete.AddListener(OnDialogueComplete);
+            dialogueRunner.onNodeStart.AddListener(OnNodeStart);
+            dialogueRunner.onNodeComplete.AddListener(OnNodeComplete);
         }
     }
     
@@ -142,6 +152,8 @@ public class YarnSpinnerManager : MonoBehaviour
         {
             dialogueRunner.onDialogueStart.RemoveListener(OnDialogueStart);
             dialogueRunner.onDialogueComplete.RemoveListener(OnDialogueComplete);
+            dialogueRunner.onNodeStart.RemoveListener(OnNodeStart);
+            dialogueRunner.onNodeComplete.RemoveListener(OnNodeComplete);
         }
     }
     
@@ -167,6 +179,133 @@ public class YarnSpinnerManager : MonoBehaviour
         {
             PlayerInputManager.Instance.EnableGameplayInput();
         }
+        
+        // 保存当前对话节点为已完成
+        if (!string.IsNullOrEmpty(currentDialogueNode))
+        {
+            // 检查SaveManager是否可用
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.AddCompletedDialogueNode(currentDialogueNode);
+                LogDebug($"Marked dialogue node '{currentDialogueNode}' as completed");
+            }
+            else
+            {
+                LogError("SaveManager.Instance is null! Cannot save dialogue completion. Make sure SaveManager exists in the scene.");
+            }
+            
+            // 通知所有交互物体对话已完成
+            NotifyInteractiveObjects(currentDialogueNode);
+        }
+        
+        // 清空当前对话节点
+        currentDialogueNode = "";
+    }
+    
+    private void OnNodeStart(string nodeName)
+    {
+        currentDialogueNode = nodeName;
+        LogDebug($"Dialogue node started: {nodeName}");
+    }
+    
+    private void OnNodeComplete(string nodeName)
+    {
+        LogDebug($"Dialogue node completed: {nodeName}");
+        // 注意：这里不直接保存，而是在整个对话完成时保存
+        // 这样可以避免在对话中间保存不完整的状态
+    }
+    
+    /// <summary>
+    /// 通知所有交互物体对话已完成
+    /// </summary>
+    /// <param name="completedNodeName">完成的对话节点名称</param>
+    private void NotifyInteractiveObjects(string completedNodeName)
+    {
+        // 查找场景中所有的交互物体
+        IInteractive[] interactiveObjects = FindObjectsOfType<IInteractive>();
+        
+        LogDebug($"Notifying {interactiveObjects.Length} interactive objects about completed dialogue: {completedNodeName}");
+        
+        foreach (IInteractive interactiveObject in interactiveObjects)
+        {
+            if (interactiveObject != null)
+            {
+                interactiveObject.OnDialogueCompleted(completedNodeName);
+            }
+        }
+        
+        // 对话完成后，保存所有交互物体的当前状态
+        SaveAllInteractiveObjectsState();
+    }
+    
+    /// <summary>
+    /// 保存所有交互物体的当前状态
+    /// </summary>
+    private void SaveAllInteractiveObjectsState()
+    {
+        if (SaveManager.Instance == null) return;
+        
+        // 查找场景中所有的交互物体
+        IInteractive[] interactiveObjects = FindObjectsOfType<IInteractive>();
+        
+        LogDebug($"Saving state for {interactiveObjects.Length} interactive objects");
+        
+        foreach (IInteractive interactiveObject in interactiveObjects)
+        {
+            if (interactiveObject != null)
+            {
+                string interactiveID = interactiveObject.GetInteractiveID();
+                if (!string.IsNullOrEmpty(interactiveID))
+                {
+                    // 保存当前状态：CanInteract 和 IsActivated (gameObject.activeSelf)
+                    SaveManager.Instance.SetInteractiveObjectState(
+                        interactiveID, 
+                        interactiveObject.CanInteract, 
+                        interactiveObject.gameObject.activeSelf
+                    );
+                    
+                    LogDebug($"Saved state for {interactiveObject.gameObject.name}: CanInteract={interactiveObject.CanInteract}, IsActivated={interactiveObject.gameObject.activeSelf}");
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 检查对话是否应该自动开始
+    /// </summary>
+    /// <param name="nodeName">对话节点名称</param>
+    /// <returns>是否应该开始对话</returns>
+    public bool ShouldStartDialogueAutomatically(string nodeName)
+    {
+        // 如果存档系统存在且对话已完成，则不自动开始
+        if (SaveManager.Instance != null && SaveManager.Instance.IsDialogueCompleted(nodeName))
+        {
+            LogDebug($"Dialogue node '{nodeName}' already completed, skipping auto-start");
+            return false;
+        }
+        
+        // 如果SaveManager不存在，记录警告但允许对话开始
+        if (SaveManager.Instance == null)
+        {
+            LogError("SaveManager.Instance is null! Cannot check dialogue completion status. Make sure SaveManager exists in the scene.");
+        }
+        
+        return true;
+    }
+    
+    /// <summary>
+    /// 安全地开始对话（检查存档状态）
+    /// </summary>
+    /// <param name="nodeName">对话节点名称</param>
+    /// <param name="checkSaveState">是否检查存档状态</param>
+    public void StartDialogueSafe(string nodeName, bool checkSaveState = true)
+    {
+        if (checkSaveState && !ShouldStartDialogueAutomatically(nodeName))
+        {
+            return;
+        }
+        
+        StartDialogue(nodeName);
     }
     
     // Public API methods
@@ -203,6 +342,15 @@ public class YarnSpinnerManager : MonoBehaviour
     public bool NodeExists(string nodeName)
     {
         return dialogueRunner != null && dialogueRunner.Dialogue.NodeExists(nodeName);
+    }
+    
+    /// <summary>
+    /// 检查SaveManager是否可用
+    /// </summary>
+    /// <returns>SaveManager是否可用</returns>
+    public bool IsSaveManagerAvailable()
+    {
+        return SaveManager.Instance != null;
     }
     
     public List<string> GetAvailableNodesForCurrentScene()

@@ -35,7 +35,7 @@ PrefabInstance:
     - target: {fileID: 2958262986446477831, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2100000, guid: 9608cd1772b1b4a5f9f5ca0f681fbf75, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 2958262986520364887, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -183,7 +183,7 @@ PrefabInstance:
     - target: {fileID: 8020628925184811237, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2100000, guid: 9608cd1772b1b4a5f9f5ca0f681fbf75, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 8020628925673895293, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -222,7 +222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8309902628685535410, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: autoStart
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8309902628685535410, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: yarnProject
@@ -265,6 +265,7 @@ MonoBehaviour:
   dialogueRunner: {fileID: 1195055368778872752}
   sceneConfigs: []
   enableDebugLogs: 1
+  illustrationPanel: {fileID: 3960908374328915173, guid: 06cfe3ae9be2cb6419c4905f1838dbc6, type: 3}
 --- !u!1 &903529642122743776 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8020628925184811234, guid: 52571f68872914e24837210513edea1d, type: 3}

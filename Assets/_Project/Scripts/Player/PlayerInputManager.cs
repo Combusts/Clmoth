@@ -13,6 +13,7 @@ public class PlayerInputManager : MonoBehaviour
     public Action<float> OnMoveActionCanceled;
     public Action OnEseActionPerformed;
     public Action OnInteractActionPerformed;
+    public Action OnJumpActionPerformed;
     
     [Header("Input State")]
     [SerializeField] private bool gameplayInputEnabled = true;
@@ -34,6 +35,7 @@ public class PlayerInputManager : MonoBehaviour
         inputActions.Player.Move.canceled += OnMoveCanceled;
         inputActions.Player.Ese.performed += OnEsePerformed;
         inputActions.Player.Interact.performed += OnInteractPerformed;
+        inputActions.Player.Jump.performed += OnJumpPerformed;
         inputActions.Enable();
     }
     
@@ -47,6 +49,7 @@ public class PlayerInputManager : MonoBehaviour
             inputActions.Player.Move.canceled -= OnMoveCanceled;
             inputActions.Player.Ese.performed -= OnEsePerformed;
             inputActions.Player.Interact.performed -= OnInteractPerformed;
+            inputActions.Player.Jump.performed -= OnJumpPerformed;
         }
     }
 
@@ -82,10 +85,22 @@ public class PlayerInputManager : MonoBehaviour
         
         OnInteractActionPerformed?.Invoke();
     }
+
+    // 跳跃事件
+    void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        if (!gameplayInputEnabled) return;
+        
+        OnJumpActionPerformed?.Invoke();
+    }
     
     // Public methods for dialogue system
     public void DisableGameplayInput()
-    {
+    {   
+        // 先取消移动事件
+        OnMoveActionCanceled?.Invoke(0f);
+
+        // 禁止输入
         gameplayInputEnabled = false;
         Debug.Log("[PlayerInputManager] Gameplay input disabled");
     }

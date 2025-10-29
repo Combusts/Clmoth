@@ -5,30 +5,90 @@ using System.Collections;
 public class AnimationCommands : MonoBehaviour {
     
     private Animator animator;
+    private Animation animationComponent;
+    private SceneAnimationManager sceneAnimationManager;
 
     private void Awake()
     {
+        // 优先检测SceneAnimationManager（用于场景动画）
+        sceneAnimationManager = GetComponent<SceneAnimationManager>();
+        
+        // 检测Animation组件（备用场景动画方案）
+        animationComponent = GetComponent<Animation>();
+        
+        // 检测Animator组件（用于角色动画等）
         animator = GetComponent<Animator>();
-        if (animator == null)
+        
+        // 输出检测结果
+        if (sceneAnimationManager != null)
         {
-            Debug.LogWarning($"Animator component not found on {gameObject.name}");
+            Debug.Log($"AnimationCommands: 检测到SceneAnimationManager组件在 {gameObject.name}");
+        }
+        else if (animationComponent != null)
+        {
+            Debug.Log($"AnimationCommands: 检测到Animation组件在 {gameObject.name}");
+        }
+        else if (animator != null)
+        {
+            Debug.Log($"AnimationCommands: 检测到Animator组件在 {gameObject.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"AnimationCommands: 未找到任何动画组件在 {gameObject.name}");
         }
     }
 
     [YarnCommand("animator_trigger")]
     public void AnimatorTrigger(string triggerName) {
+        // 优先使用SceneAnimationManager
+        if (sceneAnimationManager != null)
+        {
+            sceneAnimationManager.AnimatorTrigger(triggerName);
+            return;
+        }
+        
+        // 回退到Animation组件
+        if (animationComponent != null)
+        {
+            if (animationComponent.GetClip(triggerName) != null)
+            {
+                animationComponent.Play(triggerName);
+                return;
+            }
+        }
+        
+        // 最后回退到Animator
         if (animator != null)
         {
             animator.SetTrigger(triggerName);
         }
         else
         {
-            Debug.LogWarning($"Animator not found on {gameObject.name}");
+            Debug.LogWarning($"AnimationCommands: 未找到可用的动画组件在 {gameObject.name}");
         }
     }
 
     [YarnCommand("animator_play_and_stay")]
     public void AnimatorPlayAndStay(string animationName) {
+        // 优先使用SceneAnimationManager
+        if (sceneAnimationManager != null)
+        {
+            sceneAnimationManager.AnimatorPlayAndStay(animationName);
+            return;
+        }
+        
+        // 回退到Animation组件
+        if (animationComponent != null)
+        {
+            if (animationComponent.GetClip(animationName) != null)
+            {
+                animationComponent.Play(animationName);
+                StartCoroutine(WaitForAnimationAndStop_Animation());
+                return;
+            }
+        }
+        
+        // 最后回退到Animator
         if (animator != null)
         {
             // 直接播放动画状态，不通过Trigger
@@ -39,12 +99,31 @@ public class AnimationCommands : MonoBehaviour {
         }
         else
         {
-            Debug.LogWarning($"Animator not found on {gameObject.name}");
+            Debug.LogWarning($"AnimationCommands: 未找到可用的动画组件在 {gameObject.name}");
         }
     }
 
     [YarnCommand("animator_play_and_wait")]
     public IEnumerator AnimatorPlayAndWait(string animationName) {
+        // 优先使用SceneAnimationManager
+        if (sceneAnimationManager != null)
+        {
+            yield return sceneAnimationManager.AnimatorPlayAndWait(animationName);
+            yield break;
+        }
+        
+        // 回退到Animation组件
+        if (animationComponent != null)
+        {
+            if (animationComponent.GetClip(animationName) != null)
+            {
+                animationComponent.Play(animationName);
+                yield return WaitForAnimationAndContinue_Animation();
+                yield break;
+            }
+        }
+        
+        // 最后回退到Animator
         if (animator != null)
         {
             // 直接播放动画状态
@@ -55,11 +134,13 @@ public class AnimationCommands : MonoBehaviour {
         }
         else
         {
-            Debug.LogWarning($"Animator not found on {gameObject.name}");
+            Debug.LogWarning($"AnimationCommands: 未找到可用的动画组件在 {gameObject.name}");
             yield break;
         }
     }
 
+    #region Animator相关协程
+    
     private IEnumerator WaitForAnimationAndStop()
     {
         // 等待一帧确保动画开始播放
@@ -99,4 +180,52 @@ public class AnimationCommands : MonoBehaviour {
         
         // 动画播放完成，协程结束会自动继续Yarn对话
     }
+    
+    #endregion
+    
+    #region Animation组件相关协程
+    
+    private IEnumerator WaitForAnimationAndStop_Animation()
+    {
+        // 等待一帧确保动画开始播放
+        yield return null;
+        
+        // 等待动画播放完成
+        while (animationComponent.isPlaying)
+        {
+            yield return null;
+        }
+        
+        // 保持在最后一帧
+        var state = animationComponent.GetClip(animationComponent.clip.name);
+        if (state != null)
+        {
+            animationComponent[state.name].time = animationComponent[state.name].length;
+            animationComponent[state.name].enabled = false;
+        }
+    }
+    
+    private IEnumerator WaitForAnimationAndContinue_Animation()
+    {
+        // 等待一帧确保动画开始播放
+        yield return null;
+        
+        // 等待动画播放完成
+        while (animationComponent.isPlaying)
+        {
+            yield return null;
+        }
+        
+        // 保持在最后一帧
+        var state = animationComponent.GetClip(animationComponent.clip.name);
+        if (state != null)
+        {
+            animationComponent[state.name].time = animationComponent[state.name].length;
+            animationComponent[state.name].enabled = false;
+        }
+        
+        // 动画播放完成，协程结束会自动继续Yarn对话
+    }
+    
+    #endregion
 }
