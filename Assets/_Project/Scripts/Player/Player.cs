@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float cameraSmoothSpeed = 5f; // 平滑跟随速度
     [SerializeField] private float cameraMinX = -10f; // 摄像机X轴最小位置
     [SerializeField] private float cameraMaxX = 10f; // 摄像机X轴最大位置
+    [SerializeField] private bool cameraFollowEnabled = true; // 摄像机跟随开关
 
     [Header("跳跃")]
     [SerializeField] private bool canJump = true; // 跳跃开关
@@ -263,7 +264,7 @@ public class Player : MonoBehaviour
     // 摄像机跟随逻辑
     private void UpdateCameraFollow()
     {
-        if (mainCamera == null) return;
+        if (mainCamera == null || !cameraFollowEnabled) return;
 
         // 计算玩家相对于屏幕中心的偏移距离
         Vector3 playerScreenPos = mainCamera.WorldToScreenPoint(transform.position);
@@ -340,6 +341,15 @@ public class Player : MonoBehaviour
             Vector3 currentPos = mainCamera.transform.position;
             currentPos.x = Mathf.Clamp(currentPos.x, cameraMinX, cameraMaxX);
             mainCamera.transform.position = currentPos;
+        }
+
+        if (cameraFollowEnabled)
+        {
+            EnableCameraFollow();
+        }
+        else
+        {
+            DisableCameraFollow();
         }
     }
 
@@ -437,5 +447,25 @@ public class Player : MonoBehaviour
     public void DisableJump()
     {
         SetCanJump(false);
+    }
+
+    /// <summary>
+    /// Yarn命令：禁用摄像机跟随
+    /// </summary>
+    [YarnCommand("DisableCameraFollow")]
+    public void DisableCameraFollow()
+    {
+        cameraFollowEnabled = false;
+        Debug.Log("[Player] Camera follow disabled");
+    }
+
+    /// <summary>
+    /// Yarn命令：启用摄像机跟随
+    /// </summary>
+    [YarnCommand("EnableCameraFollow")]
+    public void EnableCameraFollow()
+    {
+        cameraFollowEnabled = true;
+        Debug.Log("[Player] Camera follow enabled");
     }
 }
