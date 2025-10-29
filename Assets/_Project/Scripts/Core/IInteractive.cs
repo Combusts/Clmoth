@@ -12,9 +12,6 @@ public abstract class IInteractive : MonoBehaviour
     
     [Header("存档系统")]
     [SerializeField] private string interactiveID = ""; // 唯一标识符
-    [SerializeField] private string linkedDialogueNode = ""; // 关联的对话节点
-    [SerializeField] private bool disableAfterDialogue = true; // 对话后是否禁用交互
-    [SerializeField] private bool deactivateAfterDialogue = false; // 对话后是否隐藏物件
     
     private GameObject currentHintItem; // 当前显示的提示实例
 
@@ -91,59 +88,31 @@ public abstract class IInteractive : MonoBehaviour
         
         Debug.Log($"[IInteractive] CheckSaveState for {gameObject.name} (ID: {interactiveID})");
         
-        // 首先检查是否有直接保存的交互物体状态
-        bool canInteract = SaveManager.Instance.GetInteractiveObjectCanInteract(interactiveID);
-        bool isActivated = SaveManager.Instance.GetInteractiveObjectIsActivated(interactiveID);
+        // 直接从存档恢复交互物体状态
+        bool? savedCanInteract = SaveManager.Instance.GetInteractiveObjectCanInteract(interactiveID);
+        bool? savedIsActivated = SaveManager.Instance.GetInteractiveObjectIsActivated(interactiveID);
         
-        Debug.Log($"[IInteractive] Saved state for {gameObject.name}: CanInteract={canInteract}, IsActivated={isActivated}");
+        Debug.Log($"[IInteractive] Saved state for {gameObject.name}: CanInteract={savedCanInteract}, IsActivated={savedIsActivated}");
         
-        if (!canInteract || !isActivated)
+        // 如果有存档数据则恢复状态，如果没有（为null）则保持场景内的原始设置
+        if (savedCanInteract.HasValue)
         {
-            Debug.Log($"[IInteractive] Restoring saved state for {gameObject.name} - CanInteract: {canInteract}, IsActivated: {isActivated}");
-            
-            if (!canInteract)
-            {
-                CanInteract = false;
-                Debug.Log($"[IInteractive] Set CanInteract=false for {gameObject.name}");
-            }
-            
-            if (!isActivated)
-            {
-                gameObject.SetActive(false);
-                Debug.Log($"[IInteractive] Set active=false for {gameObject.name}");
-            }
-        }
-        // 如果没有直接保存的状态，检查对话节点完成状态
-        else if (!string.IsNullOrEmpty(linkedDialogueNode))
-        {
-            bool isDialogueCompleted = SaveManager.Instance.IsDialogueCompleted(linkedDialogueNode);
-            Debug.Log($"[IInteractive] Checking dialogue completion for {gameObject.name}: {linkedDialogueNode} = {isDialogueCompleted}");
-            
-            if (isDialogueCompleted)
-            {
-                Debug.Log($"[IInteractive] Dialogue '{linkedDialogueNode}' completed for {gameObject.name}, updating state");
-                
-                // 根据设置更新状态
-                if (disableAfterDialogue)
-                {
-                    CanInteract = false;
-                    Debug.Log($"[IInteractive] Disabled interaction for {gameObject.name} after dialogue");
-                }
-                
-                if (deactivateAfterDialogue)
-                {
-                    gameObject.SetActive(false);
-                    Debug.Log($"[IInteractive] Deactivated {gameObject.name} after dialogue");
-                }
-                
-                // 保存当前状态到存档
-                Debug.Log($"[IInteractive] Saving state for {gameObject.name}: CanInteract={CanInteract}, IsActivated={gameObject.activeSelf}");
-                SaveManager.Instance.SetInteractiveObjectState(interactiveID, CanInteract, gameObject.activeSelf);
-            }
+            CanInteract = savedCanInteract.Value;
+            Debug.Log($"[IInteractive] Restored CanInteract={CanInteract} for {gameObject.name}");
         }
         else
         {
-            Debug.Log($"[IInteractive] No linked dialogue node for {gameObject.name}, using default state");
+            Debug.Log($"[IInteractive] No saved CanInteract for {gameObject.name}, keeping original value");
+        }
+        
+        if (savedIsActivated.HasValue)
+        {
+            gameObject.SetActive(savedIsActivated.Value);
+            Debug.Log($"[IInteractive] Restored IsActivated={savedIsActivated.Value} for {gameObject.name}");
+        }
+        else
+        {
+            Debug.Log($"[IInteractive] No saved IsActivated for {gameObject.name}, keeping original value");
         }
     }
     
@@ -153,69 +122,6 @@ public abstract class IInteractive : MonoBehaviour
     public string GetInteractiveID()
     {
         return interactiveID;
-    }
-    
-    /// <summary>
-    /// 获取关联的对话节点
-    /// </summary>
-    public string GetLinkedDialogueNode()
-    {
-        return linkedDialogueNode;
-    }
-    
-    /// <summary>
-    /// 设置关联的对话节点
-    /// </summary>
-    /// <param name="nodeName">对话节点名称</param>
-    public void SetLinkedDialogueNode(string nodeName)
-    {
-        linkedDialogueNode = nodeName;
-    }
-    
-    /// <summary>
-    /// 处理对话完成后的状态更新
-    /// </summary>
-    /// <param name="completedNodeName">完成的对话节点名称</param>
-    public virtual void OnDialogueCompleted(string completedNodeName)
-    {
-        Debug.Log($"[IInteractive] OnDialogueCompleted called for {gameObject.name} with node: {completedNodeName}");
-        Debug.Log($"[IInteractive] Linked dialogue node: {linkedDialogueNode}");
-        Debug.Log($"[IInteractive] Disable after dialogue: {disableAfterDialogue}");
-        Debug.Log($"[IInteractive] Deactivate after dialogue: {deactivateAfterDialogue}");
-        
-        // 检查是否是关联的对话节点
-        if (!string.IsNullOrEmpty(linkedDialogueNode) && linkedDialogueNode == completedNodeName)
-        {
-            Debug.Log($"[IInteractive] Dialogue '{completedNodeName}' completed for {gameObject.name}, updating state");
-            
-            // 根据设置更新状态
-            if (disableAfterDialogue)
-            {
-                CanInteract = false;
-                Debug.Log($"[IInteractive] Disabled interaction for {gameObject.name}");
-            }
-            
-            if (deactivateAfterDialogue)
-            {
-                gameObject.SetActive(false);
-                Debug.Log($"[IInteractive] Deactivated {gameObject.name}");
-            }
-            
-            // 保存当前状态到存档
-            if (SaveManager.Instance != null)
-            {
-                Debug.Log($"[IInteractive] Saving state for {gameObject.name}: CanInteract={CanInteract}, IsActivated={gameObject.activeSelf}");
-                SaveManager.Instance.SetInteractiveObjectState(interactiveID, CanInteract, gameObject.activeSelf);
-            }
-            else
-            {
-                Debug.LogError($"[IInteractive] SaveManager.Instance is null for {gameObject.name}!");
-            }
-        }
-        else
-        {
-            Debug.Log($"[IInteractive] Node {completedNodeName} does not match linked node {linkedDialogueNode} for {gameObject.name}");
-        }
     }
 
     public virtual void ShowHint()

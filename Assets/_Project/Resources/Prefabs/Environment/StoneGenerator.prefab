@@ -46,10 +46,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stonePrefab: {fileID: 5870782831503748137, guid: 37b09a7dc74af364998cc06503d71cc6, type: 3}
   stoneSprites:
-  - {fileID: 21300000, guid: 0529c2253e364ba468fe1dc848458b6b, type: 3}
-  - {fileID: 21300000, guid: 05ca5501a1e93e4479a71aaac4a27d92, type: 3}
-  - {fileID: 21300000, guid: f28bc1857c489524190d121b5edaba67, type: 3}
+  - {fileID: 21300000, guid: 0d55fde574a950f49b63204426974f04, type: 3}
+  - {fileID: 21300000, guid: 93e1ff03af0b7e54b9e7132a8583712c, type: 3}
+  - {fileID: 21300000, guid: c7f84b71837b4ca4b9af0b8b9fa79cd3, type: 3}
   generateOnStart: 1
   generateCount: 1
   randomOffset: {x: 0, y: 0, z: 0}
   randomRotation: 0
+  maxDelay: 1
+  minDelay: 0

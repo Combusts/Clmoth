@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Scenes/Game.unity
     guid: 4ef271c2c61c00d4da3fb8b455267569
+  - enabled: 1
+    path: Assets/_Project/Scenes/Levels/Loop/Loop.unity
+    guid: 991b35a9a64ddba408c8aeb47f65e5e0
+  - enabled: 1
+    path: Assets/_Project/Scenes/Levels/Loop/FinalLoop.unity
+    guid: f7f957ddb34740f46aa724672fc96fc1
   m_configObjects: {}

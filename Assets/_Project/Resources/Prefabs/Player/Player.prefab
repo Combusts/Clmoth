@@ -172,7 +172,14 @@ MonoBehaviour:
   cameraSmoothSpeed: 5
   cameraMinX: -10
   cameraMaxX: 10
-  animator: {fileID: 0}
+  canJump: 1
+  jumpForce: 20
+  groundCheckDistance: 0.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  animator: {fileID: 3685505772218176616}
+  isRunning: 0
 --- !u!95 &3685505772218176616
 Animator:
   serializedVersion: 5
