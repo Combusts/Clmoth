@@ -42,6 +42,7 @@ public class UIManager : MonoBehaviour
         uiPathDic["MiniGameWin"] = "Prefabs/UI/UIGameWin";
         uiPathDic["MiniGameOver"] = "Prefabs/UI/UIGameOver";
         uiPathDic["Password"] = "Prefabs/UI/UIPassword";
+        uiPathDic["GameExplain"] = "Prefabs/UI/UIGameExplain";
 
 
     }
@@ -68,6 +69,9 @@ public class UIManager : MonoBehaviour
             }
             
             GameObject uiInstance = Instantiate(ui, uiRoot.transform);
+            // 设置sortingOrder
+            Canvas canvas = uiInstance.GetComponent<Canvas>();
+            canvas.overrideSorting = true;
             uiInstance.name = uiName;
             uiDic.Add(uiName, uiInstance.GetComponent<PanelBase>());
             openPanels.Add(uiInstance.GetComponent<PanelBase>());

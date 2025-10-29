@@ -183,14 +183,16 @@ public class SceneAnimationData
     public class SceneAnimationEntry
     {
         public string name;
+        public string sceneName; // 添加场景名称字段，用于区分不同场景中的同名动画
         public bool isCompleted;
         public float progress; // 播放进度 (0-1)
         
         public SceneAnimationEntry() { }
         
-        public SceneAnimationEntry(string name, bool isCompleted, float progress)
+        public SceneAnimationEntry(string name, string sceneName, bool isCompleted, float progress)
         {
             this.name = name;
+            this.sceneName = sceneName;
             this.isCompleted = isCompleted;
             this.progress = progress;
         }
@@ -207,15 +209,16 @@ public class SceneAnimationData
         RefreshDictionary();
     }
     
-    public void AddCompletedAnimation(string animationName)
+    public void AddCompletedAnimation(string animationName, string sceneName = "")
     {
         if (!string.IsNullOrEmpty(animationName))
         {
-            var entry = new SceneAnimationEntry(animationName, true, 1f);
-            animationDict[animationName] = entry;
+            string key = GetAnimationKey(animationName, sceneName);
+            var entry = new SceneAnimationEntry(animationName, sceneName, true, 1f);
+            animationDict[key] = entry;
             
             // 更新 List
-            var existingEntry = animations.Find(anim => anim.name == animationName);
+            var existingEntry = animations.Find(anim => anim.name == animationName && anim.sceneName == sceneName);
             if (existingEntry != null)
             {
                 existingEntry.isCompleted = true;
@@ -228,16 +231,17 @@ public class SceneAnimationData
         }
     }
     
-    public void SetAnimationState(string animationName, float progress)
+    public void SetAnimationState(string animationName, float progress, string sceneName = "")
     {
         if (!string.IsNullOrEmpty(animationName))
         {
             var clampedProgress = Mathf.Clamp01(progress);
-            var entry = new SceneAnimationEntry(animationName, clampedProgress >= 1f, clampedProgress);
-            animationDict[animationName] = entry;
+            string key = GetAnimationKey(animationName, sceneName);
+            var entry = new SceneAnimationEntry(animationName, sceneName, clampedProgress >= 1f, clampedProgress);
+            animationDict[key] = entry;
             
             // 更新 List
-            var existingEntry = animations.Find(anim => anim.name == animationName);
+            var existingEntry = animations.Find(anim => anim.name == animationName && anim.sceneName == sceneName);
             if (existingEntry != null)
             {
                 existingEntry.isCompleted = clampedProgress >= 1f;
@@ -250,22 +254,57 @@ public class SceneAnimationData
         }
     }
     
-    public bool IsAnimationCompleted(string animationName)
+    public bool IsAnimationCompleted(string animationName, string sceneName = "")
     {
-        if (!string.IsNullOrEmpty(animationName) && animationDict.ContainsKey(animationName))
+        if (!string.IsNullOrEmpty(animationName))
         {
-            return animationDict[animationName].isCompleted;
+            string key = GetAnimationKey(animationName, sceneName);
+            if (animationDict.ContainsKey(key))
+            {
+                return animationDict[key].isCompleted;
+            }
+            
+            // 向后兼容：尝试查找没有场景名称的旧动画记录
+            if (animationDict.ContainsKey(animationName))
+            {
+                return animationDict[animationName].isCompleted;
+            }
         }
         return false;
     }
     
-    public float GetAnimationProgress(string animationName)
+    public float GetAnimationProgress(string animationName, string sceneName = "")
     {
-        if (!string.IsNullOrEmpty(animationName) && animationDict.ContainsKey(animationName))
+        if (!string.IsNullOrEmpty(animationName))
         {
-            return animationDict[animationName].progress;
+            string key = GetAnimationKey(animationName, sceneName);
+            if (animationDict.ContainsKey(key))
+            {
+                return animationDict[key].progress;
+            }
+            
+            // 向后兼容：尝试查找没有场景名称的旧动画记录
+            if (animationDict.ContainsKey(animationName))
+            {
+                return animationDict[animationName].progress;
+            }
         }
         return 0f;
+    }
+    
+    /// <summary>
+    /// 生成动画的唯一键
+    /// </summary>
+    /// <param name="animationName">动画名称</param>
+    /// <param name="sceneName">场景名称</param>
+    /// <returns>唯一的动画键</returns>
+    private string GetAnimationKey(string animationName, string sceneName)
+    {
+        if (string.IsNullOrEmpty(sceneName))
+        {
+            return animationName;
+        }
+        return $"{sceneName}_{animationName}";
     }
     
     public void RefreshDictionary()
@@ -275,7 +314,8 @@ public class SceneAnimationData
         {
             if (!string.IsNullOrEmpty(entry.name))
             {
-                animationDict[entry.name] = entry;
+                string key = GetAnimationKey(entry.name, entry.sceneName);
+                animationDict[key] = entry;
             }
         }
     }
@@ -349,19 +389,21 @@ public class GameSaveData
     /// 添加已完成的场景动画
     /// </summary>
     /// <param name="animationName">动画名称</param>
-    public void AddCompletedSceneAnimation(string animationName)
+    /// <param name="sceneName">场景名称（可选）</param>
+    public void AddCompletedSceneAnimation(string animationName, string sceneName = "")
     {
-        sceneAnimationData.AddCompletedAnimation(animationName);
+        sceneAnimationData.AddCompletedAnimation(animationName, sceneName);
     }
     
     /// <summary>
     /// 检查场景动画是否已完成
     /// </summary>
     /// <param name="animationName">动画名称</param>
+    /// <param name="sceneName">场景名称（可选）</param>
     /// <returns>是否已完成</returns>
-    public bool IsSceneAnimationCompleted(string animationName)
+    public bool IsSceneAnimationCompleted(string animationName, string sceneName = "")
     {
-        return sceneAnimationData.IsAnimationCompleted(animationName);
+        return sceneAnimationData.IsAnimationCompleted(animationName, sceneName);
     }
     
     /// <summary>
@@ -369,19 +411,21 @@ public class GameSaveData
     /// </summary>
     /// <param name="animationName">动画名称</param>
     /// <param name="progress">播放进度 (0-1)</param>
-    public void SetSceneAnimationState(string animationName, float progress)
+    /// <param name="sceneName">场景名称（可选）</param>
+    public void SetSceneAnimationState(string animationName, float progress, string sceneName = "")
     {
-        sceneAnimationData.SetAnimationState(animationName, progress);
+        sceneAnimationData.SetAnimationState(animationName, progress, sceneName);
     }
     
     /// <summary>
     /// 获取场景动画状态
     /// </summary>
     /// <param name="animationName">动画名称</param>
+    /// <param name="sceneName">场景名称（可选）</param>
     /// <returns>播放进度 (0-1)</returns>
-    public float GetSceneAnimationState(string animationName)
+    public float GetSceneAnimationState(string animationName, string sceneName = "")
     {
-        return sceneAnimationData.GetAnimationProgress(animationName);
+        return sceneAnimationData.GetAnimationProgress(animationName, sceneName);
     }
     
     /// <summary>

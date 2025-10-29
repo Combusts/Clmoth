@@ -284,7 +284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiRoot: {fileID: 637976371}
-  fadeImage: {fileID: 0}
+  fadeImage: {fileID: 1130182952}
 --- !u!114 &637976377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeImage: {fileID: 1130182952}
-  fadeDuration: 1
+  fadeDuration: 0.5
 --- !u!4 &813456861
 Transform:
   m_ObjectHideFlags: 0
@@ -794,7 +794,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 9999
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!1 &2001583751
 GameObject:

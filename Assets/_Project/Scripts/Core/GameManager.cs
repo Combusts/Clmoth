@@ -39,8 +39,9 @@ public class GameManager : MonoBehaviour
         levelDic["Level_01_01"] = 1;
         levelDic["Game"] = 2;
         levelDic["MiniGame"] = 2;
-        levelDic["FinalLoop"] = 3;
-        levelDic["Ending"] = 4;
+        levelDic["Loop"] = 3;
+        levelDic["FinalLoop"] = 4;
+        levelDic["Ending"] = 5;
 
         SceneManager.sceneLoaded += (scene, mode)=>{
             Debug.Log($"Scene Loaded: {scene.name}");
@@ -59,7 +60,7 @@ public class GameManager : MonoBehaviour
             {
                 UIManager.Instance.ShowUI("Main");
             } 
-            else if (scene.name == "Level_01" || scene.name == "Level_01_01")
+            else if (scene.name == "Level_01" || scene.name == "Level_01_01" || scene.name == "Loop")
             {
                 SetCameraPositionAfterSceneLoad();
                 InitializeCommandManager();
@@ -67,9 +68,9 @@ public class GameManager : MonoBehaviour
                 UIManager.Instance.ShowUI("CinematicBars");
             } 
             else if (scene.name == "Game"){
+                UIManager.Instance.ShowUI("GameExplain");
                 UIManager.Instance.ShowUI("Playing");
             }
-
             if (scene.name == "FinalLoop")
             {
                 UIManager.Instance.ShowUI("Playing");
@@ -86,6 +87,7 @@ public class GameManager : MonoBehaviour
                 // 进入结局对话
                 YarnSpinnerManager.Instance.StartDialogueSafe("Ending", true);
             }
+            
         };
     }
 

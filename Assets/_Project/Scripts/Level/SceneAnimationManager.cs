@@ -136,8 +136,9 @@ public class SceneAnimationManager : MonoBehaviour
                 Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 的clip存在: {anim.clip.name}");
                 
                 // 检查动画是否已完成
-                bool isCompleted = SaveManager.Instance.IsSceneAnimationCompleted(anim.name);
-                Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 完成状态: {isCompleted}");
+                string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                bool isCompleted = SaveManager.Instance.IsSceneAnimationCompleted(anim.name, currentScene);
+                Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' (场景: {currentScene}) 完成状态: {isCompleted}");
                 
                 if (isCompleted)
                 {
@@ -172,8 +173,9 @@ public class SceneAnimationManager : MonoBehaviour
                     Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 未完成，检查播放进度");
                     
                     // 检查是否有部分播放进度
-                    float progress = SaveManager.Instance.GetSceneAnimationState(anim.name);
-                    Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 播放进度: {progress}");
+                    string animScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                    float progress = SaveManager.Instance.GetSceneAnimationState(anim.name, animScene);
+                    Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' (场景: {animScene}) 播放进度: {progress}");
                     
                     if (progress > 0f)
                     {
@@ -246,7 +248,8 @@ public class SceneAnimationManager : MonoBehaviour
         // 保存动画完成状态
         if (enableSaveIntegration && SaveManager.Instance != null)
         {
-            SaveManager.Instance.AddCompletedSceneAnimation(animationName);
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            SaveManager.Instance.AddCompletedSceneAnimation(animationName, currentScene);
         }
         
         // 如果设置了保留最后一帧，保持在最后一帧
@@ -278,7 +281,8 @@ public class SceneAnimationManager : MonoBehaviour
         // 保存动画状态
         if (enableSaveIntegration && SaveManager.Instance != null)
         {
-            SaveManager.Instance.SetSceneAnimationState(animationName, 1f); // 标记为完成
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            SaveManager.Instance.SetSceneAnimationState(animationName, 1f, currentScene); // 标记为完成
         }
         
         // 如果设置了保留最后一帧，等待完成后保持在最后一帧
@@ -404,7 +408,8 @@ public class SceneAnimationManager : MonoBehaviour
     {
         if (enableSaveIntegration && SaveManager.Instance != null)
         {
-            return SaveManager.Instance.IsSceneAnimationCompleted(animationName);
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            return SaveManager.Instance.IsSceneAnimationCompleted(animationName, currentScene);
         }
         return false;
     }
@@ -417,8 +422,9 @@ public class SceneAnimationManager : MonoBehaviour
     {
         if (enableSaveIntegration && SaveManager.Instance != null)
         {
-            SaveManager.Instance.AddCompletedSceneAnimation(animationName);
-            Debug.Log($"SceneAnimationManager: Manually marked animation '{animationName}' as completed");
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            SaveManager.Instance.AddCompletedSceneAnimation(animationName, currentScene);
+            Debug.Log($"SceneAnimationManager: Manually marked animation '{animationName}' in scene '{currentScene}' as completed");
         }
     }
     

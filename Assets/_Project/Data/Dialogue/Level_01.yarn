@@ -78,8 +78,10 @@ position: -401,-200
 现在先看看有没有新的工作邮件需要发出去。
 <<activate_object CommandManager "2 with doc">>
 <<enable_interaction CommandManager "2 with doc">>
+<<disable_interaction CommandManager "Cloth Table">>
 <<deactivate_object CommandManager "2 without doc">>
 <<hide_illustration CommandManager "IllustrationPanel">>  // 隐藏立绘
+<<save_game CommandManager>>
 <<ToLevel GameManager "MiniGame">>
 
 ===
@@ -131,6 +133,7 @@ position: -418,-63
  还是先去窗台那里放松一下再工作吧。
 <<enable_interaction CommandManager "窗边休息">>
 <<hide_illustration CommandManager "IllustrationPanel">>  // 隐藏立绘
+<<disable_interaction CommandManager "1">>
 
 ===
 title:window
@@ -139,7 +142,22 @@ position: -164,122
 <<sleepy>>
 <<center_dialogue 160>>
 【你走到阳台边，正准备看风景休息的时侯】
+<<restore_dialogue>>
+// 白闪两下
+// 推下去的图 + 描述
+<<flash CommandManager>>
+<<set_background "Image/坠楼场景">>
+<<show_background>>
+<<wait 1.5>>
 【一双手突然抓住你的腰背，用力地把你推出围栏外。】
+// 白闪两下
+// 回头看 + ！！
+<<flash CommandManager>>
+<<set_background "Image/坠楼场景2">>
+<<wait 1.5>>
+{$mainName}: !!!
+<<hide_background>>
+<<disable_interaction CommandManager "窗边休息">>
 <<jump badream>>
 
 
@@ -182,6 +200,7 @@ position: -387,288
 <<animator_play_and_stay MainScene "NewHireLeave">>
 【他说完，挥了挥手，回到了他自己的工位。】
 自白：金总找我有事，先去办公室吧。
+<<enable_interaction CommandManager "Door">>
 //进入自由状态
 ===
 title: JumpToLoop

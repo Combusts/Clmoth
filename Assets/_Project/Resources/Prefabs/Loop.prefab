@@ -151,9 +151,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!1 &290500940042521509
 GameObject:
@@ -326,9 +323,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0.05, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: LoopDoor1
-  linkedDialogueNode: Door
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: Door
 --- !u!61 &2914191911181005470
 BoxCollider2D:
@@ -479,9 +473,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 1, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!1 &795839311049793466
 GameObject:
@@ -803,9 +794,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!1 &1443231209423003456
 GameObject:
@@ -1075,9 +1063,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: Loop0FileSender
 --- !u!61 &791167749972541786
 BoxCollider2D:
@@ -1619,9 +1604,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: Loop0File
 --- !u!61 &200266655167725725
 BoxCollider2D:
@@ -1694,8 +1676,8 @@ Transform:
   m_GameObject: {fileID: 2852003395042019536}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.14, y: 4.2195272, z: 0.08215806}
-  m_LocalScale: {x: 0.3004326, y: 12.0492735, z: 1}
+  m_LocalPosition: {x: 8.9934, y: 4.6149, z: 0.08215806}
+  m_LocalScale: {x: 0.59359473, y: 11.2588415, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8000606186403209251}
@@ -2027,9 +2009,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!61 &5192006360710133381
 BoxCollider2D:
@@ -2242,7 +2221,7 @@ SpriteRenderer:
   m_Size: {x: 2.22, y: 3.01}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &3925931072535419342
@@ -2481,9 +2460,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!1 &4281066774279552899
 GameObject:
@@ -2623,9 +2599,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!61 &3293498012459848326
 BoxCollider2D:
@@ -2823,9 +2796,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!1 &5151241869164403175
 GameObject:
@@ -2937,8 +2907,8 @@ Transform:
   m_GameObject: {fileID: 5320606081376027044}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.11, y: -7.088, z: 0.08215806}
-  m_LocalScale: {x: 0.34026995, y: 3.761456, z: 1.1326}
+  m_LocalPosition: {x: 8.9873, y: -7.088, z: 0.08215806}
+  m_LocalScale: {x: 0.58570665, y: 3.761456, z: 1.1326}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8000606186403209251}
@@ -3270,9 +3240,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!61 &3687744386077696272
 BoxCollider2D:
@@ -3893,9 +3860,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!61 &1490250398109194225
 BoxCollider2D:
@@ -4292,9 +4256,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!61 &1412800838300363551
 BoxCollider2D:
@@ -4742,7 +4703,7 @@ SpriteRenderer:
   m_Size: {x: 17.84, y: 0.08}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8906608509125268580
@@ -4851,9 +4812,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: Loop0FileSender
 --- !u!61 &1190909337325880593
 BoxCollider2D:
@@ -5090,9 +5048,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: 
 --- !u!61 &5010169233150836053
 BoxCollider2D:
@@ -6391,11 +6346,11 @@ PrefabInstance:
       objectReference: {fileID: 1443231209423003456}
     - target: {fileID: 6463598941760921103, guid: 0960042767c1e4c9e98e89c5f2b3cc46, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.18
       objectReference: {fileID: 0}
     - target: {fileID: 6463598941760921103, guid: 0960042767c1e4c9e98e89c5f2b3cc46, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 1.18
       objectReference: {fileID: 0}
     - target: {fileID: 6463598941760921103, guid: 0960042767c1e4c9e98e89c5f2b3cc46, type: 3}
       propertyPath: m_LocalScale.z
@@ -6407,7 +6362,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6463598941760921103, guid: 0960042767c1e4c9e98e89c5f2b3cc46, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.66
+      value: -3.3
       objectReference: {fileID: 0}
     - target: {fileID: 6463598941760921103, guid: 0960042767c1e4c9e98e89c5f2b3cc46, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6499,9 +6454,6 @@ MonoBehaviour:
   hintOffset: {x: 0, y: 0, z: 0}
   hintScale: {x: 1, y: 1, z: 1}
   interactiveID: 
-  linkedDialogueNode: 
-  disableAfterDialogue: 0
-  deactivateAfterDialogue: 0
   dialogueNode: Loop0NextLoopDoor
 --- !u!1001 &7321657495620585347
 PrefabInstance:
