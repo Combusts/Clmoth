@@ -9,22 +9,24 @@ position: -147,-50
 主角:“这到底是什么地方？”
 泰勒:“哈哈……你在这胡言乱语什么呢。”
 主角:“我是认真的！你是不是知道什么事情。”
-泰勒:“克络斯，你压力太大了。回到你的工位上去，Task.ReturnToStation.完成你的工作while(employed)\{work();\}if(dissidence)\{ enforceCompliance(); \}
+泰勒:“克络斯，你压力太大了。回到你的工位上去
+<<codePrint CodeManager1 0>>
 主角:“泰勒，你在说什么？”
-泰勒:ERROR: UNRECOGNIZED INPUT.SpeechInput.Disable(); //禁用语音输入
+<<codePrint CodeManager1 1>>
 主角:“……”
-泰勒:Navigation.ForceReturn("Main_Office"); //强制回办公室，场景开始崩塌
-泰勒:WorkTask.Assign("Urgent_Report"); WorkTask.Execute(); //启动任务
-泰勒:While (Task.IsComplete == false) \{ Loop(); \} //启动循环
-泰勒:ERROR: TASK_COMPLETION = FALSE//报错
-泰勒:System.Reboot(true); true = FORCE_IMMEDIATE//系统重启
-<<jump escape>>
+<<codePrint CodeManager1 2>>
+<<setMaterial CameraOutPut 1>>
+<<animator_play_and_wait AnimController "ChangeScene">>
+<<setMaterial CameraOutPut 0>>
+<<codePrint CodeManager2 3>>
+<<codePrint CodeManager2 4>>
+<<setMaterial CameraOutPut 1>>
+<<animator_play_and_wait AnimController "ChangeToChase">>
+<<setMaterial CameraOutPut 0>>
+<<start_chase_player AChaser>>
 ===
-title: escape
-position: 192,141
+title: escape_sequence
 ---
-//开始追逐​ 
-自白:快点离开这里！
 //追逐动画，主角从循环场景到窗户场景再到走廊（带门）场景，门旁边站着新人
 自白:呼……我现在是安全了吗？
 {$newName}: “克络斯……”

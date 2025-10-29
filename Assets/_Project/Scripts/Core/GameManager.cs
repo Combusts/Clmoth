@@ -14,6 +14,14 @@ public class GameManager : MonoBehaviour
 
     public Action OnStartGame;
 
+    #region Debug Tools - Level Switching
+    [Header("Debug Settings - Scene Switching")]
+    [Tooltip("输入场景名称或索引来切换场景（留空则保持原样）")]
+    [SerializeField] private string debugSwitchToScene = "";
+    
+    private string lastProcessedValue = "";
+    #endregion
+
     void Awake()
     {
         // 单例模式
@@ -28,7 +36,11 @@ public class GameManager : MonoBehaviour
         // 初始化场景字典
         levelDic["Main"] = 0;
         levelDic["Level_01"] = 1;
+        levelDic["Level_01_01"] = 1;
+        levelDic["Game"] = 2;
         levelDic["MiniGame"] = 2;
+        levelDic["FinalLoop"] = 3;
+        levelDic["BeforeChase"] = 4;
 
         SceneManager.sceneLoaded += (scene, mode)=>{
             Debug.Log($"Scene Loaded: {scene.name}");
@@ -50,6 +62,12 @@ public class GameManager : MonoBehaviour
             } 
             else if (scene.name == "Game"){
                 UIManager.Instance.ShowUI("Playing");
+            }
+
+            if (scene.name == "FinalLoop")
+            {
+                UIManager.Instance.ShowUI("Playing");
+                UIManager.Instance.ShowUI("CinematicBars");
             }
         };
     }
@@ -183,4 +201,131 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    #region Debug Tools Implementation
+
+    /// <summary>
+    /// 当 Inspector 中的值发生变化时调用（仅在 Editor 中）
+    /// </summary>
+    private void OnValidate()
+    {
+        // 只在 Editor 中且运行时执行
+        #if UNITY_EDITOR
+        if (Application.isPlaying && !string.IsNullOrWhiteSpace(debugSwitchToScene) && debugSwitchToScene != lastProcessedValue)
+        {
+            string sceneToSwitch = debugSwitchToScene.Trim();
+            Debug.Log($"[Debug] Scene switch request detected: {sceneToSwitch}");
+            
+            // 标记为已处理，防止重复触发
+            lastProcessedValue = sceneToSwitch;
+            
+            // 使用协程延迟执行，确保在下一帧处理，并清空字段
+            StartCoroutine(ProcessSceneSwitchDelayed(sceneToSwitch));
+        }
+        // 如果字段被清空，重置处理标记
+        else if (string.IsNullOrWhiteSpace(debugSwitchToScene) && !string.IsNullOrEmpty(lastProcessedValue))
+        {
+            lastProcessedValue = "";
+        }
+        #endif
+    }
+
+    /// <summary>
+    /// 延迟处理场景切换（协程）
+    /// </summary>
+    private IEnumerator ProcessSceneSwitchDelayed(string sceneName)
+    {
+        // 等待一帧，确保 Inspector 更新完成
+        yield return null;
+        
+        // 执行场景切换
+        HandleDebugSceneSwitch(sceneName);
+        
+        // 清空字段
+        debugSwitchToScene = "";
+        
+        // 重置处理标记，允许下次输入
+        lastProcessedValue = "";
+    }
+
+    /// <summary>
+    /// 处理调试场景切换
+    /// </summary>
+    /// <param name="sceneInput">场景名称或索引（字符串格式）</param>
+    private void HandleDebugSceneSwitch(string sceneInput)
+    {
+        if (string.IsNullOrWhiteSpace(sceneInput))
+        {
+            return;
+        }
+
+        sceneInput = sceneInput.Trim();
+
+        // 尝试解析为场景索引（数字）
+        if (int.TryParse(sceneInput, out int sceneIndex))
+        {
+            SwitchToSceneByIndex(sceneIndex);
+            return;
+        }
+
+        // 尝试作为场景名称查找
+        if (levelDic.ContainsKey(sceneInput))
+        {
+            int index = levelDic[sceneInput];
+            SwitchToSceneByIndex(index);
+            return;
+        }
+
+        // 如果都没找到，输出错误信息
+        Debug.LogError($"[Debug] Scene '{sceneInput}' not found. Available scenes:");
+        foreach (var kvp in levelDic)
+        {
+            Debug.Log($"  - {kvp.Key} (Index: {kvp.Value})");
+        }
+        Debug.Log($"Or use scene index: 0-{SceneManager.sceneCountInBuildSettings - 1}");
+    }
+
+    /// <summary>
+    /// 通过索引切换场景
+    /// </summary>
+    /// <param name="sceneIndex">场景索引</param>
+    private void SwitchToSceneByIndex(int sceneIndex)
+    {
+        if (sceneIndex < 0 || sceneIndex >= SceneManager.sceneCountInBuildSettings)
+        {
+            Debug.LogError($"[Debug] Invalid scene index: {sceneIndex}. Available range: 0-{SceneManager.sceneCountInBuildSettings - 1}");
+            return;
+        }
+
+        string sceneName = GetSceneNameByIndex(sceneIndex);
+        Debug.Log($"[Debug] Switching to scene [{sceneIndex}] {sceneName}");
+
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.LoadSceneWithFade(sceneIndex);
+        }
+        else
+        {
+            Debug.LogWarning("[Debug] SceneTransitionManager not found, using direct scene load");
+            SceneManager.LoadScene(sceneIndex);
+        }
+    }
+
+    /// <summary>
+    /// 根据场景索引获取场景名称
+    /// </summary>
+    private string GetSceneNameByIndex(int sceneIndex)
+    {
+        // 从 levelDic 中查找
+        foreach (var kvp in levelDic)
+        {
+            if (kvp.Value == sceneIndex)
+            {
+                return kvp.Key;
+            }
+        }
+        return $"Scene_{sceneIndex}";
+    }
+
+    #endregion
 }

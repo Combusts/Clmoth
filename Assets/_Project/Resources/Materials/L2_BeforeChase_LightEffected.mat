@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: L2_LightEffected
+  m_Name: L2_BeforeChase_LightEffected
   m_Shader: {fileID: 4800000, guid: a2e2dca21759efd49ab5736327f20477, type: 3}
   m_Parent: {fileID: 2100000, guid: 338f88f06eee25e498c4661bc67e64c6, type: 2}
   m_ModifiedSerializedProperties: 0
@@ -22,18 +22,8 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _IlluminationTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: []
     m_Ints: []
-    m_Floats:
-    - _FlickerPattern: 0.67
-    - _GlobalLight: 0.046
-    - _IlluminationIntensity: 5.3
-    - _LightIntensityMultiplier: 14.5
-    m_Colors:
-    - _IlluminationOffset: {r: -17.73, g: -6.3, b: 0, a: 0}
-    - _IlluminationScale: {r: 412.2, g: 3.51, b: 0, a: 0}
+    m_Floats: []
+    m_Colors: []
   m_BuildTextureStacks: []

@@ -124,8 +124,6 @@ public class BaseCharacter : MonoBehaviour
             UpdateEmotion();
         }
         
-        // 更新追逐状态
-        UpdateChasing();
     }
     
     private void UpdateChasing()
