@@ -144,7 +144,19 @@ position: -164,122
 <<sleepy>>
 <<center_dialogue 160>>
 【你走到阳台边，正准备看风景休息的时侯】
+<<restore_dialogue>>
+// 白闪两下
+// 推下去的图 + 描述
+<<flash CommandManager>>
+<<set_background "Image/坠楼场景">>
+<<show_background>>
 【一双手突然抓住你的腰背，用力地把你推出围栏外。】
+// 白闪两下
+// 回头看 + ！！
+<<flash CommandManager>>
+<<set_background "Image/坠楼场景2">>
+{$mainName}: !!!
+<<hide_background>>
 <<disable_interaction CommandManager "窗边休息">>
 <<jump badream>>
 

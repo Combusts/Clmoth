@@ -34,7 +34,7 @@ public class BlankEyes : MonoBehaviour
         GameObject canvasObj = new("BlinkCanvas");
         blinkCanvas = canvasObj.AddComponent<Canvas>();
         blinkCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        blinkCanvas.sortingOrder = 9;
+        blinkCanvas.sortingOrder = 8;
         
         // Add Canvas Scaler
         CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();

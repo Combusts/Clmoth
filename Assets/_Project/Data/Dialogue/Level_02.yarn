@@ -548,9 +548,10 @@ title: Loop3Filebox
 ---
 <<if !$Loop3HasInteractWithFileBox>>
     <<set $Loop3HasInteractWithFileBox to true>>
-    我是笨蛋吗？
+    【获得一份封口文件袋。】
     <<set $Loop3HasFile to true>>
 <<else>>
+    我是笨蛋吗？
     ……    
 <<endif>>
 ===
