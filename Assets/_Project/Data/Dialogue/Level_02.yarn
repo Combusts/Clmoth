@@ -203,7 +203,9 @@ title: Loop0password
     <<OpenPasswordPanelWithLoop LevelLoop 0>>
     <<WaitForPasswordResult LevelLoop>>
     <<if !$Loop0RightPassw>>
-        这个密码不对，《评估测试》有提到输入密码0000，再试试看。
+        <<if $Loop0HasFile>>
+            这个密码不对，《评估测试》有提到输入密码0000，再试试看。
+        <<endif>>
         <<stop>>
     <<endif>>
 <<endif>>
@@ -214,6 +216,9 @@ title: Loop0password
     <<if $Loop0HasFile>>
         -> 投入文件
             这就算完成测试中的任务了吧。//进入自由状态
+            <<PlayAudio AudioManager "LockAndKey">>
+            <<wait 0.5>>
+            <<StopAudio AudioManager "LockAndKey">>
             【右侧的门传来锁芯转动的声音。】
             好像右边的门开了，去看看能不能开。
             <<ScreenShift LevelLoop 0 2>>
@@ -381,6 +386,9 @@ title: Loop1Password
     <<if $Loop1HasFile>>
         -> 投入文件
             还真是我的生日，真是不知道人事部的人在想什么。
+            <<PlayAudio AudioManager "LockAndKey">>
+            <<wait 0.5>>
+            <<StopAudio AudioManager "LockAndKey">>
             【右侧的门传来锁芯转动的声音。】
             走吧，我还想快点下班呢。
             <<ScreenShift LevelLoop 1 2>>
@@ -504,6 +512,9 @@ title: Loop2Password
     看起来还需要投入文件
     <<if $Loop2HasFile>>
         -> 投入文件
+            <<PlayAudio AudioManager "LockAndKey">>
+            <<wait 0.5>>
+            <<StopAudio AudioManager "LockAndKey">>
             【右侧的门传来锁芯转动的声音。】
             <<ScreenShift LevelLoop 2 2>>
             <<set $Loop2ScreenState to 3>> 
@@ -608,6 +619,9 @@ title: Loop3Password
     看起来还需要投入文件
     <<if $Loop3HasFile>>
         -> 投入文件
+            <<PlayAudio AudioManager "LockAndKey">>
+            <<wait 0.5>>
+            <<StopAudio AudioManager "LockAndKey">>
             【右侧的门传来锁芯转动的声音。】
             <<ScreenShift LevelLoop 3 2>>
             <<set $Loop3ScreenState to 3>> 
@@ -669,6 +683,9 @@ title: Loop4Window
 title: Loop4DoorA
 ---
 <<if !$Loop4HasOpenDoorA>>
+    <<PlayAudio AudioManager "NockingDoor">>
+    <<wait 2>>
+    <<StopAudio AudioManager "NockingDoor">>
     门外好像有些动静...
     【是否要打开门？】
     -> 是
@@ -737,6 +754,9 @@ title: Loop4Password
     看起来还需要投入文件
     <<if $Loop4HasFile>>
         -> 投入文件
+            <<PlayAudio AudioManager "LockAndKey">>
+            <<wait 0.5>>
+            <<StopAudio AudioManager "LockAndKey">>
             【右侧的门传来锁芯转动的声音。】
             <<ScreenShift LevelLoop 4 2>>
             <<set $Loop4ScreenState to 3>> 
@@ -809,7 +829,7 @@ title: Loop5DoorA
 -> 芝麻开门
     【门奇迹般地开了。】//进入循环？
     <<LoopEnd LevelLoop>>
-    <<ToLevel GameManager "FinalLoop">>
+    <<stop>>
 -> 否
     <<stop>>//*返回
 ===

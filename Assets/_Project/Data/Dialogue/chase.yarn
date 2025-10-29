@@ -10,15 +10,30 @@ position: -147,-50
 泰勒:“哈哈……你在这胡言乱语什么呢。”
 主角:“我是认真的！你是不是知道什么事情。”
 泰勒:“克络斯，你压力太大了。回到你的工位上去
+
+<<PlayAudio AudioManager "Typing">>
 <<codePrint CodeManager1 0>>
+<<StopAudio AudioManager "Typing">>
+
 主角:“泰勒，你在说什么？”
+
+<<PlayAudio AudioManager "Typing">>
 <<codePrint CodeManager1 1>>
+<<StopAudio AudioManager "Typing">>
+
 主角:“……”
+
+<<PlayAudio AudioManager "Typing">>
 <<codePrint CodeManager1 2>>
+<<StopAudio AudioManager "Typing">>
+
 <<setMaterial CameraOutPut 1>>
 <<animator_play_and_wait AnimController "ChangeScene">>
 <<setMaterial CameraOutPut 0>>
+
+<<PlayAudio AudioManager "Typing">>
 <<codePrint CodeManager2 3>>
+<<StopAudio AudioManager "Typing">>
 是否开启今天的工作？
 -> WORK
     <WORK>
@@ -26,14 +41,20 @@ position: -147,-50
     <WORK>
 -> WORK
     <WORK>
+
+<<PlayAudio AudioManager "Error">>
 <<codePrint CodeManager2 4>>
+<<StopAudio AudioManager "Error">>
+
 <<setMaterial CameraOutPut 1>>
 <<animator_play_and_wait AnimController "ChangeToChase">>
 <<setMaterial CameraOutPut 0>>
 <<start_chase_player AChaser>>
+<<PlayAudio AudioManager "StonesFall">>
 ===
 title: open_escape_door
 ---
+<<StopAudio AudioManager "StonesFall">>
 <<stop_chase AChaser>>
 <<ToLevel GameManager "Ending">>
 ===
@@ -72,14 +93,22 @@ title: Ending
 {$newName}:“目的就是为了让你有‘不得不工作’的理由。”
 {$mainName}: “……”
 {$newName}:“看起来你还需要亲眼看看。”
+
+<<PlayAudio AudioManager "Typing">>
 <<codePrint CodeManager1 0>>
+<<StopAudio AudioManager "Typing">>
+
 <<setMaterial CameraOutPut 1>>
 <<wait 1>>
 <<activate_object AnimController "White BG">>
 <<wait 1>>
 <<setMaterial CameraOutPut 0>>
 {$newName}:“只需要简单地按几个键，输入代码就能去到任何一个地方。”
+
+<<PlayAudio AudioManager "Typing">>
 <<codePrint CodeManager1 1>>
+<<StopAudio AudioManager "Typing">>
+
 <<setMaterial CameraOutPut 1>>
 <<wait 1>>
 <<deactivate_object AnimController "White BG">>
@@ -90,19 +119,29 @@ title: Ending
 <<setMaterial CameraOutPut 0>>
 {$newName}:“假装今天什么也没发生，你可以继续作为‘普通人’生活。”
 {$newName}:“选择权在你手里，克络斯。”
+
+<<PlayAudio AudioManager "Typing">>
 <<codePrint CodeManager1 2>>
+<<StopAudio AudioManager "Typing">>
+
 <<setMaterial CameraOutPut 1>>
 <<wait 1>>
 <<deactivate_object AnimController "NewHire">>
 <<setMaterial CameraOutPut 0>>
 {$newName}:“想想看，你真正需要的是什么？”
 -> 一份安稳的工作
+    <<PlayAudio AudioManager "Typing">>
     <<codePrint CodeManager2 0>>
+    <<StopAudio AudioManager "Typing">>
     自白:太好了，金总跟我说评估测试通过了！
     自白:可以继续在这里工作，真好啊。
     自白:真好啊……
+    <<wait 3>> // 暂时性
+    <<ToLevel GameManager "Main">> // 暂时性
 -> ？？？
+    <<PlayAudio AudioManager "Typing">>
     <<codePrint CodeManager2 1>>
+    <<StopAudio AudioManager "Typing">>
     <<setMaterial CameraOutPut 1>>
     <<wait 3>>
     <<ToLevel GameManager "Main">>

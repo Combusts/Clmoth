@@ -187,6 +187,7 @@ public class LevelLoop : MonoBehaviour
     [YarnCommand("LoopEnd")]
     public void LoopEnd()
     {
+        SceneTransitionManager.Instance.LoadSceneWithFade(4);
         Debug.Log($"[LevelLoop] 循环结束");
     }
 }

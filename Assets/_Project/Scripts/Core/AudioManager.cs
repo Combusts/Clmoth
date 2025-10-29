@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
+using Yarn.Unity;
 
 public class AudioManager : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null) Instance = this;
         if (Instance != this)
         {
             Destroy(gameObject);
@@ -60,6 +61,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    [YarnCommand("PlayAudio")]
     public void PlayAudio(string audioName)
     {
         if (audioGameObjects.ContainsKey(audioName))
@@ -72,6 +74,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    [YarnCommand("StopAudio")]
     public void StopAudio(string audioName)
     {
         if (audioGameObjects.ContainsKey(audioName))

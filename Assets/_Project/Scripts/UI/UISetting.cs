@@ -32,7 +32,9 @@ public class UISetting : PanelBase
     
     public void OnClickBackButton()
     {
+        AudioManager.Instance.PlayAudio("Click");
         UIManager.Instance.HideUI("Setting");
+        UIManager.Instance.ShowUI("Pause");
     }
 
     public void OnClickBGMSlider()

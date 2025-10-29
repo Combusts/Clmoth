@@ -14,7 +14,9 @@ public class UIGameExplain : PanelBase
 
     public void OnCloseButtonClick()
     {
+
         GameManager.Instance.ResumeGame();
+        AudioManager.Instance.PlayAudio("Click");
         UIManager.Instance.HideUI("GameExplain");
         UIManager.Instance.ShowUI("Playing");
     }

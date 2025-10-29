@@ -18,16 +18,19 @@ public class UIMain : PanelBase
 
     public void OnStartGame()
     {
+        AudioManager.Instance.PlayAudio("Click");
         GameManager.Instance.StartGame();
     }
 
     public void OnExitGame()
     {
+        AudioManager.Instance.PlayAudio("Click");   
         Application.Quit();
 
     }
     public void OnSetting()
     {
+        AudioManager.Instance.PlayAudio("Click");   
         UIManager.Instance.ShowUI("Setting");
     }
 }

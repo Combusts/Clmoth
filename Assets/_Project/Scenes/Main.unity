@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ed1c3eb868fe844aba8418e94010d3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugSwitchToScene: 
 --- !u!4 &123826607
 Transform:
   m_ObjectHideFlags: 0
@@ -841,30 +842,110 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioDatas:
-  - audioName: RightEmail
+  - audioName: Loop
     isLoop: 0
-    volume: 1
+    volume: 0.1
     pitch: 1
     playOnAwake: 0
-    type: 1
+    type: 0
     playOnStart: 0
-    audioClip: {fileID: 8300000, guid: 49d52c64c0f993b46b75805d4fc28885, type: 3}
-  - audioName: WrongEmail
-    isLoop: 0
-    volume: 1
-    pitch: 1
-    playOnAwake: 0
-    type: 1
-    playOnStart: 0
-    audioClip: {fileID: 8300000, guid: 38450a534487a344599eec80b0394484, type: 3}
-  - audioName: BGM
+    audioClip: {fileID: 8300000, guid: d8c7ed9728400c844b7e144114cde32f, type: 3}
+  - audioName: LoopWithLead
     isLoop: 1
-    volume: 1
+    volume: 0.1
     pitch: 1
-    playOnAwake: 1
+    playOnAwake: 0
     type: 0
     playOnStart: 1
-    audioClip: {fileID: 8300000, guid: ddc32a67925c13c408703d6f1ae64a64, type: 3}
+    audioClip: {fileID: 8300000, guid: d0df24dd64130d24ba5007481e6068d0, type: 3}
+  - audioName: Click
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 06aaf55242bae9f499265480aa34a036, type: 3}
+  - audioName: Correct
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 2ef2a33501734ed41b4368935fd293f9, type: 3}
+  - audioName: Typing
+    isLoop: 1
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 1c1c63c4ac771ed4f9794a79c94c2a41, type: 3}
+  - audioName: NockingDoor
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 0f2e91ce26649de419928160530e045b, type: 3}
+  - audioName: OpenDoor
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 32341fe700f807e43a443033bf28544b, type: 3}
+  - audioName: Run
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: f22da1ec2def2d644a0bf901f33d3e20, type: 3}
+  - audioName: Walk
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 70f748f8f3c2e324ba5bf9dc4aed828c, type: 3}
+  - audioName: Wrong
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 7b37a842bade031408b5f82debc3a6c0, type: 3}
+  - audioName: LockAndKey
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 35b8575bd3540464fb976ab9962babaf, type: 3}
+  - audioName: StonesFall
+    isLoop: 1
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 9d753843fb529484e901c2534a8e1f35, type: 3}
+  - audioName: Error
+    isLoop: 1
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 06e1c5c126abc9745bd44096f3597cc2, type: 3}
   AudioMixer: {fileID: 24100000, guid: 5eba0e3dee944984eb2a8a091c13c2a6, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

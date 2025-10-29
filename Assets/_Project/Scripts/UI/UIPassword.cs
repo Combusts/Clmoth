@@ -39,6 +39,7 @@ public class UIPassword : PanelBase
 
     public bool CheckPassword()
     {
+        AudioManager.Instance.PlayAudio("Click");
         for (int i = 0; i < password.Count; i++)
         {
             if (passwordNumTexts[i].text != password[i].ToString()){
@@ -53,6 +54,7 @@ public class UIPassword : PanelBase
 
     public void OnEnterPassword(int num)
     {
+        AudioManager.Instance.PlayAudio("Click");
         if (isLocked)
         {
             // 密码输入被锁定，不能输入
@@ -74,6 +76,8 @@ public class UIPassword : PanelBase
                 Debug.Log("密码正确");
                 isPasswordCorrect = true;
                 greenLight.SetActive(true);
+                // 播放密码正确音效
+                AudioManager.Instance.PlayAudio("Correct");
                 // 锁定密码输入
                 isLocked = true;
                 // 触发密码正确事件
@@ -84,6 +88,8 @@ public class UIPassword : PanelBase
                 // 密码错误
                 Debug.Log("密码错误");
                 ResetPasswordInput();
+                // 播放密码错误音效
+                AudioManager.Instance.PlayAudio("Wrong");
             }
         }
     }
@@ -100,6 +106,7 @@ public class UIPassword : PanelBase
 
     public void OnBackspace()
     {
+        AudioManager.Instance.PlayAudio("Click");
         // 密码输入被锁定，不能删除
         if (isLocked)
         {
@@ -115,6 +122,7 @@ public class UIPassword : PanelBase
 
     public void OnCloseButtonClick()
     {
+        AudioManager.Instance.PlayAudio("Click");
         if (isPasswordCorrect)
         {
             OnPasswordCorrect?.Invoke();
