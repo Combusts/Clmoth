@@ -194,8 +194,8 @@ public class YarnSpinnerManager : MonoBehaviour
                 LogError("SaveManager.Instance is null! Cannot save dialogue completion. Make sure SaveManager exists in the scene.");
             }
             
-            // 通知所有交互物体对话已完成
-            NotifyInteractiveObjects(currentDialogueNode);
+            // 对话完成后，保存所有交互物体的当前状态
+            SaveAllInteractiveObjectsState();
         }
         
         // 清空当前对话节点
@@ -213,29 +213,6 @@ public class YarnSpinnerManager : MonoBehaviour
         LogDebug($"Dialogue node completed: {nodeName}");
         // 注意：这里不直接保存，而是在整个对话完成时保存
         // 这样可以避免在对话中间保存不完整的状态
-    }
-    
-    /// <summary>
-    /// 通知所有交互物体对话已完成
-    /// </summary>
-    /// <param name="completedNodeName">完成的对话节点名称</param>
-    private void NotifyInteractiveObjects(string completedNodeName)
-    {
-        // 查找场景中所有的交互物体
-        IInteractive[] interactiveObjects = FindObjectsOfType<IInteractive>();
-        
-        LogDebug($"Notifying {interactiveObjects.Length} interactive objects about completed dialogue: {completedNodeName}");
-        
-        foreach (IInteractive interactiveObject in interactiveObjects)
-        {
-            if (interactiveObject != null)
-            {
-                interactiveObject.OnDialogueCompleted(completedNodeName);
-            }
-        }
-        
-        // 对话完成后，保存所有交互物体的当前状态
-        SaveAllInteractiveObjectsState();
     }
     
     /// <summary>

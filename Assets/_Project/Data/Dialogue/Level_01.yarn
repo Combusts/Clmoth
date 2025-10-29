@@ -8,6 +8,7 @@ position: -403,-349
 //对话框可以没有前面的冒号，在对话框左上方显示名字/头像框
 <<sleepy>>
 <<center_dialogue 120>>
+<<deactivate_object CommandManager "2 with doc">>
 你好，我是{$mainName}，一位来自房地产公司的普通员工。
 我每天的生活就是工作。
 负责处理无尽的文件、修改第N版的设计方案，
