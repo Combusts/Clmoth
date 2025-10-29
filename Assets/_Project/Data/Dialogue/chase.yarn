@@ -1,4 +1,4 @@
-﻿title: chase
+﻿title: FinalLoop
 position: -147,-50
 ---
 主角:“泰勒……你怎么在这里？”
@@ -19,17 +19,30 @@ position: -147,-50
 <<animator_play_and_wait AnimController "ChangeScene">>
 <<setMaterial CameraOutPut 0>>
 <<codePrint CodeManager2 3>>
+是否开启今天的工作？
+-> WORK
+    <WORK>
+-> WORK
+    <WORK>
+-> WORK
+    <WORK>
 <<codePrint CodeManager2 4>>
 <<setMaterial CameraOutPut 1>>
 <<animator_play_and_wait AnimController "ChangeToChase">>
 <<setMaterial CameraOutPut 0>>
 <<start_chase_player AChaser>>
 ===
-title: escape_sequence
+title: open_escape_door
+---
+<<stop_chase AChaser>>
+<<ToLevel GameManager "Ending">>
+===
+title: Ending
 ---
 //追逐动画，主角从循环场景到窗户场景再到走廊（带门）场景，门旁边站着新人
 自白:呼……我现在是安全了吗？
 {$newName}: “克络斯……”
+<<animator_play_and_wait AnimController "NewHireComeUp">>
 //此时动画直接让主角走到新人旁边继续对话。
 {$newName}: “克络斯前辈，你还好吗？跑这么急，是金总又在催了吗？”
 {$mainName}: “刚……刚才走廊那边都坍塌了。”
@@ -59,22 +72,38 @@ title: escape_sequence
 {$newName}:“目的就是为了让你有‘不得不工作’的理由。”
 {$mainName}: “……”
 {$newName}:“看起来你还需要亲眼看看。”
-Environment.RenderMode = Wireframe;//切换场景到什么都没有的背景图
+<<codePrint CodeManager1 0>>
+<<setMaterial CameraOutPut 1>>
+<<wait 1>>
+<<activate_object AnimController "White BG">>
+<<wait 1>>
+<<setMaterial CameraOutPut 0>>
 {$newName}:“只需要简单地按几个键，输入代码就能去到任何一个地方。”
-{$newName}:Scene.Load("Office_Standard");//场景回到初始办公室
+<<codePrint CodeManager1 1>>
+<<setMaterial CameraOutPut 1>>
+<<wait 1>>
+<<deactivate_object AnimController "White BG">>
+<<wait  1>>
+<<deactivate_object AnimController "Ending Env">>
+<<activate_object AnimController "Office Env">>
+<<wait 1>>
+<<setMaterial CameraOutPut 0>>
 {$newName}:“假装今天什么也没发生，你可以继续作为‘普通人’生活。”
 {$newName}:“选择权在你手里，克络斯。”
-{$newName}:Actor.Despawn(self);// 新人的身影彻底消失
+<<codePrint CodeManager1 2>>
+<<setMaterial CameraOutPut 1>>
+<<wait 1>>
+<<deactivate_object AnimController "NewHire">>
+<<setMaterial CameraOutPut 0>>
 {$newName}:“想想看，你真正需要的是什么？”
 -> 一份安稳的工作
-    System.Restore//主角又回到正常的工作情景
-    //动画操控主角从办公室门的位置走向自己的办公桌开始游戏
+    <<codePrint CodeManager2 0>>
     自白:太好了，金总跟我说评估测试通过了！
     自白:可以继续在这里工作，真好啊。
-    自白:继续
+    自白:真好啊……
 -> ？？？
-    System.Override
-    WARNING: Unauthorized access detected.
-    EXECUTING: IMMEDIATE_TERMINATION_SEQUENCE.//系统开始删除
-    //最后黑屏直接退回主界面   
+    <<codePrint CodeManager2 1>>
+    <<setMaterial CameraOutPut 1>>
+    <<wait 3>>
+    <<ToLevel GameManager "Main">>
 ===

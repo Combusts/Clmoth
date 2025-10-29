@@ -40,10 +40,16 @@ public class GameManager : MonoBehaviour
         levelDic["Game"] = 2;
         levelDic["MiniGame"] = 2;
         levelDic["FinalLoop"] = 3;
-        levelDic["BeforeChase"] = 4;
+        levelDic["Ending"] = 4;
 
         SceneManager.sceneLoaded += (scene, mode)=>{
             Debug.Log($"Scene Loaded: {scene.name}");
+            
+            // 切换场景时清除玩家位置存档
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.ClearPlayerPosition();
+            }
             
             // 初始化UI
             
@@ -68,6 +74,17 @@ public class GameManager : MonoBehaviour
             {
                 UIManager.Instance.ShowUI("Playing");
                 UIManager.Instance.ShowUI("CinematicBars");
+                YarnSpinnerManager.Instance.StartDialogueSafe("FinalLoop", true);
+            }
+
+            if (scene.name == "Ending")
+            {
+                // 禁用Player的摄像机跟随，避免覆盖设置的摄像机位置
+                StartCoroutine(DisablePlayerCameraFollow());
+                UIManager.Instance.ShowUI("Playing");
+                UIManager.Instance.ShowUI("CinematicBars");
+                // 进入结局对话
+                YarnSpinnerManager.Instance.StartDialogueSafe("Ending", true);
             }
         };
     }
@@ -192,13 +209,34 @@ public class GameManager : MonoBehaviour
             var cinematicBars = FindObjectOfType<UICinematicBars>();
             if (cinematicBars != null)
             {
-                cinematicBars.SetCameraPosition();
-                Debug.Log("Camera position set after scene load");
+                // 已取消相机位置更改
+                // cinematicBars.SetCameraPosition(); // 不再更改相机位置
+                Debug.Log("Cinematic bars found after scene load (camera position unchanged)");
             }
             else
             {
                 Debug.LogWarning("UICinematicBars not found after scene load");
             }
+        }
+    }
+
+    /// <summary>
+    /// 禁用Player的摄像机跟随（用于Ending等场景）
+    /// </summary>
+    private IEnumerator DisablePlayerCameraFollow()
+    {
+        // 等待一帧确保Player已初始化
+        yield return null;
+        
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.DisableCameraFollow();
+            Debug.Log("[GameManager] Player camera follow disabled for Ending scene");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Player not found in Ending scene");
         }
     }
 

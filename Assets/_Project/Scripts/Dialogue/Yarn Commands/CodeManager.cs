@@ -11,6 +11,7 @@ public class CodeLinesList
     public List<string> CodeString;
     public int Index;
     public Color VertexColor = Color.white;
+    public float WaitTime = 0.3f;
 }
 
 [RequireComponent(typeof(TextMeshProUGUI))]
@@ -42,7 +43,8 @@ public class CodeManager : MonoBehaviour
                 codeDisplayText.text += code[i];
                 yield return new WaitForSeconds(0.03f);
             }
-            yield return new WaitForSeconds(0.3f);
+            codeDisplayText.text += "\n";
+            yield return new WaitForSeconds(codeLinesList.WaitTime);
             codeLinesList.Index++;
             if (codeLinesList.Index >= codeLinesList.CodeString.Count)
             {
@@ -56,6 +58,5 @@ public class CodeManager : MonoBehaviour
     public IEnumerator CodePrint(int index)
     {
         yield return ShowCode(index);
-        yield return new WaitForSeconds(2f);
     }
 }

@@ -3,33 +3,35 @@ using UnityEngine;
 using UnityEngine.UI;
 using Yarn.Unity;
 
-[RequireComponent(typeof(RawImage))]
 public class MaterialManager : MonoBehaviour
 {
     [Header("Materials")]
     [SerializeField] private List<Material> materials = new List<Material>();
 
     private RawImage rawImage;
+    private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         rawImage = GetComponent<RawImage>();
-        if (rawImage == null)
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (rawImage == null && spriteRenderer == null)
         {
-            Debug.LogError($"MaterialManager: RawImage component not found on {gameObject.name}!", this);
+            Debug.LogError($"MaterialManager: Neither RawImage nor SpriteRenderer component found on {gameObject.name}!", this);
         }
     }
 
     /// <summary>
-    /// Yarn指令：通过索引设置RawImage组件的材质
+    /// Yarn指令：通过索引设置RawImage或SpriteRenderer组件的材质
     /// </summary>
     /// <param name="index">材质列表中的索引（从0开始）</param>
     [YarnCommand("setMaterial")]
     public void SetMaterial(int index)
     {
-        if (rawImage == null)
+        if (rawImage == null && spriteRenderer == null)
         {
-            Debug.LogError($"MaterialManager: RawImage component is null on {gameObject.name}!", this);
+            Debug.LogError($"MaterialManager: Neither RawImage nor SpriteRenderer component is found on {gameObject.name}!", this);
             return;
         }
 
@@ -54,7 +56,18 @@ public class MaterialManager : MonoBehaviour
 
         // 创建材质实例以避免修改原始材质资源
         Material materialInstance = new Material(material);
-        rawImage.material = materialInstance;
+
+        // 设置RawImage材质（如果存在）
+        if (rawImage != null)
+        {
+            rawImage.material = materialInstance;
+        }
+
+        // 设置SpriteRenderer材质（如果存在）
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.material = materialInstance;
+        }
 
         Debug.Log($"MaterialManager: Successfully set material at index {index} ({material.name}) on {gameObject.name}");
     }

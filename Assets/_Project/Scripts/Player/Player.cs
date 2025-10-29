@@ -77,6 +77,9 @@ public class Player : MonoBehaviour
             // 如果 PlayerInputManager 还没准备好，延迟订阅
             StartCoroutine(SubscribeToInputManagerWhenReady());
         }
+        
+        // 订阅对话完成事件
+        SubscribeToDialogueEvents();
     }
 
     void Update()
@@ -97,9 +100,6 @@ public class Player : MonoBehaviour
         
         // 摄像机跟随逻辑
         UpdateCameraFollow();
-        
-        // 定期保存玩家位置
-        SavePlayerPosition();
 
         // 更新动画器状态
         if (animator != null)
@@ -118,6 +118,9 @@ public class Player : MonoBehaviour
             PlayerInputManager.Instance.OnInteractActionPerformed -= Interact;
             PlayerInputManager.Instance.OnJumpActionPerformed -= Jump;
         }
+        
+        // 取消订阅对话事件
+        UnsubscribeFromDialogueEvents();
     }
 
     public void OnTriggerEnter2D(UnityEngine.Collider2D collision)
@@ -330,6 +333,82 @@ public class Player : MonoBehaviour
             string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             SaveManager.Instance.SetPlayerData(transform.position, currentScene);
         }
+    }
+    
+    /// <summary>
+    /// 订阅对话事件
+    /// </summary>
+    private void SubscribeToDialogueEvents()
+    {
+        // 如果 YarnSpinnerManager 还没准备好，延迟订阅
+        if (YarnSpinnerManager.Instance == null)
+        {
+            StartCoroutine(SubscribeToDialogueEventsWhenReady());
+            return;
+        }
+        
+        // 从 YarnSpinnerManager 的 GameObject 获取 DialogueRunner
+        DialogueRunner dialogueRunner = YarnSpinnerManager.Instance.GetComponent<DialogueRunner>();
+        if (dialogueRunner != null)
+        {
+            dialogueRunner.onDialogueComplete.AddListener(OnDialogueComplete);
+        }
+        else
+        {
+            // 如果 DialogueRunner 还没准备好，延迟订阅
+            StartCoroutine(SubscribeToDialogueEventsWhenReady());
+        }
+    }
+    
+    /// <summary>
+    /// 取消订阅对话事件
+    /// </summary>
+    private void UnsubscribeFromDialogueEvents()
+    {
+        if (YarnSpinnerManager.Instance != null)
+        {
+            DialogueRunner dialogueRunner = YarnSpinnerManager.Instance.GetComponent<DialogueRunner>();
+            if (dialogueRunner != null)
+            {
+                dialogueRunner.onDialogueComplete.RemoveListener(OnDialogueComplete);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 等待 YarnSpinnerManager 准备就绪的协程
+    /// </summary>
+    private IEnumerator SubscribeToDialogueEventsWhenReady()
+    {
+        // 等待直到 YarnSpinnerManager.Instance 不为空
+        while (YarnSpinnerManager.Instance == null)
+        {
+            yield return null; // 等待一帧
+        }
+        
+        // 等待直到 DialogueRunner 可用
+        DialogueRunner dialogueRunner = null;
+        while (dialogueRunner == null)
+        {
+            dialogueRunner = YarnSpinnerManager.Instance.GetComponent<DialogueRunner>();
+            if (dialogueRunner == null)
+            {
+                yield return null; // 等待一帧
+            }
+        }
+        
+        // 现在可以安全地订阅事件
+        dialogueRunner.onDialogueComplete.AddListener(OnDialogueComplete);
+    }
+    
+    /// <summary>
+    /// 对话完成时的回调
+    /// </summary>
+    private void OnDialogueComplete()
+    {
+        // 对话结束后保存玩家位置
+        SavePlayerPosition();
+        Debug.Log("[Player] Position saved after dialogue completion");
     }
     
     // 编辑器实时预览

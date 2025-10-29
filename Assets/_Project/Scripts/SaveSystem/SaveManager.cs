@@ -221,6 +221,25 @@ public class SaveManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 清除玩家位置存档
+    /// </summary>
+    public void ClearPlayerPosition()
+    {
+        if (currentSaveData != null)
+        {
+            currentSaveData.playerData.position = Vector3.zero;
+            currentSaveData.playerData.sceneName = "";
+            LogDebug("Player position cleared from save data");
+
+            // 自动保存
+            if (enableAutoSave)
+            {
+                SaveGame();
+            }
+        }
+    }
+
+    /// <summary>
     /// 获取存档数据
     /// </summary>
     /// <returns>当前存档数据</returns>

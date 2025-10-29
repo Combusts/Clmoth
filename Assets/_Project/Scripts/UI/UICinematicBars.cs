@@ -38,8 +38,8 @@ public class UICinematicBars : PanelBase
         bottomRect.offsetMin = Vector2.zero;
         bottomRect.offsetMax = Vector2.zero;
 
-        // 将mainCamera的Transform PostionY向上偏移 BottomBlackBar的高度
-        SetCameraPosition();
+        // 已取消相机位置更改
+        // SetCameraPosition(); // 不再更改相机位置
 
         Debug.Log("mainCamera.transform.position: " + mainCamera.transform.position);
 
@@ -47,18 +47,8 @@ public class UICinematicBars : PanelBase
 
     public void SetCameraPosition()
     {
-        // 重新获取Camera引用，确保使用当前场景的Camera
-        mainCamera = Camera.main;
-        
-        if (mainCamera != null)
-        {
-            mainCamera.transform.position = new Vector3(0, 0 - bottomBarHeight*10, -10);
-            Debug.Log("Camera position set to: " + mainCamera.transform.position);
-        }
-        else
-        {
-            Debug.LogWarning("Main camera not found when setting position");
-        }
+        // 已取消相机位置更改，保留方法以避免编译错误
+        // 相机位置不再被此系统修改
     }
 
     void OnDisable()
@@ -107,8 +97,8 @@ public class UICinematicBars : PanelBase
         bottomRect.offsetMin = Vector2.zero;
         bottomRect.offsetMax = Vector2.zero;
 
-        // 重新设置相机位置
-        SetCameraPosition();
+        // 已取消相机位置更改
+        // SetCameraPosition(); // 不再更改相机位置
 
         Debug.Log($"Cinematic bars reloaded - Top: {topBarHeight:F2}, Bottom: {bottomBarHeight:F2}");
     }

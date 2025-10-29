@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/Game.unity
     guid: 4ef271c2c61c00d4da3fb8b455267569
   - enabled: 1
-    path: Assets/_Project/Scenes/Levels/Loop/FinalLoop.unity
+    path: Assets/_Project/Scenes/Levels/Loop/FinalLoop/FinalLoop.unity
     guid: f7f957ddb34740f46aa724672fc96fc1
+  - enabled: 1
+    path: Assets/_Project/Scenes/Levels/Loop/Ending/Ending.unity
+    guid: 67683462f98541e469ac6feedb433d6f
   m_configObjects: {}
