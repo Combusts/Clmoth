@@ -29,6 +29,9 @@ public class GameManager : MonoBehaviour
         levelDic["Main"] = 0;
         levelDic["Level_01"] = 1;
         levelDic["MiniGame"] = 2;
+        levelDic["Loop"] = 3;
+        levelDic["LoopFinal"] = 4;
+        
 
         SceneManager.sceneLoaded += (scene, mode)=>{
             Debug.Log($"Scene Loaded: {scene.name}");

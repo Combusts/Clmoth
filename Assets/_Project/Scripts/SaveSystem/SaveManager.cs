@@ -40,11 +40,11 @@ public class SaveManager : MonoBehaviour
         LogDebug($"SaveManager initialized. Save path: {savePath}");
     }
 
-    void Start()
-    {
-        // 尝试加载现有存档
-        LoadSaveData();
-    }
+    // void Start()
+    // {
+    //     // 尝试加载现有存档
+    //     LoadSaveData();
+    // }
 
     /// <summary>
     /// 保存存档数据

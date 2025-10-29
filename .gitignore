@@ -87,10 +87,6 @@ Thumbs.db
 
 # Custom ignores for this project
 # Add any project-specific files or folders to ignore here
-/[Aa]ssets/_Project/Art/Sprites/Characters/*.png
-/[Aa]ssets/_Project/Art/Sprites/Environment/*.png
-/[Aa]ssets/_Project/Art/Sprites/Props/*.png
-/[Aa]ssets/_Project/Art/Sprites/UI/*.png
 /[Aa]ssets/_Project/Audio/Music/*.mp3
 /[Aa]ssets/_Project/Audio/SFX/*.wav
 /[Aa]ssets/_Project/Audio/Dialogue/*.wav

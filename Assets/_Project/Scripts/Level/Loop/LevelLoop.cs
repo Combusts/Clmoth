@@ -137,6 +137,10 @@ public class LevelLoop : MonoBehaviour
 
     void OnPasswordCorrect()
     {   
+
+        if(dialogueRunner == null){
+            dialogueRunner = FindObjectOfType<DialogueRunner>();
+        }
         Debug.Log("[LevelLoop] 密码正确");
         FileSenders[curLoopNum].ShiftSprite(1);
         dialogueRunner.VariableStorage.SetValue($"$Loop{curLoopNum}RightPassw", true);
