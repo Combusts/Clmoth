@@ -21,11 +21,6 @@ public class Table : IInteractive
     
     protected override void Start()
     {
-        // 设置关联的对话节点
-        if (!string.IsNullOrEmpty(dialogueNode))
-        {
-            SetLinkedDialogueNode(dialogueNode);
-        }
         
         // 调用基类的存档状态检查
         base.Start();

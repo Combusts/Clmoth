@@ -344,20 +344,20 @@ public class SaveManager : MonoBehaviour
     /// 获取交互物体是否可交互
     /// </summary>
     /// <param name="interactiveID">交互物体ID</param>
-    /// <returns>是否可交互</returns>
-    public bool GetInteractiveObjectCanInteract(string interactiveID)
+    /// <returns>是否可交互，如果没有存档则返回null</returns>
+    public bool? GetInteractiveObjectCanInteract(string interactiveID)
     {
-        return currentSaveData != null && currentSaveData.GetInteractiveObjectCanInteract(interactiveID);
+        return currentSaveData?.GetInteractiveObjectCanInteract(interactiveID);
     }
 
     /// <summary>
     /// 获取交互物体是否激活
     /// </summary>
     /// <param name="interactiveID">交互物体ID</param>
-    /// <returns>是否激活</returns>
-    public bool GetInteractiveObjectIsActivated(string interactiveID)
+    /// <returns>是否激活，如果没有存档则返回null</returns>
+    public bool? GetInteractiveObjectIsActivated(string interactiveID)
     {
-        return currentSaveData != null && currentSaveData.GetInteractiveObjectIsActivated(interactiveID);
+        return currentSaveData?.GetInteractiveObjectIsActivated(interactiveID);
     }
 
     // 向后兼容方法 - 保持旧API可用
@@ -381,7 +381,7 @@ public class SaveManager : MonoBehaviour
     [System.Obsolete("Use GetInteractiveObjectCanInteract() instead")]
     public bool IsInteractiveObjectDisabled(string interactiveID)
     {
-        return !GetInteractiveObjectCanInteract(interactiveID);
+        return !GetInteractiveObjectCanInteract(interactiveID) ?? false;
     }
 
     /// <summary>
@@ -392,7 +392,7 @@ public class SaveManager : MonoBehaviour
     [System.Obsolete("Use GetInteractiveObjectIsActivated() instead")]
     public bool IsInteractiveObjectDeactivated(string interactiveID)
     {
-        return !GetInteractiveObjectIsActivated(interactiveID);
+        return !GetInteractiveObjectIsActivated(interactiveID) ?? false;
     }
 
     // 调试方法

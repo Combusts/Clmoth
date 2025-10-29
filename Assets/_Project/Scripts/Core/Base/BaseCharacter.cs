@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using Yarn.Unity;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class BaseCharacter : MonoBehaviour
 {
     [Header("移动状态")]
@@ -12,7 +14,16 @@ public class BaseCharacter : MonoBehaviour
     [SerializeField] private int emotionState = 0;
     public List<Sprite> emotionSprites = new();
     
+    [Header("追逐设置")]
+    [SerializeField] private bool isChasing = false;
+    [SerializeField] private float chaseStopDistance = 1f; // 停止追逐的距离
+    [SerializeField] private bool flipTowardsTarget = true; // 是否朝向目标翻转
+    [SerializeField] private float chaseSpeedThreshold = 5f; // 切换速度的距离阈值
+    [SerializeField] private float farChaseSpeed = 7f; // 远距离追逐速度（距离大于阈值时）
+    [SerializeField] private float closeChaseSpeed = 3f; // 近距离追逐速度（距离小于阈值时）
+    
     private Animator animator;
+    private Rigidbody2D rb; // 物理组件，用于支持物理移动
     private bool lastOnMoveValue;
     private bool lastOnRunningValue;
     private int lastEmotionState;
@@ -55,6 +66,7 @@ public class BaseCharacter : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>(); // 初始化物理组件
         lastOnMoveValue = onMove;
         lastOnRunningValue = onRunning;
         lastEmotionState = emotionState;
@@ -110,6 +122,21 @@ public class BaseCharacter : MonoBehaviour
         else
         {
             UpdateEmotion();
+        }
+        
+        // 更新追逐状态
+        UpdateChasing();
+    }
+    
+    private void UpdateChasing()
+    {
+        if (isChasing)
+        {
+            StartChasePlayer();
+        }
+        else
+        {
+            StopChase();
         }
     }
     
@@ -213,6 +240,108 @@ public class BaseCharacter : MonoBehaviour
         }
     }
     
+    #region 追逐功能
+    
+    /// <summary>
+    /// 开始追逐目标
+    /// </summary>
+    /// <param name="target">目标Transform</param>
+    public void StartChasing(Transform target)
+    {
+        if (target == null)
+        {
+            Debug.LogWarning($"[BaseCharacter] {gameObject.name}: 目标是null");
+            return;
+        }
+        
+        isChasing = true;
+        OnRunning = true;
+        StartCoroutine(ChaseCoroutine(target));
+    }
+    
+    /// <summary>
+    /// 停止追逐
+    /// </summary>
+    public void StopChasing()
+    {
+        isChasing = false;
+        OnRunning = false;
+        
+        // 如果使用物理移动，停止水平速度
+        if (rb != null)
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
+        
+        StopAllCoroutines();
+    }
+    
+    /// <summary>
+    /// 追逐协程
+    /// </summary>
+    private System.Collections.IEnumerator ChaseCoroutine(Transform target)
+    {
+        while (isChasing && target != null)
+        {
+            // 计算到目标的距离和方向
+            Vector3 direction = (target.position - transform.position).normalized;
+            float distance = Vector2.Distance(transform.position, target.position);
+            
+            // 如果距离足够近，停止追逐
+            if (distance <= chaseStopDistance)
+            {
+                Debug.Log($"[BaseCharacter] {gameObject.name} 到达目标，停止追逐");
+                break;
+            }
+            
+            // 根据距离选择不同的速度
+            float currentSpeed = distance > chaseSpeedThreshold ? farChaseSpeed : closeChaseSpeed;
+            
+            // 翻转朝向目标（可选）
+            if (flipTowardsTarget)
+            {
+                bool shouldFaceLeft = target.position.x < transform.position.x;
+                FlipSprite(shouldFaceLeft);
+            }
+            
+            // 使用物理移动或直接移动
+            if (rb != null)
+            {
+                // 使用物理移动
+                rb.velocity = new Vector2(direction.x * currentSpeed, rb.velocity.y);
+            }
+            else
+            {
+                // 直接移动
+                transform.position += currentSpeed * Time.deltaTime * direction;
+            }
+            
+            yield return null;
+        }
+        
+        // 追逐结束后停止
+        StopChasing();
+    }
+    
+    /// <summary>
+    /// 翻转精灵朝向
+    /// </summary>
+    private void FlipSprite(bool faceLeft)
+    {
+        Vector3 scale = transform.localScale;
+        if (faceLeft)
+        {
+            scale.x = Mathf.Abs(scale.x);
+        }
+        else
+        {
+            scale.x = -Mathf.Abs(scale.x);
+        }
+        transform.localScale = scale;
+    }
+    
+    #endregion
+    
     #region Yarn Spinner Commands
     
     /// <summary>
@@ -289,6 +418,35 @@ public class BaseCharacter : MonoBehaviour
     {
         OnRunning = false;
         Debug.Log($"[BaseCharacter] OnStopRunning: {gameObject.name}");
+    }
+    
+    /// <summary>
+    /// Yarn命令：开始追逐玩家
+    /// 用法: <<start_chase_player>>
+    /// </summary>
+    [YarnCommand("start_chase_player")]
+    public void StartChasePlayer()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null)
+        {
+            Debug.LogWarning("[BaseCharacter] 找不到玩家对象");
+            return;
+        }
+        
+        StartChasing(player.transform);
+        Debug.Log($"[BaseCharacter] {gameObject.name} 开始追逐玩家");
+    }
+    
+    /// <summary>
+    /// Yarn命令：停止追逐
+    /// 用法: <<stop_chase>>
+    /// </summary>
+    [YarnCommand("stop_chase")]
+    public void StopChase()
+    {
+        StopChasing();
+        Debug.Log($"[BaseCharacter] {gameObject.name} 停止追逐");
     }
     
     #endregion

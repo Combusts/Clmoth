@@ -8,6 +8,7 @@ position: -403,-349
 //对话框可以没有前面的冒号，在对话框左上方显示名字/头像框
 <<sleepy>>
 <<center_dialogue 120>>
+<<deactivate_object CommandManager "2 with doc">>
 你好，我是{$mainName}，一位来自房地产公司的普通员工。
 我每天的生活就是工作。
 负责处理无尽的文件、修改第N版的设计方案，
@@ -16,9 +17,9 @@ position: -403,-349
 "喂，快醒醒！" // 这里改为对话框放中间
 <<restore_dialogue>>
 <<wake_up>>
-<<show_illustration CommandManager "IllustrationPanel" "ClothCloseEyes" true>>
+<<show_illustration CommandManager "IllustrationPanel" "ClothCloseEyes" false>>
 {$mainName}: ！！！//可以加个“突然发生什么事情”的音效
-<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" true>>
+<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" false>>
 【你打瞌睡的样子刚好被上司撞见】
 -> 道歉
     {$mainName}: “对不起！{$managerName}，我昨晚……
@@ -71,7 +72,7 @@ position: -403,-349
 title: work
 position: -401,-200
 ---
-<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" false>> //显示立绘，最后false表示再右边，true在左边，名字在unity里面看
+<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" true>> //显示立绘，最后false表示再右边，true在左边，名字在unity里面看
  {$managerName}需要一份档案资料，那就先从整理档案开始吧: 
 整理档案要先把相关文件发送给对应的同事。
 现在先看看有没有新的工作邮件需要发出去。
@@ -107,18 +108,18 @@ position: -434,74
 title:A
 position: -418,-63
 ---
-<<show_illustration CommandManager "IllustrationPanel" "ANormal" false>>
-<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" true>>
+<<show_illustration CommandManager "IllustrationPanel" "ANormal" true>>
+<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" false>>
 {$AName}: “可以帮我check一下这里的代码吗，我点击run之后总是发生error。”
 {$AName}: “还有这个file，待会帮我copy然后print一下哦~”
 -> {$mainName}: 好的。
 -> {$mainName}: 这些不是你自己的工作吗？
-    <<show_illustration CommandManager "IllustrationPanel" "ASinisterSmile" false>>
+    <<show_illustration CommandManager "IllustrationPanel" "ASinisterSmile" true>>
     {$AName}: “哎呀哎呀，这些你比较skilled嘛～”
 -> 可是我还有其他的工作。
     {$AName}: “我们不是一个team吗，帮我点小忙应该没问题吧。”
 {$AName}: “我还有自己的schedule要忙啦，记得不要告诉leader哦~”
-<<show_illustration CommandManager "IllustrationPanel" "ANormal" false>>
+<<show_illustration CommandManager "IllustrationPanel" "ANormal" true>>
  同事A喜欢四处打听消息，说不定他知道简历的事情。
 {$mainName}: “等一下，但我还有一个问题。”
 {$AName}: “What’s problem?快点说，我可忙着呢。”
