@@ -148,11 +148,13 @@ position: -164,122
 <<flash CommandManager>>
 <<set_background "Image/坠楼场景">>
 <<show_background>>
+<<wait 1.5>>
 【一双手突然抓住你的腰背，用力地把你推出围栏外。】
 // 白闪两下
 // 回头看 + ！！
 <<flash CommandManager>>
 <<set_background "Image/坠楼场景2">>
+<<wait 1.5>>
 {$mainName}: !!!
 <<hide_background>>
 <<disable_interaction CommandManager "窗边休息">>

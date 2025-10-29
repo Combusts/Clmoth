@@ -679,7 +679,12 @@ title: Loop4DoorA
         {$mainName}：“我这边门锁上了打不开，能帮帮忙嘛？”
         【门外没有任何回应，敲门声也随即停止。】
         门外的人是在帮我开门吗？从猫眼看下他在做什么。//弹出猫眼动画
+        <<flash Loop4>>
+        <<set_background "Image/猫眼眼睛（有速度线）">>
+        <<show_background>>
+        <<wait 1.5>>
         ！！
+        <<hide_background>>
         【底下门缝传进一份拆封的工作信件。】
         <<animator_play_and_wait Loop4 "DocumentPop">>
         <<set $Loop4HasFile to true>>

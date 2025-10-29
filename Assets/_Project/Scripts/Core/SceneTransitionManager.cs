@@ -9,7 +9,9 @@ public class SceneTransitionManager : MonoBehaviour
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration = 0.5f;
 
-    public event System.Action OnSceneLoaded;
+    public event System.Action OnSceneLoaded; // 场景加载完成后触发(还处于黑屏)
+
+    public event System.Action OnSceneLoadComplete; // 场景加载完成后触发(黑屏已关闭)
     
     private void Awake()
     {
@@ -59,6 +61,9 @@ public class SceneTransitionManager : MonoBehaviour
 
         // 渐变关闭黑屏
         yield return StartCoroutine(FadeFromBlack());
+        
+        OnSceneLoadComplete?.Invoke();
+        OnSceneLoadComplete = null;
     }
 
     private System.Collections.IEnumerator FadeToBlack()

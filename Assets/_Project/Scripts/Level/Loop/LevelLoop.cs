@@ -10,6 +10,7 @@ public class LevelLoop : MonoBehaviour
 
     [SerializeField] private SpriteShiftItem[] FileSenders;
     [SerializeField] private SpriteShiftItem[] Windows;
+    [SerializeField] private GameObject[] Docs;
 
     [SerializeField] private DialogueRunner dialogueRunner;
     [SerializeField] private GameObject waterFountainBefore;
@@ -22,6 +23,14 @@ public class LevelLoop : MonoBehaviour
         if (dialogueRunner == null)
         {
             dialogueRunner = FindObjectOfType<DialogueRunner>();
+        }
+    }
+
+    void Start()
+    {
+        for (int i = 0; i < Docs.Length; i++)
+        {
+            Docs[i].SetActive(false);
         }
     }
 

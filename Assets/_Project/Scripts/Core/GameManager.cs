@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
             {
                 UIManager.Instance.ShowUI("Main");
             } 
-            else if (scene.name == "Level_01" || scene.name == "Level_01_01")
+            else if (scene.name == "Level_01" || scene.name == "Level_01_01" || scene.name == "Loop")
             {
                 SetCameraPositionAfterSceneLoad();
                 InitializeCommandManager();
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
                 UIManager.Instance.ShowUI("CinematicBars");
             } 
             else if (scene.name == "Game"){
-                UIManager.Instance.ShowUI("Playing");
+                UIManager.Instance.ShowUI("GameExplain");
             }
         };
     }

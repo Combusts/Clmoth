@@ -251,12 +251,19 @@ public class SaveManager : MonoBehaviour
     /// 添加已完成的场景动画
     /// </summary>
     /// <param name="animationName">动画名称</param>
-    public void AddCompletedSceneAnimation(string animationName)
+    /// <param name="sceneName">场景名称（可选）</param>
+    public void AddCompletedSceneAnimation(string animationName, string sceneName = "")
     {
         if (currentSaveData != null)
         {
-            currentSaveData.AddCompletedSceneAnimation(animationName);
-            LogDebug($"Added completed scene animation: {animationName}");
+            // 如果未提供场景名称，使用当前存档的场景名称
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                sceneName = currentSaveData.playerData.sceneName;
+            }
+            
+            currentSaveData.AddCompletedSceneAnimation(animationName, sceneName);
+            LogDebug($"Added completed scene animation: {animationName} (scene: {sceneName})");
 
             // 自动保存
             if (enableAutoSave)
@@ -265,17 +272,45 @@ public class SaveManager : MonoBehaviour
             }
         }
     }
+    
+    /// <summary>
+    /// 添加已完成的场景动画（向后兼容方法）
+    /// </summary>
+    /// <param name="animationName">动画名称</param>
+    [System.Obsolete("Use AddCompletedSceneAnimation(string animationName, string sceneName) instead")]
+    public void AddCompletedSceneAnimationLegacy(string animationName)
+    {
+        AddCompletedSceneAnimation(animationName);
+    }
 
     /// <summary>
     /// 检查场景动画是否已完成
     /// </summary>
     /// <param name="animationName">动画名称</param>
+    /// <param name="sceneName">场景名称（可选）</param>
     /// <returns>是否已完成</returns>
-    public bool IsSceneAnimationCompleted(string animationName)
+    public bool IsSceneAnimationCompleted(string animationName, string sceneName = "")
     {
-        bool result = currentSaveData != null && currentSaveData.IsSceneAnimationCompleted(animationName);
-        LogDebug($"检查动画完成状态: {animationName} = {result}");
+        // 如果未提供场景名称，使用当前存档的场景名称
+        if (string.IsNullOrEmpty(sceneName) && currentSaveData != null)
+        {
+            sceneName = currentSaveData.playerData.sceneName;
+        }
+        
+        bool result = currentSaveData != null && currentSaveData.IsSceneAnimationCompleted(animationName, sceneName);
+        LogDebug($"检查动画完成状态: {animationName} (scene: {sceneName}) = {result}");
         return result;
+    }
+    
+    /// <summary>
+    /// 检查场景动画是否已完成（向后兼容方法）
+    /// </summary>
+    /// <param name="animationName">动画名称</param>
+    /// <returns>是否已完成</returns>
+    [System.Obsolete("Use IsSceneAnimationCompleted(string animationName, string sceneName) instead")]
+    public bool IsSceneAnimationCompletedLegacy(string animationName)
+    {
+        return IsSceneAnimationCompleted(animationName);
     }
 
     /// <summary>
@@ -283,12 +318,19 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     /// <param name="animationName">动画名称</param>
     /// <param name="progress">播放进度 (0-1)</param>
-    public void SetSceneAnimationState(string animationName, float progress)
+    /// <param name="sceneName">场景名称（可选）</param>
+    public void SetSceneAnimationState(string animationName, float progress, string sceneName = "")
     {
         if (currentSaveData != null)
         {
-            currentSaveData.SetSceneAnimationState(animationName, progress);
-            LogDebug($"Set scene animation state: {animationName} = {progress}");
+            // 如果未提供场景名称，使用当前存档的场景名称
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                sceneName = currentSaveData.playerData.sceneName;
+            }
+            
+            currentSaveData.SetSceneAnimationState(animationName, progress, sceneName);
+            LogDebug($"Set scene animation state: {animationName} (scene: {sceneName}) = {progress}");
 
             // 自动保存
             if (enableAutoSave)
@@ -297,17 +339,46 @@ public class SaveManager : MonoBehaviour
             }
         }
     }
+    
+    /// <summary>
+    /// 设置场景动画状态（向后兼容方法）
+    /// </summary>
+    /// <param name="animationName">动画名称</param>
+    /// <param name="progress">播放进度 (0-1)</param>
+    [System.Obsolete("Use SetSceneAnimationState(string animationName, float progress, string sceneName) instead")]
+    public void SetSceneAnimationStateLegacy(string animationName, float progress)
+    {
+        SetSceneAnimationState(animationName, progress);
+    }
 
     /// <summary>
     /// 获取场景动画状态
     /// </summary>
     /// <param name="animationName">动画名称</param>
+    /// <param name="sceneName">场景名称（可选）</param>
     /// <returns>播放进度 (0-1)</returns>
-    public float GetSceneAnimationState(string animationName)
+    public float GetSceneAnimationState(string animationName, string sceneName = "")
     {
-        float result = currentSaveData != null ? currentSaveData.GetSceneAnimationState(animationName) : 0f;
-        LogDebug($"获取动画状态: {animationName} = {result}");
+        // 如果未提供场景名称，使用当前存档的场景名称
+        if (string.IsNullOrEmpty(sceneName) && currentSaveData != null)
+        {
+            sceneName = currentSaveData.playerData.sceneName;
+        }
+        
+        float result = currentSaveData != null ? currentSaveData.GetSceneAnimationState(animationName, sceneName) : 0f;
+        LogDebug($"获取动画状态: {animationName} (scene: {sceneName}) = {result}");
         return result;
+    }
+    
+    /// <summary>
+    /// 获取场景动画状态（向后兼容方法）
+    /// </summary>
+    /// <param name="animationName">动画名称</param>
+    /// <returns>播放进度 (0-1)</returns>
+    [System.Obsolete("Use GetSceneAnimationState(string animationName, string sceneName) instead")]
+    public float GetSceneAnimationStateLegacy(string animationName)
+    {
+        return GetSceneAnimationState(animationName);
     }
 
     /// <summary>
