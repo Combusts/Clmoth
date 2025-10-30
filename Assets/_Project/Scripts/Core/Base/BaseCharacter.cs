@@ -33,6 +33,10 @@ public class BaseCharacter : MonoBehaviour
     private SpriteRenderer emotionIconSpriteRenderer;
     private Animator emotionIconAnimator;
     
+    // 追逐相关变量
+    private Transform chaseTarget;
+    private float currentChaseSpeed;
+    
     public bool OnMove
     {
         get => onMove;
@@ -67,6 +71,13 @@ public class BaseCharacter : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>(); // 初始化物理组件
+        
+        // 设置 Rigidbody2D 插值以提供流畅的视觉体验
+        if (rb != null)
+        {
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        }
+        
         lastOnMoveValue = onMove;
         lastOnRunningValue = onRunning;
         lastEmotionState = emotionState;
@@ -99,6 +110,38 @@ public class BaseCharacter : MonoBehaviour
         {
             UpdateEmotion();
             lastEmotionState = emotionState;
+        }
+    }
+    
+    void FixedUpdate()
+    {
+        // 在 FixedUpdate 中处理物理移动（追逐逻辑）
+        if (isChasing && chaseTarget != null && rb != null)
+        {
+            // 计算到目标的距离和方向
+            Vector3 direction = (chaseTarget.position - transform.position).normalized;
+            float distance = Vector2.Distance(transform.position, chaseTarget.position);
+            
+            // 如果距离足够近，停止追逐
+            if (distance <= chaseStopDistance)
+            {
+                Debug.Log($"[BaseCharacter] {gameObject.name} 到达目标，停止追逐");
+                StopChasing();
+                return;
+            }
+            
+            // 根据距离选择不同的速度
+            currentChaseSpeed = distance > chaseSpeedThreshold ? farChaseSpeed : closeChaseSpeed;
+            
+            // 翻转朝向目标（可选）
+            if (flipTowardsTarget)
+            {
+                bool shouldFaceLeft = chaseTarget.position.x < transform.position.x;
+                FlipSprite(shouldFaceLeft);
+            }
+            
+            // 在 FixedUpdate 中更新速度
+            rb.velocity = new Vector2(direction.x * currentChaseSpeed, rb.velocity.y);
         }
     }
     
@@ -253,8 +296,8 @@ public class BaseCharacter : MonoBehaviour
         }
         
         isChasing = true;
+        chaseTarget = target;
         OnRunning = true;
-        StartCoroutine(ChaseCoroutine(target));
     }
     
     /// <summary>
@@ -263,6 +306,7 @@ public class BaseCharacter : MonoBehaviour
     public void StopChasing()
     {
         isChasing = false;
+        chaseTarget = null;
         OnRunning = false;
         
         // 如果使用物理移动，停止水平速度
@@ -270,16 +314,15 @@ public class BaseCharacter : MonoBehaviour
         {
             rb.velocity = new Vector2(0, rb.velocity.y);
         }
-        
-        StopAllCoroutines();
     }
     
     /// <summary>
-    /// 追逐协程
+    /// 追逐协程（已弃用，改用 FixedUpdate 方式）
+    /// 保留此方法以兼容没有 Rigidbody2D 的情况
     /// </summary>
     private System.Collections.IEnumerator ChaseCoroutine(Transform target)
     {
-        while (isChasing && target != null)
+        while (isChasing && target != null && rb == null)
         {
             // 计算到目标的距离和方向
             Vector3 direction = (target.position - transform.position).normalized;
@@ -302,17 +345,8 @@ public class BaseCharacter : MonoBehaviour
                 FlipSprite(shouldFaceLeft);
             }
             
-            // 使用物理移动或直接移动
-            if (rb != null)
-            {
-                // 使用物理移动
-                rb.velocity = new Vector2(direction.x * currentSpeed, rb.velocity.y);
-            }
-            else
-            {
-                // 直接移动
-                transform.position += currentSpeed * Time.deltaTime * direction;
-            }
+            // 直接移动（仅在没有 Rigidbody2D 时使用）
+            transform.position += currentSpeed * Time.deltaTime * direction;
             
             yield return null;
         }

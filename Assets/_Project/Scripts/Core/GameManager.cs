@@ -155,9 +155,45 @@ public class GameManager : MonoBehaviour
         // 检查Start节点是否已完成
         if (SaveManager.Instance != null && YarnSpinnerManager.Instance != null)
         {
-            // 使用YarnSpinnerManager的StartDialogueSafe方法，它会自动检查存档状态
-            Debug.Log("[GameManager] Checking Start dialogue completion status...");
-            YarnSpinnerManager.Instance.StartDialogueSafe("Start", true);
+            // 获取当前场景名称
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            
+            // 检查是否为 Level_01 场景
+            if (currentSceneName == "Level_01" || currentSceneName == "Level_01_01")
+            {
+                // 检查 Start 和 work 对话是否都已完成
+                bool startCompleted = SaveManager.Instance.IsDialogueCompleted("Start");
+                bool workCompleted = SaveManager.Instance.IsDialogueCompleted("work");
+                
+                if (startCompleted && workCompleted)
+                {
+                    // Start 和 work 都已完成，检查 go_around_hint 是否已完成
+                    bool goAroundHintCompleted = SaveManager.Instance.IsDialogueCompleted("go_around_hint");
+                    
+                    if (!goAroundHintCompleted)
+                    {
+                        // go_around_hint 未完成，自动开启
+                        Debug.Log("[GameManager] Start and work dialogues completed. Starting go_around_hint dialogue...");
+                        YarnSpinnerManager.Instance.StartDialogueSafe("go_around_hint", true);
+                    }
+                    else
+                    {
+                        Debug.Log("[GameManager] Start, work, and go_around_hint dialogues all completed.");
+                    }
+                }
+                else
+                {
+                    // Start 或 work 未完成，检查并开始 Start 对话
+                    Debug.Log("[GameManager] Checking Start dialogue completion status...");
+                    YarnSpinnerManager.Instance.StartDialogueSafe("Start", true);
+                }
+            }
+            else
+            {
+                // 其他场景，保持原有逻辑
+                Debug.Log("[GameManager] Checking Start dialogue completion status...");
+                YarnSpinnerManager.Instance.StartDialogueSafe("Start", true);
+            }
         }
         else
         {

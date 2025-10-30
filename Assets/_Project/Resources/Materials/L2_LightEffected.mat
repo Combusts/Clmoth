@@ -31,7 +31,7 @@ Material:
     m_Floats:
     - _FlickerPattern: 0.67
     - _GlobalLight: 0.05
-    - _IlluminationIntensity: 17.609509
+    - _IlluminationIntensity: 5.6679754
     - _LightIntensityMultiplier: 14.5
     m_Colors:
     - _IlluminationOffset: {r: -17.73, g: -6.3, b: 0, a: 0}

@@ -843,20 +843,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioDatas:
   - audioName: Loop
+    isLoop: 1
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 1
+    type: 0
+    playOnStart: 1
+    audioClip: {fileID: 8300000, guid: d8c7ed9728400c844b7e144114cde32f, type: 3}
+  - audioName: LoopWithLead
     isLoop: 0
     volume: 0.1
     pitch: 1
     playOnAwake: 0
     type: 0
     playOnStart: 0
-    audioClip: {fileID: 8300000, guid: d8c7ed9728400c844b7e144114cde32f, type: 3}
-  - audioName: LoopWithLead
-    isLoop: 1
-    volume: 0.1
-    pitch: 1
-    playOnAwake: 0
-    type: 0
-    playOnStart: 1
     audioClip: {fileID: 8300000, guid: d0df24dd64130d24ba5007481e6068d0, type: 3}
   - audioName: Click
     isLoop: 0

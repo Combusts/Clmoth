@@ -49,6 +49,12 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         
+        // 设置 Rigidbody2D 插值以提供流畅的视觉体验
+        if (rb != null)
+        {
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        }
+        
         // 检查是否有存档需要恢复位置
         RestorePlayerPosition();
 
@@ -84,16 +90,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // 使用 Rigidbody2D 进行水平移动以支持跳跃
-        if (rb != null)
-        {
-            rb.velocity = new Vector2(direction * speed, rb.velocity.y);
-        }
-        else
-        {
-            transform.Translate(speed * Time.deltaTime * new Vector3(direction, 0, 0));
-        }
-
+        // 只处理非物理相关的逻辑
         animator.SetFloat("Speed", Mathf.Abs(direction));
 
         UpdateClosestInteractive();
@@ -105,6 +102,21 @@ public class Player : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("IsGrounded", IsGrounded());
+        }
+        
+        // 如果没有 Rigidbody，使用直接移动（向后兼容）
+        if (rb == null)
+        {
+            transform.Translate(speed * Time.deltaTime * new Vector3(direction, 0, 0));
+        }
+    }
+
+    void FixedUpdate()
+    {
+        // 在 FixedUpdate 中更新物理相关代码
+        if (rb != null)
+        {
+            rb.velocity = new Vector2(direction * speed, rb.velocity.y);
         }
     }
 

@@ -85,6 +85,12 @@ position: -401,-200
 <<ToLevel GameManager "MiniGame">>
 
 ===
+title: go_around_hint
+---
+呼~终于干完了这些工作。
+到处走走，活动活动筋骨吧。
+
+===
 title:file
 position: -434,74
 ---
@@ -175,30 +181,39 @@ position: -387,288
 {$mainName}: *看向时钟
 【时钟显示11点】
 <<animator_play_and_wait MainScene "NewHireComeUp">>
+<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" false>>
+<<show_illustration CommandManager "IllustrationPanel" "MothOpenEyes" true>>
 【一道身影挡住了你的视线。】
-？？？: “嘿!你一定是{$mainName}前辈吧？”
+？？？: "嘿!你一定是{$mainName}前辈吧？"
 ？？？：“我是今天入职的墨森！”
 ？！//可以加个“突然发生什么事情”的音效
 -> 询问个人简历的信息
-    {$mainName}: “你就是那位三岁的墨森？！”
-    {$newName}: “啊呀，前辈是从哪里看到的。”
+    <<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" false>>
+    {$mainName}: "你就是那位三岁的墨森？！"
+    <<show_illustration CommandManager "IllustrationPanel" "MothOpenEyes" true>>
+    {$newName}: "啊呀，前辈是从哪里看到的。"
 -> 沉默
-    {$mainName}: “……”
-    {$newName}: “……”
+    <<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" false>>
+    {$mainName}: "……"
+    <<show_illustration CommandManager "IllustrationPanel" "MothOpenEyes" true>>
+    {$newName}: "……"
 {$newName}: “总之，向前辈你正式介绍下我自己！”
 {$newName}: “我是墨森，今天是我入职的第一天。”
-{$newName}: “以后我就是前辈的同事了，请多多指教！”
+{$newName}: "以后我就是前辈的同事了，请多多指教！"
+<<show_illustration CommandManager "IllustrationPanel" "ClothOpenEyes" false>>
 -> 故作热情
-    {$mainName}: “非常高兴你能成为我的同事，祝工作愉快。”
+    {$mainName}: "非常高兴你能成为我的同事，祝工作愉快。"
 -> 敷衍迎合
-    {$mainName}: “彳亍。”
+    {$mainName}: "彳亍。"
 -> 沉默
-    {$mainName}: “……”
-{$newName}: “哦对，金总刚才说他有事找前辈。”
+    {$mainName}: "……"
+<<show_illustration CommandManager "IllustrationPanel" "MothOpenEyes" true>>
+{$newName}: "哦对，金总刚才说他有事找前辈。"
 {$newName}: “本来还想拜托前辈带我参观一下公司。”
 {$newName}: “但金总看起来还挺着急的，那我就先不打扰到前辈工作啦。”
 <<animator_play_and_stay MainScene "NewHireLeave">>
 【他说完，挥了挥手，回到了他自己的工位。】
+<<hide_illustration CommandManager "IllustrationPanel">>
 自白：金总找我有事，先去办公室吧。
 <<enable_interaction CommandManager "Door">>
 //进入自由状态
