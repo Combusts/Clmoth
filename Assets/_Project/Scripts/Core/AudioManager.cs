@@ -90,13 +90,13 @@ public class AudioManager : MonoBehaviour
     public void SetVolume(string volumeName, float volume)
     {
         Debug.Log($"SetVolume: {volumeName} volume: {volume}");
-        AudioMixer.SetFloat(volumeName, Mathf.Log10(volume) * 20);
+        AudioMixer.SetFloat(volumeName, Mathf.Log10(volume) * 20 + 2);
     }
 
     public float GetVolume(string volumeName)
     {
         AudioMixer.GetFloat(volumeName, out float volume);
-        return Mathf.Pow(10, volume / 20);
+        return Mathf.Pow(10, (volume - 2) / 20);
     }
 }
 
