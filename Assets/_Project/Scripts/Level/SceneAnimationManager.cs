@@ -234,6 +234,15 @@ public class SceneAnimationManager : MonoBehaviour
         
         Debug.Log($"SceneAnimationManager: 开始播放动画 '{animationName}' (clip: {anim.clip.name})");
         
+        // 在播放前重置之前可能保留末帧的状态，避免阻塞
+        var stateToReset = animationComponent[animationName];
+        if (stateToReset != null)
+        {
+            stateToReset.speed = 1f;
+            stateToReset.enabled = true;
+            stateToReset.time = 0f;
+        }
+        
         // 播放动画
         animationComponent.Play(animationName);
         
@@ -275,6 +284,15 @@ public class SceneAnimationManager : MonoBehaviour
         var anim = animations.Find(a => a.name == animationName);
         if (anim == null) return;
         
+        // 在播放前重置之前可能保留末帧的状态，避免阻塞
+        var stateToReset = animationComponent[animationName];
+        if (stateToReset != null)
+        {
+            stateToReset.speed = 1f;
+            stateToReset.enabled = true;
+            stateToReset.time = 0f;
+        }
+
         // 播放动画
         animationComponent.Play(animationName);
         
@@ -362,11 +380,16 @@ public class SceneAnimationManager : MonoBehaviour
         {
             state.time = state.length;
             state.speed = 0f;
-            state.enabled = true; // 保持启用状态以显示最后一帧
+            state.enabled = true; // 先启用并采样末帧
             state.weight = 1f; // 确保权重正确
             animationComponent.Sample();
             // 同时对Clip进行一次末帧采样，确保写入到Transform
             ApplyClipAtNormalizedTime(animationName, 1f);
+
+            // 关键：禁用该状态并清权重，避免下次播放被认为仍在播放/被使能
+            state.enabled = false;
+            state.weight = 0f;
+            animationComponent.Sample();
         }
     }
     
