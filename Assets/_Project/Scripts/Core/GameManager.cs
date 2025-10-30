@@ -210,6 +210,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        SaveManager.Instance.DeleteSaveData();
         OnStartGame?.Invoke();
         SceneTransitionManager.Instance.LoadSceneWithFade(levelDic["Level_01"]);
     }
