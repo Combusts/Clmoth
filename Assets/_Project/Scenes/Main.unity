@@ -946,6 +946,14 @@ MonoBehaviour:
     type: 1
     playOnStart: 0
     audioClip: {fileID: 8300000, guid: 06e1c5c126abc9745bd44096f3597cc2, type: 3}
+  - audioName: Push
+    isLoop: 0
+    volume: 0.1
+    pitch: 1
+    playOnAwake: 0
+    type: 1
+    playOnStart: 0
+    audioClip: {fileID: 8300000, guid: 66d1ce15dbc670245ad6649c40b50f67, type: 3}
   AudioMixer: {fileID: 24100000, guid: 5eba0e3dee944984eb2a8a091c13c2a6, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

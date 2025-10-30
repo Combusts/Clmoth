@@ -152,6 +152,7 @@ position: -164,122
 // 白闪两下
 // 推下去的图 + 描述
 <<flash CommandManager>>
+<<PlayAudio AudioManager "Push">>
 <<set_background "Image/坠楼场景">>
 <<show_background>>
 <<wait 1.5>>
