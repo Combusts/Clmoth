@@ -52,6 +52,25 @@ position: -147,-50
 <<start_chase_player AChaser>>
 <<PlayAudio AudioManager "StonesFall">>
 ===
+title: retry_chase_ui
+---
+<<setMaterial CameraOutPut 1>>
+<<activate_object Camera "Retry UI">>
+<<stop_chase AChaser>>
+<<wait 1>>
+<<setMaterial CameraOutPut 0>>
+===
+title: retry_chase
+---
+<<setMaterial CameraOutPut 1>>
+<<reset_object FinalLoop>>
+<<wait 1>>
+<<deactivate_object Camera "Retry UI">>
+<<setMaterial CameraOutPut 0>>
+<<start_chase_player AChaser>>
+<<OnRunning Player>>
+<<PlayAudio AudioManager "StonesFall">>
+===
 title: open_escape_door
 ---
 <<StopAudio AudioManager "StonesFall">>

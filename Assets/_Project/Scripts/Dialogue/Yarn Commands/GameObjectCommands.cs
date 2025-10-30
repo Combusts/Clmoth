@@ -3,6 +3,19 @@ using Yarn.Unity;
 
 public class GameObjectCommands : MonoBehaviour
 {
+#pragma warning disable 0649
+    [System.Serializable]
+    private struct PrefabEntry
+    {
+        public string name;
+        public GameObject prefab;
+        public Vector3 localPositionOffset;
+    }
+#pragma warning restore 0649
+
+    [SerializeField]
+    private PrefabEntry[] prefabEntries;
+
     /// <summary>
     /// 激活场景中指定名称的GameObject
     /// 支持两种格式：
@@ -377,4 +390,73 @@ public class GameObjectCommands : MonoBehaviour
             Debug.LogWarning($"[GameObjectCommands] 未找到名为 '{panelName}' 的立绘面板");
         }
     }
+
+	/// <summary>
+	/// 仅传入索引，在本脚本绑定对象下实例化
+	/// 格式：<<instantiate_prefab_under 0>>
+	/// </summary>
+	[YarnCommand("instantiate_prefab_under")]
+	public void InstantiatePrefabUnder(int index)
+	{
+		int prefabIndex = index;
+		InstantiateUnder(gameObject, prefabIndex, gameObject.name);
+	}
+
+	private void InstantiateUnder(GameObject parentObject, int prefabIndex, string parentNameForLog)
+	{
+		if (prefabEntries == null || prefabEntries.Length == 0)
+		{
+			Debug.LogError("[GameObjectCommands] prefabEntries 未配置或为空，无法实例化预制体");
+			return;
+		}
+
+		if (prefabIndex < 0 || prefabIndex >= prefabEntries.Length)
+		{
+			Debug.LogError($"[GameObjectCommands] 传入的索引 {prefabIndex} 超出范围 [0, {prefabEntries.Length - 1}]");
+			return;
+		}
+
+		if (parentObject == null)
+		{
+			Debug.LogError("[GameObjectCommands] 父对象不存在，无法实例化");
+			return;
+		}
+
+		var entry = prefabEntries[prefabIndex];
+		GameObject prefab = entry.prefab;
+		if (prefab == null)
+		{
+			Debug.LogError($"[GameObjectCommands] prefabEntries[{prefabIndex}].prefab 为空，无法实例化");
+			return;
+		}
+
+		var instance = Instantiate(prefab, parentObject.transform);
+		instance.transform.SetLocalPositionAndRotation(entry.localPositionOffset, Quaternion.identity);
+        instance.transform.localScale = Vector3.one;
+		if (!string.IsNullOrEmpty(entry.name))
+		{
+			instance.name = entry.name;
+		}
+		Debug.Log($"[GameObjectCommands] 已在 '{parentNameForLog}' 下实例化预制体 '{(string.IsNullOrEmpty(entry.name) ? prefab.name : entry.name)}' (索引 {prefabIndex})，偏移 {entry.localPositionOffset}");
+	}
+
+	/// <summary>
+	/// 摧毁场景中指定名称的GameObject
+	/// 格式：<<destroy_object "ObjectName">>
+	/// </summary>
+	/// <param name="objectName">要摧毁的GameObject名称</param>
+	[YarnCommand("destroy_object")]
+	public void DestroyObjectByName(string objectName)
+	{
+		GameObject targetObject = FindGameObjectByName(objectName);
+		if (targetObject != null)
+		{
+			Destroy(targetObject);
+			Debug.Log($"[GameObjectCommands] 已摧毁GameObject: {objectName}");
+		}
+		else
+		{
+			Debug.LogWarning($"[GameObjectCommands] 未找到名为 '{objectName}' 的GameObject，无法摧毁");
+		}
+	}
 }
