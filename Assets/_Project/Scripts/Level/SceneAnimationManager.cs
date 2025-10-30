@@ -13,6 +13,10 @@ public class SceneAnimationManager : MonoBehaviour
         public AnimationClip clip;
         public bool keepLastFrame = true; // 是否保留最后一帧
         public float weight = 1f; // 动画权重
+        [Tooltip("同一组内的动画互斥，恢复时只应用优先级最高的一条")]
+        public string groupKey = "";
+        [Tooltip("数值越大优先级越高（仅在同组内生效）")]
+        public int priority = 0;
     }
     
     [Header("场景动画配置")]
@@ -24,6 +28,7 @@ public class SceneAnimationManager : MonoBehaviour
     
     [Header("存档集成")]
     [SerializeField] private bool enableSaveIntegration = true;
+    [SerializeField] private bool disableAnimatorsDuringRestore = true;
     
     private void Awake()
     {
@@ -40,6 +45,9 @@ public class SceneAnimationManager : MonoBehaviour
             Debug.Log($"SceneAnimationManager: 找到现有的Animation组件");
         }
         
+        // 确保动画在任何情况下都进行评估（包括不可见/裁剪时）
+        animationComponent.cullingType = AnimationCullingType.AlwaysAnimate;
+
         // 初始化动画字典
         animationDict = new Dictionary<string, AnimationClip>();
         activeAnimations = new Dictionary<string, AnimationState>();
@@ -104,11 +112,14 @@ public class SceneAnimationManager : MonoBehaviour
         
         Debug.Log($"SceneAnimationManager: 动画配置完成，共配置 {animationDict.Count} 个动画");
         
-        // 恢复存档的动画状态
+        // 恢复存档的动画状态（Awake 时可能过早，这里仍保持一次以兼容旧行为）
         if (enableSaveIntegration)
         {
             RestoreAnimationStates();
         }
+
+        // 订阅存档加载事件，在数据加载完成与布局稳定后再次恢复，确保最终可见状态正确
+        SaveManager.OnSaveDataLoaded += OnSaveDataLoaded;
     }
     
     /// <summary>
@@ -127,81 +138,70 @@ public class SceneAnimationManager : MonoBehaviour
         Debug.Log($"SceneAnimationManager: SaveManager实例存在，开始检查动画");
         Debug.Log($"SceneAnimationManager: 配置的动画数量: {animations.Count}");
         
+        // 先预计算每个动画目标的期望归一化时间（1代表末帧）
+        var desiredTimes = new Dictionary<string, float>();
+        var chosenByGroup = new Dictionary<string, SceneAnimation>();
+
         foreach (var anim in animations)
         {
-            Debug.Log($"SceneAnimationManager: 处理动画 '{anim.name}'");
-            
-            if (anim.clip != null)
+            if (anim.clip == null) continue;
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            bool isCompleted = SaveManager.Instance.IsSceneAnimationCompleted(anim.name, currentScene);
+
+            float? normalized = null;
+            if (isCompleted && anim.keepLastFrame)
             {
-                Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 的clip存在: {anim.clip.name}");
-                
-                // 检查动画是否已完成
-                string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                bool isCompleted = SaveManager.Instance.IsSceneAnimationCompleted(anim.name, currentScene);
-                Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' (场景: {currentScene}) 完成状态: {isCompleted}");
-                
-                if (isCompleted)
-                {
-                    Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 已完成，检查是否需要保留最后一帧");
-                    
-                    // 如果动画已完成且设置了保留最后一帧，直接跳到最后一帧
-                    if (anim.keepLastFrame)
-                    {
-                        Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 需要保留最后一帧");
-                        
-                        var state = animationComponent[anim.name];
-                        if (state != null)
-                        {
-                            Debug.Log($"SceneAnimationManager: 找到动画状态 '{anim.name}', 长度: {state.length}");
-                            state.time = state.length;
-                            state.enabled = true; // 保持启用状态以显示最后一帧
-                            state.weight = anim.weight; // 确保权重正确
-                            Debug.Log($"SceneAnimationManager: 成功恢复动画 '{anim.name}' 到最后一帧");
-                        }
-                        else
-                        {
-                            Debug.LogError($"SceneAnimationManager: 无法找到动画状态 '{anim.name}'");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 已完成但不需要保留最后一帧");
-                    }
-                }
-                else
-                {
-                    Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 未完成，检查播放进度");
-                    
-                    // 检查是否有部分播放进度
-                    string animScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                    float progress = SaveManager.Instance.GetSceneAnimationState(anim.name, animScene);
-                    Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' (场景: {animScene}) 播放进度: {progress}");
-                    
-                    if (progress > 0f)
-                    {
-                        var state = animationComponent[anim.name];
-                        if (state != null)
-                        {
-                            float targetTime = state.length * progress;
-                            Debug.Log($"SceneAnimationManager: 设置动画 '{anim.name}' 到时间 {targetTime} (总长度: {state.length})");
-                            state.time = targetTime;
-                            Debug.Log($"SceneAnimationManager: 成功恢复动画 '{anim.name}' 到进度 {progress}");
-                        }
-                        else
-                        {
-                            Debug.LogError($"SceneAnimationManager: 无法找到动画状态 '{anim.name}' 来恢复进度");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log($"SceneAnimationManager: 动画 '{anim.name}' 没有播放进度，保持初始状态");
-                    }
-                }
+                normalized = 1f;
             }
             else
             {
-                Debug.LogWarning($"SceneAnimationManager: 动画 '{anim.name}' 的clip为空，跳过恢复");
+                float progress = SaveManager.Instance.GetSceneAnimationState(anim.name, currentScene);
+                if (progress > 0f)
+                {
+                    normalized = Mathf.Clamp01(progress);
+                }
             }
+
+            if (normalized.HasValue)
+            {
+                string key = string.IsNullOrEmpty(anim.groupKey) ? anim.name : anim.groupKey;
+                // 在同组内选择优先级最高者；优先级相等时选择normalized更大的；再相等取列表后者
+                if (!chosenByGroup.ContainsKey(key))
+                {
+                    chosenByGroup[key] = anim;
+                    desiredTimes[key] = normalized.Value;
+                }
+                else
+                {
+                    var current = chosenByGroup[key];
+                    if (anim.priority > current.priority ||
+                        (anim.priority == current.priority && normalized.Value > desiredTimes[key]))
+                    {
+                        chosenByGroup[key] = anim;
+                        desiredTimes[key] = normalized.Value;
+                    }
+                }
+            }
+        }
+
+        // 应用被选中的动画采样（避免同组内多动画互相覆盖）
+        foreach (var kv in chosenByGroup)
+        {
+            var anim = kv.Value;
+            float normalized = desiredTimes[kv.Key];
+            Debug.Log($"SceneAnimationManager: 处理动画 '{anim.name}'（组: '{(string.IsNullOrEmpty(anim.groupKey)?"<none>":anim.groupKey)}'，优先级: {anim.priority}）");
+
+            var state = animationComponent[anim.name];
+            if (state == null) { Debug.LogError($"SceneAnimationManager: 无法找到动画状态 '{anim.name}'"); continue; }
+
+            // 使用Clip采样到目标进度
+            ApplyClipAtNormalizedTime(anim.name, normalized);
+            // 冻结Legacy Animation状态
+            state.time = state.length * normalized;
+            state.speed = 0f;
+            state.enabled = true;
+            state.weight = anim.weight;
+            animationComponent.Sample();
         }
         
         Debug.Log($"SceneAnimationManager: 动画状态恢复完成");
@@ -361,8 +361,12 @@ public class SceneAnimationManager : MonoBehaviour
         if (state != null)
         {
             state.time = state.length;
+            state.speed = 0f;
             state.enabled = true; // 保持启用状态以显示最后一帧
             state.weight = 1f; // 确保权重正确
+            animationComponent.Sample();
+            // 同时对Clip进行一次末帧采样，确保写入到Transform
+            ApplyClipAtNormalizedTime(animationName, 1f);
         }
     }
     
@@ -464,4 +468,74 @@ public class SceneAnimationManager : MonoBehaviour
     #endif
     
     #endregion
+
+    private void OnDestroy()
+    {
+        SaveManager.OnSaveDataLoaded -= OnSaveDataLoaded;
+    }
+
+    private void OnSaveDataLoaded(GameSaveData data)
+    {
+        // 在数据加载完成后，等待布局稳定再恢复，避免被后续布局或其他动画覆盖
+        StartCoroutine(RestoreAfterCanvasReady());
+    }
+
+    private IEnumerator RestoreAfterCanvasReady()
+    {
+        // 等一帧让对象与UI实例化完成
+        yield return null;
+        // 强制刷新Canvas，确保布局树稳定
+        Canvas.ForceUpdateCanvases();
+        yield return null;
+        // 等待到帧末，避免LateUpdate/Canvas系统覆盖
+        yield return new WaitForEndOfFrame();
+        
+        List<Animator> disabledAnimators = null;
+        if (disableAnimatorsDuringRestore)
+        {
+            disabledAnimators = new List<Animator>();
+            var animators = GetComponentsInChildren<Animator>(true);
+            foreach (var a in animators)
+            {
+                if (a != null && a.enabled)
+                {
+                    a.enabled = false;
+                    disabledAnimators.Add(a);
+                }
+            }
+        }
+        
+        if (enableSaveIntegration)
+        {
+            // 停止正在播放，避免混合影响采样
+            animationComponent.Stop();
+            RestoreAnimationStates();
+            // 再次在帧末采样一次，确保视觉稳定
+            yield return new WaitForEndOfFrame();
+            animationComponent.Sample();
+        }
+        
+        if (disabledAnimators != null)
+        {
+            // 下一帧再恢复Animator，避免立刻覆盖
+            yield return null;
+            foreach (var a in disabledAnimators)
+            {
+                if (a != null)
+                {
+                    a.enabled = true;
+                }
+            }
+        }
+    }
+
+    private void ApplyClipAtNormalizedTime(string animationName, float normalizedTime)
+    {
+        if (!animationDict.ContainsKey(animationName)) return;
+        var clip = animationDict[animationName];
+        if (clip == null) return;
+        var t = Mathf.Clamp01(normalizedTime) * clip.length;
+        // 使用Clip的采样直接写入对象的最终属性（包括RectTransform）
+        clip.SampleAnimation(gameObject, t);
+    }
 }

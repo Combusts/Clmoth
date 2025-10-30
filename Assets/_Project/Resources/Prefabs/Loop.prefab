@@ -4519,15 +4519,22 @@ MonoBehaviour:
     clip: {fileID: 7400000, guid: 785551ad9e0c34f32889e0142be09df2, type: 2}
     keepLastFrame: 1
     weight: 1
+    groupKey: 
+    priority: 0
   - name: DocumentPop
     clip: {fileID: 7400000, guid: 5de93933f56574029853a7086f3711a8, type: 2}
     keepLastFrame: 1
     weight: 1
+    groupKey: Document
+    priority: 0
   - name: DocumentExit
     clip: {fileID: 7400000, guid: 2b0c08d0288464b26afc32030ea66ce7, type: 2}
     keepLastFrame: 1
     weight: 1
+    groupKey: Document
+    priority: 10
   enableSaveIntegration: 1
+  disableAnimatorsDuringRestore: 1
 --- !u!1 &8541119396610833544
 GameObject:
   m_ObjectHideFlags: 0
