@@ -1,0 +1,37 @@
+ManifestFileVersion: 0
+CRC: 1644418945
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 2678cb0ba8529077730d93542be7e114
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 2d8df09e698f722ada1caa03d3413830
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 2678cb0ba8529077730d93542be7e114
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- "Assets/_Project/Art/Sprites/Characters/\u751F\u6C14\u56FE\u6807.png"
+- "Assets/_Project/Art/Sprites/Characters/\u6536\u4EF6\u7BB1\uFF08\u7EA2\uFF09.png"
+- "Assets/_Project/Art/Sprites/Characters/\u7EB8\u5806\uFF08\u84DD\uFF09.png"
+- "Assets/_Project/Art/Sprites/Characters/\u6536\u4EF6\u7BB1\uFF08\u84DD\uFF09.png"
+- "Assets/_Project/Art/Sprites/Characters/\u6587\u4EF6\uFF08\u84DD\uFF09.png"
+- "Assets/_Project/Art/Sprites/Characters/\u5458\u5DE5.png"
+- "Assets/_Project/Art/Sprites/Characters/\u7EB8\u5806\uFF08\u7EA2\uFF09.png"
+- "Assets/_Project/Art/Sprites/Characters/\u65B0\u4EBA.png"
+- "Assets/_Project/Art/Sprites/Characters/\u6587\u4EF6\uFF08\u7EA2\uFF09.png"
+- "Assets/_Project/Art/Sprites/Characters/\u4E3B\u89D2\u62FF\u6587\u4EF61.png"
+- "Assets/_Project/Art/Sprites/Characters/\u6587\u4EF6\uFF08 \u9EC4\uFF09.png"
+- "Assets/_Project/Art/Sprites/Characters/\u7ECF\u74061.png"
+- "Assets/_Project/Art/Sprites/Characters/\u540C\u4E8Ba.png"
+- "Assets/_Project/Art/Sprites/Characters/\u6536\u4EF6\u7BB1\uFF08\u9EC4\uFF09.png"
+- "Assets/_Project/Art/Sprites/Characters/\u4E3B\u89D2.png"
+- "Assets/_Project/Art/Sprites/Characters/\u7EB8\u5806\uFF08\u9EC4\uFF09.png"
+Dependencies: []

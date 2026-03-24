@@ -1,0 +1,254 @@
+
+using UnityEngine;
+
+public abstract class IInteractive : MonoBehaviour
+{
+    [SerializeField] private bool isShowHint;
+    [SerializeField] private bool canInteract = true;
+    [SerializeField] private GameObject hintItemPrefab; // 改为Prefab引用
+    [SerializeField] private string hintText;
+    [SerializeField] private Vector3 hintOffset = new(0, 1, 0); // 提示位置偏移
+    [SerializeField] private Vector3 hintScale = Vector3.one; // 提示大小缩放
+    
+    [Header("存档系统")]
+    [SerializeField] private string interactiveID = ""; // 唯一标识符
+    
+    private GameObject currentHintItem; // 当前显示的提示实例
+
+    public bool IsShowHint 
+    { 
+        get => isShowHint; 
+        set => isShowHint = value; 
+    }
+    
+    public bool CanInteract 
+    { 
+        get => canInteract; 
+        set => canInteract = value; 
+    }
+
+    public string HintText
+    {
+        get => hintText;
+        set => hintText = value;
+    }
+
+    public Vector3 HintScale
+    {
+        get => hintScale;
+        set => hintScale = value;
+    }
+
+    void Awake()
+    {
+        // 确保isShowHint初始状态为false，避免第一次触碰不显示hint的问题
+        isShowHint = false;
+        
+        // 如果没有设置ID，使用游戏物件名称作为ID
+        if (string.IsNullOrEmpty(interactiveID))
+        {
+            interactiveID = gameObject.name;
+        }
+    }
+    
+    protected virtual void Start()
+    {
+        // 检查存档状态，恢复交互物件的状态
+        CheckSaveState();
+    }
+
+    // 修改变量自动重载
+    private void OnValidate()
+    {
+        // OnValidate期间不能调用SendMessage，所以只更新文本、位置和大小
+        if (currentHintItem != null)
+        {
+            var textComponent = currentHintItem.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (textComponent != null)
+            {
+                textComponent.text = hintText;
+            }
+            currentHintItem.transform.localPosition = hintOffset;
+            currentHintItem.transform.localScale = hintScale;
+        }
+    }
+
+    public abstract void Interact();
+    
+    /// <summary>
+    /// 检查存档状态并恢复物件状态
+    /// </summary>
+    protected virtual void CheckSaveState()
+    {
+        if (SaveManager.Instance == null) 
+        {
+            Debug.LogWarning($"[IInteractive] SaveManager.Instance is null for {gameObject.name}");
+            return;
+        }
+        
+        Debug.Log($"[IInteractive] CheckSaveState for {gameObject.name} (ID: {interactiveID})");
+        
+        // 直接从存档恢复交互物体状态
+        bool? savedCanInteract = SaveManager.Instance.GetInteractiveObjectCanInteract(interactiveID);
+        bool? savedIsActivated = SaveManager.Instance.GetInteractiveObjectIsActivated(interactiveID);
+        
+        Debug.Log($"[IInteractive] Saved state for {gameObject.name}: CanInteract={savedCanInteract}, IsActivated={savedIsActivated}");
+        
+        // 如果有存档数据则恢复状态，如果没有（为null）则保持场景内的原始设置
+        if (savedCanInteract.HasValue)
+        {
+            CanInteract = savedCanInteract.Value;
+            Debug.Log($"[IInteractive] Restored CanInteract={CanInteract} for {gameObject.name}");
+        }
+        else
+        {
+            Debug.Log($"[IInteractive] No saved CanInteract for {gameObject.name}, keeping original value");
+        }
+        
+        if (savedIsActivated.HasValue)
+        {
+            gameObject.SetActive(savedIsActivated.Value);
+            Debug.Log($"[IInteractive] Restored IsActivated={savedIsActivated.Value} for {gameObject.name}");
+        }
+        else
+        {
+            Debug.Log($"[IInteractive] No saved IsActivated for {gameObject.name}, keeping original value");
+        }
+    }
+    
+    /// <summary>
+    /// 获取交互物件ID
+    /// </summary>
+    public string GetInteractiveID()
+    {
+        return interactiveID;
+    }
+
+    public virtual void ShowHint()
+    {
+        if (IsShowHint || !canInteract) return;
+        
+        IsShowHint = true;
+        
+        // 如果还没有创建提示实例，则创建
+        if (currentHintItem == null && hintItemPrefab != null)
+        {
+            currentHintItem = Instantiate(hintItemPrefab, transform);
+            currentHintItem.transform.localPosition = hintOffset;
+            currentHintItem.transform.localScale = hintScale;
+            
+            // 设置文本内容
+            var textComponent = currentHintItem.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (textComponent != null)
+            {
+                textComponent.text = hintText;
+            }
+            
+            // 验证并确保材质正确应用
+            ValidateAndFixMaterial();
+        }
+        
+        if (currentHintItem != null)
+        {
+            currentHintItem.SetActive(true);
+        }
+        
+        // 获取渲染组件并将颜色设置为灰色
+        // if (TryGetComponent<Renderer>(out var renderer))
+        // {
+        //     renderer.material.color = Color.gray;
+        // }
+    }
+    
+    /// <summary>
+    /// 验证并修复 HintItem 的材质问题
+    /// </summary>
+    private void ValidateAndFixMaterial()
+    {
+        if (currentHintItem == null) return;
+        
+        // 获取 Image 组件
+        var image = currentHintItem.GetComponentInChildren<UnityEngine.UI.Image>();
+        if (image == null)
+        {
+            Debug.LogWarning($"IInteractive: No Image component found in HintItem for {gameObject.name}");
+            return;
+        }
+        
+        // 检查材质是否正确
+        bool hasCorrectMaterial = false;
+        if (image.material != null)
+        {
+            // 检查是否是圆角材质
+            if (image.material.name.Contains("UIRounded") || 
+                image.material.shader.name.Contains("RoundConorNew"))
+            {
+                hasCorrectMaterial = true;
+                Debug.Log($"IInteractive: HintItem for {gameObject.name} has correct rounded material");
+            }
+            else
+            {
+                Debug.LogWarning($"IInteractive: HintItem for {gameObject.name} has incorrect material: {image.material.name}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"IInteractive: HintItem for {gameObject.name} has no material assigned");
+        }
+        
+        // 如果材质不正确，尝试修复
+        if (!hasCorrectMaterial)
+        {
+            // 尝试从 Resources 加载正确的材质
+            var correctMaterial = Resources.Load<Material>("Materials/UIRounded");
+            if (correctMaterial != null)
+            {
+                image.material = correctMaterial;
+                Debug.Log($"IInteractive: Successfully loaded and applied rounded material to HintItem for {gameObject.name}");
+            }
+            else
+            {
+                Debug.LogError($"IInteractive: Could not find UIRounded material in Resources/Materials/ for {gameObject.name}");
+            }
+        }
+        
+        // 确保 UIDialogueBG 组件正确初始化
+        var uiDialogueBG = currentHintItem.GetComponentInChildren<UIDialogueBG>();
+        if (uiDialogueBG != null)
+        {
+            // UIDialogueBG 的 Awake() 应该已经调用了，但我们可以确保它正确工作
+            Debug.Log($"IInteractive: UIDialogueBG component found and should be initialized for {gameObject.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"IInteractive: No UIDialogueBG component found in HintItem for {gameObject.name}");
+        }
+    }
+
+    public virtual void HideHint()
+    {
+        if (!IsShowHint) return;
+        
+        IsShowHint = false;
+        
+        if (currentHintItem != null)
+        {
+            currentHintItem.SetActive(false);
+        }
+        
+        // 获取渲染组件并将颜色设为源色
+        if (TryGetComponent<Renderer>(out var renderer))
+        {
+            renderer.material.color = Color.white;
+        }
+    }
+    
+    // 清理提示实例
+    private void OnDestroy()
+    {
+        if (currentHintItem != null)
+        {
+            Destroy(currentHintItem);
+        }
+    }
+}
